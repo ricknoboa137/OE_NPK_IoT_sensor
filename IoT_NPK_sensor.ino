@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-
+#include <ArduinoJson.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include <WiFi.h>
 #include <PubSubClient.h>
@@ -8,8 +8,12 @@
 #define DE_RE_PIN 4
 #define LED_PIN 2
 
+
+DynamicJsonDocument doc(1024); //Setup Json doc
+
+
 SoftwareSerial mod(RX_PIN, TX_PIN);
-char mqtt_server[40]= "192.168.0.108";
+char mqtt_server[40]= "192.168.0.174";
 char mqtt_port[6] = "1883";
 WiFiManager wm;
 WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
@@ -17,20 +21,10 @@ WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-const byte nitro[] = { 0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08 };
-const byte phos[] = { 0x01, 0x03, 0x00, 0x1f, 0x00, 0x01, 0xb5, 0xcc };
-const byte pota[] = { 0x01, 0x03, 0x00, 0x20, 0x00, 0x01, 0x85, 0xc0 };
+const byte nitro[] = { 0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08 }; // Modify this array to change the request
+byte values[11]; // to store reply from modbus sensor
 
-byte values[11];
-
-byte incomingByte[9] = {0};
-byte no_Byte = 0;
-
-// Modbus Request Bytes
-byte sendBuffer[] = {0x01, 0x03, 0x00, 0x01, 0x00, 0x01, 0xD5, 0xCA}; // Single Read for Temperature
-// Modify this array to change the request
-
-float humidity, temperature, nitrog, phospho, potass, ph;
+float humidity, temperature, nitrog, phospho, potass, ph, conduct;
 void saveParamCallback();
 
 /////////////////////////////////SETUP///////////////////////////////////////
@@ -48,7 +42,7 @@ wm.setClass("invert"); // use darkmode
 client.setServer(mqtt_server, atoi(mqtt_port));
 client.setCallback(callback);
 bool res;
-res = wm.autoConnect("Motor_Driver"); // password protected ap ,"password"
+res = wm.autoConnect("NPK_Sensor_V1.1"); // password protected ap ,"password"
 if(!res) {
     Serial.println("Failed to connect");}
     // ESP.restart();} 
@@ -58,53 +52,91 @@ else {
     reconnect(); //connect MQTT    
   }
 client.subscribe("inTopic");
-Serial.println("\n\Swting Up Soil Sensor...\n");
+Serial.println("\n\Setting Up Soil Sensor...\n");
 }
 
+uint16_t  val1, val2, val3, val4, val5, val6, val7, val8;
+String jsonString;
+char buffer[256];
 //////////////////////////////////LOOP///////////////////////////////////////////
 void loop() {
-//read_Modbus();
-  byte val1, val2, val3, val4, val5, val6;
-  val1 = nitrogen();
-  delay(250);
-  Serial.print("SensorData: ");
-  Serial.print(val1);
   
+  if (GetValues()==0){
+      humidity = float(val1)/10;
+      temperature = float(val2)/10;
+      conduct = float(val3)/10; 
+      ph = float(val4)/10;
+      nitrog = float(val5)/10;
+      phospho = float(val6)/10;
+      potass= float(val7)/10;
+      doc["Humidity"] = humidity;
+      doc["Temperature"] = temperature;
+      doc["Conductivity"] = conduct;
+      doc["PH"] = ph;
+      doc["Nitrogen"] = nitrog;
+      doc["Phosphorus"] = phospho;
+      doc["Potassium"] = potass;
+      // Serialize JSON document to a string
+      
+      serializeJson(doc, jsonString);
+      serializeJson(doc, buffer);
+  }
+  // Print the JSON string to the serial monitor
+  Serial.println(jsonString); 
+  delay(250); 
   if (!client.connected()) {
     reconnect();
   }
-  client.publish("outTopic", "12");
+  client.publish("NPKdata", buffer);
   client.loop();
   delay(5000);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-byte nitrogen() {
+int GetValues() {
+  int error;
   digitalWrite(DE_RE_PIN, HIGH);
   //digitalWrite(RE, HIGH);
   delay(10);
   if (mod.write(nitro, sizeof(nitro)) == 8) {
-    //mod.flush();  // wait for write complete
     digitalWrite(DE_RE_PIN, LOW);
-    //digitalWrite(RE, LOW);
-/*   for (byte i = 0; i < 19; i++) {
-      //Serial.print(mod.read(),HEX);
-      values[i] = mod.read();
-      Serial.print(values[i], HEX);
-      Serial.print("\t");
-    }*/
     int in = 0;
     while(mod.available())
     {
       values[in] = mod.read();
-      Serial.print(values[in], HEX);
-      Serial.print("\t");
+      //Serial.print(values[in], HEX);
+      //Serial.print("\t");
       in++;
-    }
+      
+    } 
+    if (in > 0){ error = 0;} // flag no error
+    else { error= 1;}   // flag error in modbus comm
     Serial.println("");
+    if (error==0)
+    {
+    val1 = (values[3] << 8) | values[4]; //Humidity
+    val2 = (values[5] << 8) | values[6]; //temperature
+    val3 = (values[7] << 8) | values[8]; //conductivity
+    val4 = (values[9] << 8) | values[10]; //PH
+    val5 = (values[11] << 8) | values[12]; // nitogene
+    val6 = (values[13] << 8) | values[14]; //phosphorus
+    val7 = (values[15] << 8) | values[16]; //potassium 
+    }
+    else 
+    {
+    val1 = 0; //Humidity
+    val2 = 0; //temperature
+    val3 = 0; //conductivity
+    val4 = 0; //PH
+    val5 = 0; // nitogene
+    val6 = 0; //phosphorus
+    val7 = 0;
+
+    }
   }
-  return values[4];
+  
+  return error;
 }
 //////////////////////////////////////////////////////////////////////
 void saveParamCallback(){
@@ -168,9 +200,9 @@ void reconnect() {
        if (client.connect("ESP32_clientID")) {
           Serial.println("connected");
           // Once connected, publish an announcement...
-          client.publish("outTopic", "MotorDriver connected to MQTT");
+          client.publish("outTopic", "NPK Sensor connected to MQTT");
           // ... and resubscribe
-          client.subscribe("motor_velocities");
+          client.subscribe("NPKcommand");
         }
         else {
           Serial.println("Retrying MQTT connection in 2 seconds...");
@@ -178,7 +210,7 @@ void reconnect() {
           retries--;
           if (retries == 0) {
             // basically die and wait for WDT to reset me
-            //wm.resetSettings();
+            wm.resetSettings();
             break;
           }
         
