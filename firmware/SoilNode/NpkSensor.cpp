@@ -87,6 +87,12 @@ int npkChannelFromKey(const char* key) {
   return -1;
 }
 
+bool npkInRange(uint8_t ch, float value) {
+  if (ch >= NPK_CHANNEL_COUNT) return false;
+  if (!isfinite(value)) return false;
+  return value >= NPK_CHANNELS[ch].lo && value <= NPK_CHANNELS[ch].hi;
+}
+
 // ---------------------------------------------------------------------------
 // Register profile
 // ---------------------------------------------------------------------------
@@ -254,7 +260,7 @@ bool NpkSensor::read(NpkReading& out) {
       // implement, aliasing them onto the low block, so a wrong register
       // profile produces well-formed nonsense rather than a timeout. The
       // physical limits are the only thing that catches it.
-      if (v < NPK_CHANNELS[ch].lo || v > NPK_CHANNELS[ch].hi) {
+      if (!npkInRange(ch, v)) {
         out.valid[ch] = false;
         out.outOfRange[ch] = true;
         lastError_ = "reading outside the physical range - wrong register profile?";
@@ -356,7 +362,16 @@ bool NpkSensor::readFloat(uint16_t addrHigh, float& out) {
   uint16_t w[2] = { 0, 0 };
   if (!transaction(addrHigh, 2, w)) return false;
   const uint32_t bits = (uint32_t)w[0] << 16 | w[1];
-  memcpy(&out, &bits, sizeof(out));
+  float v;
+  memcpy(&v, &bits, sizeof(v));
+
+  // These registers are reinterpreted raw bits. An unimplemented or never
+  // written register decodes to NaN, an infinity or a denormal, and printing
+  // that as a gain would be worse than admitting it is unreadable.
+  if (!isfinite(v)) { lastError_ = "factor register is not a valid float"; return false; }
+  if (v != 0.0f && fabsf(v) < 1e-6f) { lastError_ = "factor register is denormal"; return false; }
+
+  out = v;
   return true;
 }
 

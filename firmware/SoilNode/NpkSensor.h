@@ -46,6 +46,11 @@ extern const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT];
 // Returns -1 if it is not recognised.
 int npkChannelFromKey(const char* key);
 
+// Is this value physically possible for the channel? Used both on the raw
+// reading and again on the calibrated result, so bad coefficients cannot
+// publish something the sensor could never have measured.
+bool npkInRange(uint8_t ch, float value);
+
 uint16_t npkModbusCrc(const uint8_t* data, uint8_t len);
 
 // One complete sweep of the probe.

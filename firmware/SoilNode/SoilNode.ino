@@ -48,12 +48,30 @@ static void npkOnMqttMessage(char* topic, uint8_t* payload, unsigned int length)
 
 static void publishReading(const NpkReading& r) {
   uint8_t validCount = 0;
+  bool calRejected = false;
   for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
-    if (r.valid[c]) {
-      lastGood[c] = calibration.apply(c, r.scaled[c]);
-      haveGood[c] = true;
-      validCount++;
+    if (!r.valid[c]) continue;
+
+    const float value = calibration.apply(c, r.scaled[c]);
+
+    // The sensor layer range-checked the raw reading. Check the calibrated
+    // result too: a mistyped coefficient turns a perfectly good reading into
+    // something the probe could never have measured, and that must not reach
+    // the payload wearing an ok:true.
+    if (!npkInRange(c, value)) {
+      Serial.printf("[cal] %s: %.3f -> %.3f, outside %.4g..%.4g - not published\r\n",
+                    NPK_CHANNELS[c].key, r.scaled[c], value,
+                    NPK_CHANNELS[c].lo, NPK_CHANNELS[c].hi);
+      calRejected = true;
+      continue;
     }
+
+    lastGood[c] = value;
+    haveGood[c] = true;
+    validCount++;
+  }
+  if (calRejected) {
+    Serial.println("[cal] check the coefficients with \"cal\"; \"cal clear <ch>\" reverts one");
   }
 
   // Nothing came back at all: say so on the status topic rather than
@@ -71,7 +89,7 @@ static void publishReading(const NpkReading& r) {
       doc[NPK_CHANNELS[c].jsonKey] = roundf(lastGood[c] * 1000.0f) / 1000.0f;
     }
   }
-  doc["ok"] = r.complete;
+  doc["ok"] = r.complete && !calRejected;
 
   char payload[NPK_MQTT_BUFFER];
   serializeJson(doc, payload, sizeof(payload));

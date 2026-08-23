@@ -39,16 +39,19 @@ class NpkCal {
   NpkCoeff get(uint8_t ch) const;
   bool isDefault(uint8_t ch) const;
 
-  // Store coefficients and commit to NVS. Rejects A == 0, which would
-  // flatten the channel to a constant.
+  // Store coefficients and commit to NVS. Rejects anything non-finite, an A
+  // of zero, and magnitudes far outside a plausible scale or offset
+  // correction - a mistyped gain is otherwise indistinguishable from a
+  // deliberate one. setChecked reports why it refused.
   bool set(uint8_t ch, float a, float b);
+  bool setChecked(uint8_t ch, float a, float b, const char** error);
 
   bool resetChannel(uint8_t ch);
   void resetAll();
 
   // Offset-only trim: keeps the current A, solves B so the reported value
   // becomes `reference` for this raw reading.
-  bool onePoint(uint8_t ch, float raw, float reference);
+  bool onePoint(uint8_t ch, float raw, float reference, const char** error = nullptr);
 
   // Two-point sequence. captureLow() stashes the first point in RAM; it is
   // not persisted, so a reboot between the two steps starts over.

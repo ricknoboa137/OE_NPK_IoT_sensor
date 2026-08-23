@@ -339,6 +339,14 @@ void NpkConsole::listCalibration(Print& out) {
   out.printf("%-14s %12s %12s   %s\r\n", "channel", "A (gain)", "B (offset)", "state");
   for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
     NpkCoeff k = cal_->get(c);
+    // No attempt is made to judge a coefficient pair in the abstract. Testing
+    // the transform across the channel's physical range sounds appealing but
+    // is wrong in both directions: every channel except temperature has a low
+    // limit of 0, so a pure gain always maps 0 to 0 and looks fine however
+    // absurd it is, while a legitimate scale correction operates on raw values
+    // that are nowhere near the output range and would be flagged wrongly.
+    // The honest signal is what the coefficients do to an actual reading, and
+    // that is checked at publish time and reported by "read".
     const char* state = cal_->isDefault(c) ? "default" : "calibrated";
     if (cal_->hasPendingLow(c)) state = "low point captured";
     out.printf("%-14s %12.5f %12.5f   %s\r\n", NPK_CHANNELS[c].key, k.a, k.b, state);
@@ -502,8 +510,10 @@ void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
     if (ch < 0) return;
     const float a = strtof(argv[3], nullptr);
     const float b = strtof(argv[4], nullptr);
-    if (!cal_->set(ch, a, b)) {
-      out.println("error: A must be non-zero and both values finite");
+    const char* why = nullptr;
+    if (!cal_->setChecked(ch, a, b, &why)) {
+      out.printf("error: %s
+", why);
       return;
     }
     out.printf("%s: A=%.5f B=%.5f saved\r\n", NPK_CHANNELS[ch].key, a, b);
@@ -517,7 +527,9 @@ void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
     const float ref = strtof(argv[3], nullptr);
     float raw;
     if (!captureRaw(ch, raw, out)) return;
-    if (!cal_->onePoint(ch, raw, ref)) { out.println("error: could not solve"); return; }
+    const char* why = nullptr;
+    if (!cal_->onePoint(ch, raw, ref, &why)) { out.printf("error: %s
+", why); return; }
     NpkCoeff k = cal_->get(ch);
     out.printf("%s: offset trimmed to reference %.*f -> A=%.5f B=%.5f saved\r\n",
                NPK_CHANNELS[ch].key, NPK_CHANNELS[ch].decimals, ref, k.a, k.b);

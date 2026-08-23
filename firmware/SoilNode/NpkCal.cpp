@@ -10,6 +10,24 @@ static void npkKeyFor(char* out, size_t n, char which, uint8_t ch) {
   snprintf(out, n, "%c_%s", which, NPK_CHANNELS[ch].key);
 }
 
+// isfinite() and a != 0 are necessary but nowhere near sufficient. A typed
+// "100" where "1.00" was meant is finite and non-zero, and so is a denormal
+// that silently collapses the channel. These bounds are deliberately loose -
+// the largest legitimate gain is a scale correction, and pH reported in 0.01
+// steps where this expects 0.1 only needs A = 10 - so anything outside them
+// is a mistake rather than an unusual calibration.
+static bool npkCoeffPlausible(float a, float b, const char** why) {
+  const char* dummy = nullptr;
+  if (why == nullptr) why = &dummy;
+  if (!isfinite(a) || !isfinite(b)) { *why = "coefficients must be finite"; return false; }
+  if (a == 0.0f)         { *why = "A of zero would flatten the channel to a constant"; return false; }
+  if (fabsf(a) < 1e-3f)  { *why = "A below 0.001 collapses the channel"; return false; }
+  if (fabsf(a) > 1e3f)   { *why = "A above 1000 is far outside a plausible scale correction"; return false; }
+  if (fabsf(b) > 1e5f)   { *why = "B above 100000 is far outside a plausible offset"; return false; }
+  *why = "";
+  return true;
+}
+
 void NpkCal::begin() {
   g_prefs.begin(NPK_NVS_NAMESPACE, false);
   for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
@@ -18,8 +36,13 @@ void NpkCal::begin() {
     npkKeyFor(kb, sizeof(kb), 'b', c);
     coef_[c].a = g_prefs.getFloat(ka, 1.0f);
     coef_[c].b = g_prefs.getFloat(kb, 0.0f);
-    if (!isfinite(coef_[c].a) || coef_[c].a == 0.0f) coef_[c].a = 1.0f;
-    if (!isfinite(coef_[c].b)) coef_[c].b = 0.0f;
+    // Hold stored values to the same bar as freshly entered ones. NVS can be
+    // corrupted, and a channel silently stuck on a garbage gain is worse than
+    // one that has quietly reverted to uncalibrated.
+    if (!npkCoeffPlausible(coef_[c].a, coef_[c].b, nullptr)) {
+      coef_[c].a = 1.0f;
+      coef_[c].b = 0.0f;
+    }
     pending_[c] = false;
     pendingRaw_[c] = 0.0f;
     pendingRef_[c] = 0.0f;
@@ -50,11 +73,19 @@ bool NpkCal::isDefault(uint8_t ch) const {
 }
 
 bool NpkCal::set(uint8_t ch, float a, float b) {
-  if (ch >= NPK_CHANNEL_COUNT) return false;
-  if (!isfinite(a) || !isfinite(b) || a == 0.0f) return false;
+  return setChecked(ch, a, b, nullptr);
+}
+
+bool NpkCal::setChecked(uint8_t ch, float a, float b, const char** error) {
+  const char* dummy = nullptr;
+  if (error == nullptr) error = &dummy;
+  if (ch >= NPK_CHANNEL_COUNT) { *error = "unknown channel"; return false; }
+  if (!npkCoeffPlausible(a, b, error)) return false;
+
   coef_[ch].a = a;
   coef_[ch].b = b;
   persist(ch);
+  *error = "";
   return true;
 }
 
@@ -71,10 +102,13 @@ void NpkCal::resetAll() {
   for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) resetChannel(c);
 }
 
-bool NpkCal::onePoint(uint8_t ch, float raw, float reference) {
-  if (ch >= NPK_CHANNEL_COUNT || !isfinite(raw) || !isfinite(reference)) return false;
+bool NpkCal::onePoint(uint8_t ch, float raw, float reference, const char** error) {
+  const char* dummy = nullptr;
+  if (error == nullptr) error = &dummy;
+  if (ch >= NPK_CHANNEL_COUNT) { *error = "unknown channel"; return false; }
+  if (!isfinite(raw) || !isfinite(reference)) { *error = "reading or reference not finite"; return false; }
   // Hold the gain, move the offset so that A * raw + B == reference.
-  return set(ch, coef_[ch].a, reference - coef_[ch].a * raw);
+  return setChecked(ch, coef_[ch].a, reference - coef_[ch].a * raw, error);
 }
 
 bool NpkCal::captureLow(uint8_t ch, float raw, float reference) {
@@ -106,8 +140,8 @@ bool NpkCal::solveHigh(uint8_t ch, float raw, float reference, const char** erro
     return false;
   }
 
+  if (!setChecked(ch, a, b, error)) return false;   // *error already set
   pending_[ch] = false;
-  if (!set(ch, a, b)) { *error = "could not store coefficients"; return false; }
   *error = "";
   return true;
 }
