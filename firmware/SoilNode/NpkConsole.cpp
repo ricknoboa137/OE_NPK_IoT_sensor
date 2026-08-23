@@ -141,6 +141,8 @@ void NpkConsole::dispatch(char** argv, int argc, Print& out) {
     cmdScan(argv, argc, out);
   } else if (!strcasecmp(cmd, "cal")) {
     cmdCal(argv, argc, out);
+  } else if (!strcasecmp(cmd, "sensor")) {
+    cmdSensor(argv, argc, out);
   } else if (!strcasecmp(cmd, "mqtt")) {
     if (argc < 2) { out.println("usage: mqtt <host> [port]"); return; }
     uint16_t port = (argc >= 3) ? (uint16_t)strtol(argv[2], nullptr, 10) : net_->port();
@@ -210,6 +212,15 @@ void NpkConsole::cmdHelp(Print& out) {
   out.println(F("  cal high <ch> <ref>       two-point step 2: solve A and B"));
   out.println(F("  cal clear <ch|all>        back to A=1, B=0"));
   out.println();
+  out.println(F("The probe has its own calibration registers, separate from"));
+  out.println(F("the above. Those change what it reports; \"cal\" changes how"));
+  out.println(F("this firmware interprets what it reports."));
+  out.println();
+  out.println(F("  sensor                    read the probe's own registers"));
+  out.println(F("  sensor offset <temp|hum|ec|ph> <raw>"));
+  out.println(F("  sensor factor <n|p|k> <value>     gain, IEEE-754 float"));
+  out.println(F("  sensor npk    <n|p|k> <mg/kg>     write a lab-measured value"));
+  out.println();
   out.println(F("  Channels: moisture temperature conductivity ph"));
   out.println(F("            nitrogen phosphorus potassium"));
   out.println();
@@ -227,8 +238,9 @@ void NpkConsole::cmdHelp(Print& out) {
 void NpkConsole::cmdStatus(Print& out) {
   out.println();
   out.printf("Firmware : %s %s\r\n", NPK_FW_NAME, NPK_FW_VERSION);
-  out.printf("Sensor   : VMS-3001-TR, %u registers from 0x%04X\r\n",
-             (unsigned)NPK_REGISTER_COUNT, (unsigned)NPK_REGISTER_START);
+  out.printf("Sensor   : CWT soil NPK 5-pin, %u registers from 0x%04X%s\r\n",
+             (unsigned)NPK_REG_COUNT, (unsigned)NPK_REG_MEASUREMENTS,
+             NPK_ENABLE_CONDUCTIVITY ? "" : ", conductivity not published");
   out.printf("Port     : %s\r\n",
              NPK_USE_SOFTWARE_SERIAL ? "SoftwareSerial" : "hardware UART1");
   out.printf("RS-485   : %lu baud 8N1, slave 0x%02X, DE/RE on GPIO%d\r\n",
@@ -332,6 +344,134 @@ void NpkConsole::listCalibration(Print& out) {
     out.printf("%-14s %12.5f %12.5f   %s\r\n", NPK_CHANNELS[c].key, k.a, k.b, state);
   }
   out.println();
+}
+
+// ---------------------------------------------------------------------------
+// The sensor's own calibration registers
+// ---------------------------------------------------------------------------
+// Distinct from "cal", which corrects readings inside the ESP32. These write
+// into the probe itself and persist there, independent of this firmware.
+
+struct NpkNutrientReg {
+  const char* key;
+  uint16_t    measurement;   // the writable N/P/K reading register
+  uint16_t    factorHigh;    // factor float, high word; +1 low, +2 offset
+};
+static const NpkNutrientReg kNutrients[] = {
+  { "n", NPK_REG_NITROGEN,   NPK_REG_N_FACTOR },
+  { "p", NPK_REG_PHOSPHORUS, NPK_REG_P_FACTOR },
+  { "k", NPK_REG_POTASSIUM,  NPK_REG_K_FACTOR },
+};
+
+static const NpkNutrientReg* npkNutrientFromKey(const char* s) {
+  if (!s) return nullptr;
+  for (uint8_t i = 0; i < 3; ++i) {
+    if (!strcasecmp(s, kNutrients[i].key)) return &kNutrients[i];
+  }
+  if (!strcasecmp(s, "nitrogen"))   return &kNutrients[0];
+  if (!strcasecmp(s, "phosphorus")) return &kNutrients[1];
+  if (!strcasecmp(s, "potassium"))  return &kNutrients[2];
+  return nullptr;
+}
+
+void NpkConsole::cmdSensor(char** argv, int argc, Print& out) {
+  const char* sub = (argc >= 2) ? argv[1] : "show";
+
+  if (!strcasecmp(sub, "show") || !strcasecmp(sub, "list")) {
+    out.println();
+    out.println(F("Sensor-side calibration (stored in the probe, not the ESP32)"));
+    struct { const char* name; uint16_t reg; float scale; } offs[] = {
+      { "temperature offset", NPK_REG_TEMP_OFFSET, 10.0f },
+      { "humidity offset",    NPK_REG_HUM_OFFSET,  10.0f },
+      { "conductivity offset",NPK_REG_EC_OFFSET,    1.0f },
+      { "pH offset",          NPK_REG_PH_OFFSET,    1.0f },
+    };
+    for (uint8_t i = 0; i < 4; ++i) {
+      uint16_t v = 0;
+      if (sensor_->readRegisters(offs[i].reg, 1, &v)) {
+        out.printf("  0x%04X  %-20s raw %6d  -> %.2f\r\n", offs[i].reg, offs[i].name,
+                   (int)(int16_t)v, (int)(int16_t)v / offs[i].scale);
+      } else {
+        out.printf("  0x%04X  %-20s no reply (%s)\r\n", offs[i].reg, offs[i].name,
+                   sensor_->lastError());
+      }
+      delay(20);
+    }
+    for (uint8_t i = 0; i < 3; ++i) {
+      float f = 0.0f;
+      uint16_t o = 0;
+      const bool fok = sensor_->readFloat(kNutrients[i].factorHigh, f);
+      delay(20);
+      const bool ook = sensor_->readRegisters(kNutrients[i].factorHigh + 2, 1, &o);
+      out.printf("  0x%04X  %s factor %s", kNutrients[i].factorHigh,
+                 kNutrients[i].key, fok ? "" : "no reply");
+      if (fok) out.printf("%.5f", f);
+      out.printf("   offset %s", ook ? "" : "no reply");
+      if (ook) out.printf("%d", (int)(int16_t)o);
+      out.println();
+      delay(20);
+    }
+    out.println();
+    out.println(F("  sensor offset <temp|hum|ec|ph> <raw>   write an offset register"));
+    out.println(F("  sensor factor <n|p|k> <value>          write the gain float"));
+    out.println(F("  sensor npk    <n|p|k> <mg/kg>          write a measured value"));
+    out.println();
+    return;
+  }
+
+  if (!strcasecmp(sub, "offset")) {
+    if (argc < 4) {
+      out.println("usage: sensor offset <temp|hum|ec|ph> <raw integer>");
+      return;
+    }
+    uint16_t reg;
+    if      (!strcasecmp(argv[2], "temp")) reg = NPK_REG_TEMP_OFFSET;
+    else if (!strcasecmp(argv[2], "hum"))  reg = NPK_REG_HUM_OFFSET;
+    else if (!strcasecmp(argv[2], "ec"))   reg = NPK_REG_EC_OFFSET;
+    else if (!strcasecmp(argv[2], "ph"))   reg = NPK_REG_PH_OFFSET;
+    else { out.println("error: channel must be temp, hum, ec or ph"); return; }
+
+    const int v = (int)strtol(argv[3], nullptr, 0);
+    if (v < -32768 || v > 32767) { out.println("error: value out of range"); return; }
+    if (sensor_->writeRegister(reg, (uint16_t)(int16_t)v)) {
+      out.printf("wrote %d to 0x%04X\r\n", v, reg);
+    } else {
+      out.printf("error: write failed (%s)\r\n", sensor_->lastError());
+    }
+    return;
+  }
+
+  if (!strcasecmp(sub, "factor")) {
+    if (argc < 4) { out.println("usage: sensor factor <n|p|k> <value>"); return; }
+    const NpkNutrientReg* nr = npkNutrientFromKey(argv[2]);
+    if (!nr) { out.println("error: channel must be n, p or k"); return; }
+    const float f = strtof(argv[3], nullptr);
+    if (!isfinite(f)) { out.println("error: value must be finite"); return; }
+    if (sensor_->writeFloat(nr->factorHigh, f)) {
+      out.printf("wrote factor %.5f to 0x%04X/0x%04X\r\n", f,
+                 nr->factorHigh, nr->factorHigh + 1);
+    } else {
+      out.printf("error: write failed (%s)\r\n", sensor_->lastError());
+    }
+    return;
+  }
+
+  if (!strcasecmp(sub, "npk")) {
+    if (argc < 4) { out.println("usage: sensor npk <n|p|k> <mg/kg>"); return; }
+    const NpkNutrientReg* nr = npkNutrientFromKey(argv[2]);
+    if (!nr) { out.println("error: channel must be n, p or k"); return; }
+    const long v = strtol(argv[3], nullptr, 10);
+    if (v < 0 || v > 2999) { out.println("error: range is 0-2999 mg/kg"); return; }
+    if (sensor_->writeRegister(nr->measurement, (uint16_t)v)) {
+      out.printf("wrote %ld mg/kg to 0x%04X\r\n", v, nr->measurement);
+      out.println("The probe now reports that value until it measures again.");
+    } else {
+      out.printf("error: write failed (%s)\r\n", sensor_->lastError());
+    }
+    return;
+  }
+
+  out.printf("unknown sensor subcommand \"%s\" - try: sensor\r\n", sub);
 }
 
 void NpkConsole::cmdCal(char** argv, int argc, Print& out) {

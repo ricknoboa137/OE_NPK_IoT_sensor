@@ -28,50 +28,49 @@
 // Channel table
 // ---------------------------------------------------------------------------
 /*
- * Scale factors come from section 5.3 of the VMS-3001-TR manual, and are
- * confirmed by the worked example in section 5.4. That example reads
+ * Scaling comes from the register table on manual page 3 and is confirmed by
+ * the worked example on pages 4-5:
  *
- *     01 03 00 00 00 04 44 09
- *  -> 01 03 08 02 92 FF 9B 03 E8 00 38 57 B6
+ *     01 03 00 00 00 07 04 08
+ *  -> 01 03 0E 01D0 014C 002C 005A 0020 0058 0068 70 29
  *
- * and both CRCs verify. Decoding it:
+ * Both CRCs verify, and every field decodes to the value the manual states:
  *
- *   0x0000 moisture     0x0292 =  658  /10 -> 65.8 %     as documented
- *   0x0001 temperature  0xFF9B = -101  /10 -> -10.1 degC as documented
- *   0x0002 conductivity 0x03E8 = 1000  /1  -> 1000 us/cm as documented
- *   0x0003 pH           0x0038 =   56  /10 -> 5.6 pH     as documented
+ *   0x0000 humidity     0x01D0 = 464  /10 ->  46.4 %RH    as documented
+ *   0x0001 temperature  0x014C = 332  /10 ->  33.2 degC   as documented
+ *   0x0002 conductivity 0x002C =  44  /1  ->  44 us/cm    as documented
+ *   0x0003 pH           0x005A =  90  /10 ->   9.0 pH     as documented
+ *   0x0004 nitrogen     0x0020 =  32  /1  ->  32 mg/kg    as documented
+ *   0x0005 phosphorus   0x0058 =  88  /1  ->  88 mg/kg    as documented
+ *   0x0006 potassium    0x0068 = 104  /1  -> 104 mg/kg    as documented
  *
- * Temperature is the only signed value; below zero it is sent as a two's
+ * Two scalings differ from what the original sketch assumed. It divided
+ * every channel by ten, but conductivity and N, P, K are whole units:
+ * 1 us/cm and 1 mg/kg respectively, per both the register table and the
+ * resolution line on page 1. Readings logged by the original firmware are
+ * therefore a factor of ten low on those three channels.
+ *
+ * Temperature is the only signed value; below zero it arrives as a two's
  * complement.
  *
- * Note that conductivity is NOT scaled - the manual gives it in whole us/cm,
- * and the resolution line in section 1.3 agrees at 1 us/cm. The original
- * sketch divided it by ten. It is moot here because this unit does not
- * return conductivity at all, but it matters if the channel is restored.
- *
- * N, P and K have no registers in this manual. This is a four-parameter
- * probe - moisture, temperature, conductivity, pH - and the model-selection
- * table in section 1.5 offers only THPH, ECPH and ECTHPH variants. Slots 4,
- * 5 and 6 of the block read here are undocumented. They are kept because the
- * original decoder used them and the logged dataset carries them, but
- * whatever they hold is not soil nitrogen, phosphorus or potassium.
- *
- * A pure scale mismatch needs no code change: the calibration A coefficient
- * absorbs it.
+ * A residual scale mismatch needs no code change - the calibration A
+ * coefficient absorbs it.
  */
-// Limits are the measurement ranges in section 1.3, widened where the manual
-// quotes a narrower spec than the register can express: pH is specced 3-9 but
+// Limits are the measuring ranges on manual page 1. pH is specced 3-9 but
 // 0-14 is allowed so a badly calibrated probe still reports rather than
-// silently dropping out. The undocumented slots get a permissive 0-1999,
-// enough to catch a gross misread without pretending to know the range.
+// silently dropping out; NPK is specced 1-2999 mg/kg and 0 is allowed because
+// a dry or unresponsive channel legitimately reads zero.
 const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT] = {
-  // key            jsonKey        unit     scale  signed dec     lo       hi
-  { "moisture",    "Humidity",    "%RH",    10.0f, false, 1,     0.0f,  100.0f },
-  { "temperature", "Temperature", "degC",   10.0f, true,  1,   -40.0f,   80.0f },
-  { "ph",          "PH",          "pH",     10.0f, false, 1,     0.0f,   14.0f },
-  { "nitrogen",    "Nitrogen",    "mg/kg",  10.0f, false, 1,     0.0f, 1999.0f },
-  { "phosphorus",  "Phosphorus",  "mg/kg",  10.0f, false, 1,     0.0f, 1999.0f },
-  { "potassium",   "Potassium",   "mg/kg",  10.0f, false, 1,     0.0f, 1999.0f },
+  // key            jsonKey        unit     scale  signed dec     lo        hi
+  { "moisture",    "Humidity",    "%RH",    10.0f, false, 1,     0.0f,   100.0f },
+  { "temperature", "Temperature", "degC",   10.0f, true,  1,   -40.0f,    80.0f },
+#if NPK_ENABLE_CONDUCTIVITY
+  { "conductivity","Conductivity","us/cm",   1.0f, false, 0,     0.0f, 20000.0f },
+#endif
+  { "ph",          "PH",          "pH",     10.0f, false, 1,     0.0f,    14.0f },
+  { "nitrogen",    "Nitrogen",    "mg/kg",   1.0f, false, 0,     0.0f,  2999.0f },
+  { "phosphorus",  "Phosphorus",  "mg/kg",   1.0f, false, 0,     0.0f,  2999.0f },
+  { "potassium",   "Potassium",   "mg/kg",   1.0f, false, 0,     0.0f,  2999.0f },
 };
 
 int npkChannelFromKey(const char* key) {
@@ -100,19 +99,22 @@ struct NpkReadOp {
 };
 
 // One transaction, seven registers from 0x0000 - byte for byte the request
-// the original sketch sent (01 03 00 00 00 07, CRC 04 08), and the slots are
-// mapped in the order the original decoder used, so logged data stays
-// comparable. Slot 2 is conductivity, which this unit does not return, so it
-// is discarded rather than published.
+// the original sketch sent and the one the manual gives as its combined read
+// example (01 03 00 00 00 07, CRC 04 08, both verified). Slots are mapped in
+// the order the original decoder used, so logged data stays comparable.
 static const NpkReadOp kOps[] = {
-  { NPK_REGISTER_START, NPK_REGISTER_COUNT,
-    { NPK_MOISTURE,     // slot 0  0x0000  moisture
-      NPK_TEMPERATURE,  // slot 1  0x0001  temperature
-      -1,               // slot 2  0x0002  conductivity, not fitted
-      NPK_PH,           // slot 3  0x0003  pH
-      NPK_NITROGEN,     // slot 4  0x0004  undocumented
-      NPK_PHOSPHORUS,   // slot 5  0x0005  undocumented
-      NPK_POTASSIUM }   // slot 6  0x0006  undocumented
+  { NPK_REG_MEASUREMENTS, NPK_REG_COUNT,
+    { NPK_MOISTURE,       // slot 0  0x0000  humidity
+      NPK_TEMPERATURE,    // slot 1  0x0001  temperature
+#if NPK_ENABLE_CONDUCTIVITY
+      NPK_CONDUCTIVITY,   // slot 2  0x0002  conductivity
+#else
+      -1,                 // slot 2  0x0002  conductivity, not published
+#endif
+      NPK_PH,             // slot 3  0x0003  pH
+      NPK_NITROGEN,       // slot 4  0x0004  nitrogen
+      NPK_PHOSPHORUS,     // slot 5  0x0005  phosphorus
+      NPK_POTASSIUM }     // slot 6  0x0006  potassium
   },
 };
 
@@ -305,6 +307,66 @@ bool NpkSensor::detectBaud() {
   }
   setBaud(NPK_BAUD_DEFAULT);
   return false;
+}
+
+// ---------------------------------------------------------------------------
+// Direct register access, for the sensor's own calibration registers
+// ---------------------------------------------------------------------------
+
+bool NpkSensor::readRegisters(uint16_t addr, uint8_t count, uint16_t* out) {
+  return transaction(addr, count, out);
+}
+
+// Function 0x06, write single register. The reply echoes the request byte for
+// byte (manual pages 5-6), so a correct echo is the acknowledgement.
+bool NpkSensor::writeRegister(uint16_t addr, uint16_t value) {
+  uint8_t frame[8] = {
+    NPK_SLAVE_ID, 0x06,
+    (uint8_t)(addr >> 8),  (uint8_t)(addr & 0xFF),
+    (uint8_t)(value >> 8), (uint8_t)(value & 0xFF),
+    0, 0
+  };
+  const uint16_t crc = npkModbusCrc(frame, 6);
+  frame[6] = (uint8_t)(crc & 0xFF);
+  frame[7] = (uint8_t)(crc >> 8);
+
+  uint8_t rx[8];
+  for (uint8_t attempt = 0; attempt < NPK_RETRIES; ++attempt) {
+    if (attempt) delay(NPK_INTERFRAME_MS * 2);
+    if (!sendFrame(frame, sizeof(frame))) { lastError_ = "uart write failed"; continue; }
+
+    const int n = readFrame(rx, sizeof(rx), NPK_RESPONSE_TIMEOUT_MS);
+    if (n == 0) { lastError_ = "no reply"; continue; }
+    if (n == 5 && (rx[1] & 0x80)) { lastError_ = "modbus exception"; continue; }
+    if (n < (int)sizeof(rx))      { lastError_ = "short reply"; continue; }
+
+    const uint16_t want = npkModbusCrc(rx, 6);
+    const uint16_t got  = (uint16_t)rx[7] << 8 | rx[6];
+    if (want != got)              { lastError_ = "crc mismatch"; continue; }
+    if (memcmp(rx, frame, 6) != 0) { lastError_ = "echo did not match request"; continue; }
+
+    lastError_ = "";
+    return true;
+  }
+  return false;
+}
+
+// The NPK factors are IEEE-754 floats across two registers, high word first.
+bool NpkSensor::readFloat(uint16_t addrHigh, float& out) {
+  uint16_t w[2] = { 0, 0 };
+  if (!transaction(addrHigh, 2, w)) return false;
+  const uint32_t bits = (uint32_t)w[0] << 16 | w[1];
+  memcpy(&out, &bits, sizeof(out));
+  return true;
+}
+
+bool NpkSensor::writeFloat(uint16_t addrHigh, float value) {
+  uint32_t bits;
+  memcpy(&bits, &value, sizeof(bits));
+  // Two single-register writes: the manual documents 0x06 only, not 0x10.
+  if (!writeRegister(addrHigh,     (uint16_t)(bits >> 16))) return false;
+  delay(NPK_INTERFRAME_MS * 2);
+  return writeRegister(addrHigh + 1, (uint16_t)(bits & 0xFFFF));
 }
 
 void NpkSensor::scanRegisters(uint16_t first, uint16_t last, Print& out) {

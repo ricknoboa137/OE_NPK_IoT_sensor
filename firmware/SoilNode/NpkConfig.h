@@ -1,6 +1,11 @@
 /*
  * NpkConfig.h - every tunable for the SoilNode firmware, in one place.
  *
+ * Target hardware: CWT Soil sensor (NPK type), five-pin probe, from
+ * Shenzhen ComWinTop. Manual "NPK type (5Pin probe) manual V1.4" is the
+ * authority for everything in this file. All nine example frames in that
+ * manual have been CRC-checked and verify.
+ *
  * Naming: every file in this sketch is prefixed Npk and every type is
  * prefixed Npk. arduino-esp32 3.x declares a class called NetworkManager in
  * libraries/Network, which WiFi.h pulls in, and an earlier revision of this
@@ -15,7 +20,7 @@
 // Identity
 // ---------------------------------------------------------------------------
 #define NPK_FW_NAME     "SoilNode"
-#define NPK_FW_VERSION  "2.1.0"
+#define NPK_FW_VERSION  "2.2.0"
 
 // ---------------------------------------------------------------------------
 // RS-485 wiring (ESP32)
@@ -34,53 +39,77 @@
 #define NPK_DE_RE_PIN       4   // DE and RE tied together
 #define NPK_LED_PIN         2   // on-board LED
 
-// Datasheet section 4.1: 8 data bits, no parity, 1 stop bit.
-// Factory default baud is 9600; the original sketch used 4800. The node
-// probes the list below at boot and keeps whichever answers.
+// Manual page 3: "Default device address is 1, RS485 Default parameters:
+// 4800,n,8,1". The node probes the candidates below at boot in case the
+// device has been reconfigured.
 #define NPK_BAUD_DEFAULT     4800
 #define NPK_BAUD_AUTODETECT     1
 static const uint32_t NPK_BAUD_CANDIDATES[] = { 4800, 9600, 2400 };
 
-#define NPK_SLAVE_ID            0x01   // datasheet 4.2: factory default 0x01
+#define NPK_SLAVE_ID            0x01
 #define NPK_RESPONSE_TIMEOUT_MS  400
 #define NPK_RETRIES                3
 #define NPK_INTERFRAME_MS         10   // >= 3.5 char times at 2400 baud
 
 // ---------------------------------------------------------------------------
-// Register profile
+// Register map (manual pages 3-4)
 // ---------------------------------------------------------------------------
-// The probe is a VMS-3001-TR-*-N01 (Weimengshi five-pin soil transmitter),
-// and its own manual, section 5.3, is the authority:
+// Measurements, function code 0x03:
+//   0x0000  Humidity       0.1 %RH        read
+//   0x0001  Temperature    0.1 degC       read
+//   0x0002  Conductivity   1 us/cm        read
+//   0x0003  pH             0.1            read
+//   0x0004  Nitrogen       1 mg/kg        read / WRITE
+//   0x0005  Phosphorus     1 mg/kg        read / WRITE
+//   0x0006  Potassium      1 mg/kg        read / WRITE
+//   0x0007  Salinity       1 mg/L         read
+//   0x0008  TDS            1 mg/L         read
 //
-//   0x0000  moisture      read-only,  value x10
-//   0x0001  temperature   read-only,  value x10, signed
-//   0x0002  conductivity  read-only,  us/cm, NOT scaled
-//   0x0003  pH            read-only,  value x10
-//   0x0007  salinity      read-only,  "for reference only"
-//   0x0008  TDS           read-only,  "for reference only"
-//   0x0022  EC temperature coefficient   read/write
-//   0x0023  salinity coefficient         read/write
-//   0x0024  TDS coefficient              read/write
-//   0x0050  temperature calibration      read/write, integer x10
-//   0x0051  moisture calibration         read/write, integer x10
-//   0x0052  conductivity calibration     read/write, integer
-//   0x0053  pH calibration               read/write, integer
-//   0x07D0  device address    read/write, 1-254, factory default 1
-//   0x07D1  baud rate         read/write, 0 = 2400, 1 = 4800, 2 = 9600
+// The sensor's own calibration, function code 0x06 to write:
+//   0x0022  Conductivity factor   0-100 = 0.0-10.0 %, default 0
+//   0x0023  Salinity factor       0-100 = 0.00-1.00, default 55
+//   0x0024  TDS factor            0-100 = 0.00-1.00, default 50
+//   0x0050  Temperature offset    0.1
+//   0x0051  Humidity offset       0.1
+//   0x0052  Conductivity offset   1
+//   0x0053  pH offset             1
+//   0x04E8  Nitrogen factor,   IEEE-754 float, high word
+//   0x04E9  Nitrogen factor,   low word
+//   0x04EA  Nitrogen offset
+//   0x04F2  Phosphorus factor, high word
+//   0x04F3  Phosphorus factor, low word
+//   0x04F4  Phosphorus offset
+//   0x04FC  Potassium factor,  high word
+//   0x04FD  Potassium factor,  low word
+//   0x04FE  Potassium offset
+//   0x07D0  Slave ID    1-254
+//   0x07D1  Baud rate   0 = 2400, 1 = 4800, 2 = 9600
 //
-// Unlike the JXBS manual this project started from, this one is internally
-// consistent: both example CRCs verify, and every worked example decodes to
-// the value it claims.
-//
-// The node keeps sending the original sketch's single request - seven
-// registers from 0x0000 - and keeps the original slot order, so existing
-// decoders and logged data stay valid. See NpkSensor.cpp for the mapping.
-#define NPK_REGISTER_START  0x0000
-#define NPK_REGISTER_COUNT  7
+// Note: the manual's prose says "read function code: 0x30, write function
+// code: 0x60". Every worked example uses 0x03 and 0x06, and those are what
+// verify against the printed CRCs, so 0x30/0x60 is a typo for the decimal
+// function numbers 3 and 6.
+#define NPK_REG_MEASUREMENTS   0x0000   // start of the measurement block
+#define NPK_REG_COUNT               7   // humidity..potassium, the original read
+#define NPK_REG_NITROGEN       0x0004
+#define NPK_REG_PHOSPHORUS     0x0005
+#define NPK_REG_POTASSIUM      0x0006
+#define NPK_REG_TEMP_OFFSET    0x0050
+#define NPK_REG_HUM_OFFSET     0x0051
+#define NPK_REG_EC_OFFSET      0x0052
+#define NPK_REG_PH_OFFSET      0x0053
+#define NPK_REG_N_FACTOR       0x04E8   // + 1 = low word, + 2 = offset
+#define NPK_REG_P_FACTOR       0x04F2
+#define NPK_REG_K_FACTOR       0x04FC
 
-// Reject readings outside the physical range in section 1.3 of the datasheet.
-// A wrong register profile or scale shows up as 152 %RH or 4090 mg/kg, and
-// without this those get published as though they were real.
+// This particular unit does not return a conductivity reading, so it is left
+// out of the payload. Set to 1 to publish it - the register and its scaling
+// are fully supported, nothing else needs changing.
+#define NPK_ENABLE_CONDUCTIVITY 0
+
+// Reject readings outside the measuring ranges on manual page 1. A wrong
+// scale or slot mapping shows up as 152 %RH or 4090 mg/kg, and without this
+// those get published as though they were real.
 #define NPK_RANGE_CHECK 1
 
 // ---------------------------------------------------------------------------
@@ -125,7 +154,7 @@ static const uint32_t NPK_BAUD_CANDIDATES[] = { 4800, 9600, 2400 };
 #define NPK_MQTT_BUFFER 768   // PubSubClient defaults to 256, too small here
 
 // ---------------------------------------------------------------------------
-// Calibration
+// Calibration held in the ESP32 (separate from the sensor's own registers)
 // ---------------------------------------------------------------------------
 #define NPK_NVS_NAMESPACE   "npkcfg"
 #define NPK_CAL_SAMPLES     8      // sweeps averaged when capturing a point

@@ -10,13 +10,17 @@
 #define NPK_SENSOR_H
 
 #include <Arduino.h>
+#include "NpkConfig.h"
 
-// Conductivity sits at slot 2 of the register block but this unit does not
-// return it, so it is not a channel. To put it back: add NPK_CONDUCTIVITY
-// here, add a row to NPK_CHANNELS, and change the -1 in the read op to it.
+// Conductivity is register 0x0002 and fully supported, but this unit does not
+// return a reading for it, so NPK_ENABLE_CONDUCTIVITY leaves it out of the
+// payload. Flipping that one define is all it takes to publish it.
 enum NpkChannelId : uint8_t {
   NPK_MOISTURE = 0,
   NPK_TEMPERATURE,
+#if NPK_ENABLE_CONDUCTIVITY
+  NPK_CONDUCTIVITY,
+#endif
   NPK_PH,
   NPK_NITROGEN,
   NPK_PHOSPHORUS,
@@ -72,10 +76,20 @@ class NpkSensor {
   uint32_t baud() const { return baud_; }
   void setBaud(uint32_t baud);
 
-  // Read registers one at a time across a range and report which answer. The
-  // manual for this family contains transcription errors (see README), so
-  // this is how to find out what a given unit really implements.
+  // Read registers one at a time across a range and report which answer.
   void scanRegisters(uint16_t first, uint16_t last, Print& out);
+
+  // --- direct register access, for the sensor's own calibration ------------
+  // These reach registers outside the measurement block: the offsets at
+  // 0x0050-0x0053, the NPK factor/offset triplets, and the writable NPK
+  // measurement registers themselves.
+  bool readRegisters(uint16_t addr, uint8_t count, uint16_t* out);
+  bool writeRegister(uint16_t addr, uint16_t value);        // function 0x06
+
+  // The NPK factors are IEEE-754 floats spread over two registers, high word
+  // first (manual page 4).
+  bool readFloat(uint16_t addrHigh, float& out);
+  bool writeFloat(uint16_t addrHigh, float value);
 
   const char* lastError() const { return lastError_; }
 

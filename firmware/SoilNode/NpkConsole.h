@@ -65,6 +65,7 @@ class NpkConsole {
   void cmdRead(Print& out);
   void cmdScan(char** argv, int argc, Print& out);
   void cmdCal(char** argv, int argc, Print& out);
+  void cmdSensor(char** argv, int argc, Print& out);
   void listCalibration(Print& out);
   int  resolveChannel(const char* name, Print& out);
   bool captureRaw(uint8_t ch, float& rawOut, Print& out);
