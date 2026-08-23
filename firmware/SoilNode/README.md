@@ -237,9 +237,33 @@ Node-RED flow keeps working unchanged:
 `ok` is false when at least one register did not answer this cycle; the
 affected channels then carry their last good value rather than a zero.
 
-## Register map, and where the manual is wrong
+## Register map
 
-From section 4.3 of the manual:
+**This product family has variants that disagree with each other and with the
+manual.** Two profiles are provided; `NPK_REGISTER_PROFILE` in `NpkConfig.h`
+selects one.
+
+### `NPK_PROFILE_CONTIGUOUS` — the default, and what the probe on this project speaks
+
+Seven registers in a row, every one scaled by 0.1:
+
+| Register | Quantity | Unit |
+|---|---|---|
+| `0x0000` | Soil moisture | 0.1 %RH |
+| `0x0001` | Soil temperature | 0.1 °C, **signed** |
+| `0x0002` | Conductivity | 0.1 µS/cm |
+| `0x0003` | pH | 0.1 pH |
+| `0x0004` | Nitrogen | 0.1 mg/kg |
+| `0x0005` | Phosphorus | 0.1 mg/kg |
+| `0x0006` | Potassium | 0.1 mg/kg |
+
+This is the block the original sketch read, and 83,883 logged samples confirm
+it: humidity 0–75.9 %, temperature 17.7–29.9 °C, NPK 0–45 mg/kg, and pH
+**3.9–9.0** against a datasheet spec of 3–9 pH. That pH range is hard to hit by
+accident with a wrong scale. Keeping ÷10 also keeps the new firmware's output
+continuous with that existing dataset.
+
+### `NPK_PROFILE_SPARSE` — the map printed in the manual
 
 | Register | Quantity | Unit | Scale |
 |---|---|---|---|
@@ -256,31 +280,40 @@ From section 4.3 of the manual:
 Temperature is the only signed value: section 4.4.1 reads `FF9B` back as
 −10.1 °C.
 
-**The map is sparse — it is not seven contiguous registers starting at
-`0x0000`.** The original sketch sent `01 03 00 00 00 07` and sliced the reply
-into seven values; on a probe that matches this manual, that block does not
-hold the measurements at all. The firmware issues four transactions instead,
-each one a frame the manual prints verbatim in section 4.4.
+### Picking the wrong one does not fail cleanly
 
-Two cautions, both found by checking the manual against itself:
+This is the trap. The probe answers with a **valid CRC at addresses it does not
+implement**, aliasing them onto the low block. Reading it with the sparse map
+gives `0x0015` → the temperature register and `0x0006` → potassium, so the
+output is well-formed nonsense rather than a timeout:
 
-1. **Several of the printed CRCs are wrong.** Recomputing CRC-16/MODBUS over
-   the printed frames, the pH (`0x0006`), conductivity (`0x0015`) and potassium
-   (`0x0020`) examples check out. The nitrogen and phosphorus examples have
-   their CRCs *transposed* with each other, the three-register NPK read
-   (§4.4.5) carries the CRC for `0x001F` rather than `0x001E`, and both
-   moisture examples (§4.4.1, §4.4.2) carry CRCs computed for register
-   `0x0002` rather than the `0x0012` the same sections name. The manual has
-   other transcription errors of the same kind — §4.4.4 says "0047H = 308"
-   where the frame it just printed reads `0134H`. Do not copy the printed
-   CRCs; the firmware computes them.
+```
+"Humidity":152.4,"Temperature":151.7,"Conductivity":285,"PH":0,
+"Nitrogen":4090,"Phosphorus":0,"Potassium":0,"ok":true
+```
 
-2. **This family has variants.** Some clones really do answer on a contiguous
-   block at `0x0000`, which is presumably where the original sketch's frame
-   came from. If the datasheet profile returns nothing, run `scan` to see what
-   your unit actually answers on, then set
-   `NPK_REGISTER_PROFILE` to `NPK_PROFILE_LEGACY` in `NpkConfig.h` if the
-   contiguous block is the live one.
+`ok:true`, every CRC good, every number wrong. That is why `NPK_RANGE_CHECK`
+exists: readings outside the physical limits in datasheet section 1.3
+(0–100 %RH, −40…80 °C, 0–10000 µS/cm, 0–14 pH, 0–1999 mg/kg) are marked
+out of range, excluded from the payload, and reported by `read` with the
+raw register value and the limit that was breached. Set it to 0 to disable.
+
+If your probe matches neither profile, run `scan` — it prints every register
+that answers together with its ÷1, ÷10 and ÷100 interpretations, which is
+enough to identify the layout against known conditions. A pure scale mismatch
+needs no code change at all: a two-point calibration absorbs it into `A`.
+
+### What the manual gets wrong
+
+Worth knowing if you are checking any of this by hand: several of the printed
+CRCs do not match the frames they belong to. Recomputing CRC-16/MODBUS, the pH
+(`0x0006`), conductivity (`0x0015`) and potassium (`0x0020`) examples check
+out; the nitrogen and phosphorus examples have their CRCs *transposed* with
+each other; the three-register NPK read (§4.4.5) carries the CRC for `0x001F`
+rather than `0x001E`; and both moisture examples (§4.4.1, §4.4.2) carry CRCs
+computed for register `0x0002`, not the `0x0012` those same sections name.
+§4.4.4 says "0047H = 308" where the frame it just printed reads `0134H`. The
+firmware computes its CRCs rather than copying them.
 
 Baud is auto-probed at boot across 4800, 9600 and 2400 — 4800 first because
 that is what the original sketch used, though the datasheet says the factory

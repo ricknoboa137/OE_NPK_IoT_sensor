@@ -28,44 +28,62 @@
 // Channel table
 // ---------------------------------------------------------------------------
 /*
- * Scale factors come from the register table in section 4.3 of the
- * JXBS-3001-TR manual:
+ * Two layouts, because this product family has variants that do not agree
+ * with each other or with the manual.
  *
- *   0x0006  pH             unit 0.01 pH   -> 100 counts per pH
- *   0x0012  soil moisture  unit 0.1 %RH   ->  10 counts per %
- *   0x0013  soil temp      unit 0.1 degC  ->  10 counts per degC, signed
- *   0x0015  conductivity   unit 1 us/cm   ->   1 count  per us/cm
- *   0x001E  nitrogen       unit 1 mg/kg   ->   1 count  per mg/kg
- *   0x001F  phosphorus     unit 1 mg/kg   ->   1 count  per mg/kg
- *   0x0020  potassium      unit 1 mg/kg   ->   1 count  per mg/kg
+ * CONTIGUOUS (default, and what the probe on this project speaks):
+ *   0x0000 moisture, 0x0001 temperature, 0x0002 conductivity, 0x0003 pH,
+ *   0x0004 N, 0x0005 P, 0x0006 K - every one scaled by 0.1.
+ *   Established from 83,883 samples logged by the original firmware, which
+ *   read exactly this block: humidity 0-75.9 %, temperature 17.7-29.9 C,
+ *   pH 3.9-9.0 against a datasheet spec of 3-9 pH, NPK 0-45 mg/kg. All
+ *   physically sensible, and the pH range in particular is hard to get by
+ *   accident.
+ *
+ * SPARSE (section 4.3 of the manual):
+ *   0x0006 pH             unit 0.01 pH   -> 100 counts per pH
+ *   0x0012 soil moisture  unit 0.1 %RH   ->  10 counts per %
+ *   0x0013 soil temp      unit 0.1 degC  ->  10 counts per degC
+ *   0x0015 conductivity   unit 1 us/cm   ->   1 count  per us/cm
+ *   0x001E N, 0x001F P, 0x0020 K, unit 1 mg/kg
  *
  * Temperature is the only signed value: section 4.4.1 reads FF9BH back as
  * -10.1 degC.
  *
- * The legacy profile keeps the divide-by-ten the original sketch applied to
- * every channel. If a unit disagrees with both profiles the A coefficient
- * absorbs it - a probe reporting pH in 0.1 steps is corrected with A = 10.
+ * Reading this probe with the SPARSE map does not fail cleanly. It answers
+ * with a valid CRC at addresses it does not implement, aliasing them onto the
+ * low block: 0x0015 returns the temperature register and 0x0006 returns
+ * potassium. The result is well-formed nonsense - 152.4 %RH, 4090 mg/kg - so
+ * the range check below, not the CRC, is what catches a wrong profile.
+ *
+ * If a unit disagrees with both profiles the calibration A coefficient
+ * absorbs the difference: a probe reporting pH in 0.01 steps where this
+ * expects 0.1 is corrected with A = 0.1, no code change needed.
  */
-#if NPK_REGISTER_PROFILE == NPK_PROFILE_DATASHEET
+// Limits are the measurement ranges in section 1.3, widened a little where the
+// datasheet quotes a narrower spec than the register can express: pH is
+// specced 3-9 but 0-14 is allowed so a miscalibrated probe still reports
+// rather than silently dropping out.
+#if NPK_REGISTER_PROFILE == NPK_PROFILE_CONTIGUOUS
 const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT] = {
-  // key             jsonKey         unit      scale  signed dec
-  { "moisture",     "Humidity",     "%RH",     10.0f, false, 1 },
-  { "temperature",  "Temperature",  "degC",    10.0f, true,  1 },
-  { "conductivity", "Conductivity", "us/cm",    1.0f, false, 0 },
-  { "ph",           "PH",           "pH",     100.0f, false, 2 },
-  { "nitrogen",     "Nitrogen",     "mg/kg",    1.0f, false, 0 },
-  { "phosphorus",   "Phosphorus",   "mg/kg",    1.0f, false, 0 },
-  { "potassium",    "Potassium",    "mg/kg",    1.0f, false, 0 },
+  // key             jsonKey         unit     scale  signed dec     lo       hi
+  { "moisture",     "Humidity",     "%RH",    10.0f, false, 1,     0.0f,   100.0f },
+  { "temperature",  "Temperature",  "degC",   10.0f, true,  1,   -40.0f,    80.0f },
+  { "conductivity", "Conductivity", "us/cm",  10.0f, false, 1,     0.0f, 10000.0f },
+  { "ph",           "PH",           "pH",     10.0f, false, 2,     0.0f,    14.0f },
+  { "nitrogen",     "Nitrogen",     "mg/kg",  10.0f, false, 1,     0.0f,  1999.0f },
+  { "phosphorus",   "Phosphorus",   "mg/kg",  10.0f, false, 1,     0.0f,  1999.0f },
+  { "potassium",    "Potassium",    "mg/kg",  10.0f, false, 1,     0.0f,  1999.0f },
 };
 #else
 const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT] = {
-  { "moisture",     "Humidity",     "%RH",     10.0f, false, 1 },
-  { "temperature",  "Temperature",  "degC",    10.0f, true,  1 },
-  { "conductivity", "Conductivity", "us/cm",   10.0f, false, 1 },
-  { "ph",           "PH",           "pH",      10.0f, false, 2 },
-  { "nitrogen",     "Nitrogen",     "mg/kg",   10.0f, false, 1 },
-  { "phosphorus",   "Phosphorus",   "mg/kg",   10.0f, false, 1 },
-  { "potassium",    "Potassium",    "mg/kg",   10.0f, false, 1 },
+  { "moisture",     "Humidity",     "%RH",    10.0f, false, 1,     0.0f,   100.0f },
+  { "temperature",  "Temperature",  "degC",   10.0f, true,  1,   -40.0f,    80.0f },
+  { "conductivity", "Conductivity", "us/cm",   1.0f, false, 0,     0.0f, 10000.0f },
+  { "ph",           "PH",           "pH",    100.0f, false, 2,     0.0f,    14.0f },
+  { "nitrogen",     "Nitrogen",     "mg/kg",   1.0f, false, 0,     0.0f,  1999.0f },
+  { "phosphorus",   "Phosphorus",   "mg/kg",   1.0f, false, 0,     0.0f,  1999.0f },
+  { "potassium",    "Potassium",    "mg/kg",   1.0f, false, 0,     0.0f,  1999.0f },
 };
 #endif
 
@@ -95,20 +113,22 @@ struct NpkReadOp {
   int8_t   dest[7];
 };
 
-#if NPK_REGISTER_PROFILE == NPK_PROFILE_DATASHEET
-// Section 4.3 of the manual. The map is sparse, so this is four transactions
-// rather than one. At a five second interval that costs nothing, and each
-// frame is one the manual prints verbatim in section 4.4.
+#if NPK_REGISTER_PROFILE == NPK_PROFILE_CONTIGUOUS
+// One transaction for all seven registers. This is the frame the original
+// sketch sent, and the 83,883 samples it logged confirm the layout.
+static const NpkReadOp kOps[] = {
+  { 0x0000, 7, { NPK_MOISTURE, NPK_TEMPERATURE, NPK_CONDUCTIVITY, NPK_PH,
+                 NPK_NITROGEN, NPK_PHOSPHORUS, NPK_POTASSIUM } },
+};
+#else
+// Section 4.3 of the manual. That map is scattered, so this is four
+// transactions rather than one; each frame is one the manual prints verbatim
+// in section 4.4.
 static const NpkReadOp kOps[] = {
   { 0x0006, 1, { NPK_PH, -1, -1, -1, -1, -1, -1 } },
   { 0x0012, 2, { NPK_MOISTURE, NPK_TEMPERATURE, -1, -1, -1, -1, -1 } },
   { 0x0015, 1, { NPK_CONDUCTIVITY, -1, -1, -1, -1, -1, -1 } },
   { 0x001E, 3, { NPK_NITROGEN, NPK_PHOSPHORUS, NPK_POTASSIUM, -1, -1, -1, -1 } },
-};
-#else
-static const NpkReadOp kOps[] = {
-  { 0x0000, 7, { NPK_MOISTURE, NPK_TEMPERATURE, NPK_CONDUCTIVITY, NPK_PH,
-                 NPK_NITROGEN, NPK_PHOSPHORUS, NPK_POTASSIUM } },
 };
 #endif
 
@@ -222,6 +242,7 @@ bool NpkSensor::read(NpkReading& out) {
     out.raw[c] = 0;
     out.scaled[c] = 0.0f;
     out.valid[c] = false;
+    out.outOfRange[c] = false;
   }
   out.failedOps = 0;
 
@@ -238,8 +259,21 @@ bool NpkSensor::read(NpkReading& out) {
       // Temperature is the only two's complement value (manual 4.4.1).
       float counts = NPK_CHANNELS[ch].isSigned ? (float)(int16_t)regs[i]
                                                : (float)regs[i];
-      out.scaled[ch] = counts / NPK_CHANNELS[ch].scale;
+      const float v = counts / NPK_CHANNELS[ch].scale;
+      out.scaled[ch] = v;
       out.valid[ch] = true;
+
+#if NPK_RANGE_CHECK
+      // The probe answers with a valid CRC at addresses it does not
+      // implement, aliasing them onto the low block, so a wrong register
+      // profile produces well-formed nonsense rather than a timeout. The
+      // physical limits are the only thing that catches it.
+      if (v < NPK_CHANNELS[ch].lo || v > NPK_CHANNELS[ch].hi) {
+        out.valid[ch] = false;
+        out.outOfRange[ch] = true;
+        lastError_ = "reading outside the physical range - wrong register profile?";
+      }
+#endif
     }
     if (op + 1 < kOpCount) delay(NPK_INTERFRAME_MS);
   }

@@ -29,6 +29,8 @@ struct NpkChannel {
   float       scale;    // raw register counts per engineering unit
   bool        isSigned; // register carries a 16-bit two's complement value
   uint8_t     decimals;
+  float       lo;       // physical limits from datasheet section 1.3;
+  float       hi;       // a reading outside them means the map or scale is wrong
 };
 
 extern const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT];
@@ -44,6 +46,7 @@ struct NpkReading {
   uint16_t raw[NPK_CHANNEL_COUNT];     // register word exactly as received
   float    scaled[NPK_CHANNEL_COUNT];  // engineering units, uncalibrated
   bool     valid[NPK_CHANNEL_COUNT];
+  bool     outOfRange[NPK_CHANNEL_COUNT];  // answered, but physically impossible
   bool     complete;                   // every channel is valid
   uint8_t  failedOps;                  // transactions that got no reply
 };

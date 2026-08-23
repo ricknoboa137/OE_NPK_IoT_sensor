@@ -228,8 +228,9 @@ void NpkConsole::cmdStatus(Print& out) {
   out.println();
   out.printf("Firmware : %s %s\r\n", NPK_FW_NAME, NPK_FW_VERSION);
   out.printf("Profile  : %s\r\n",
-             NPK_REGISTER_PROFILE == NPK_PROFILE_DATASHEET
-               ? "datasheet (JXBS-3001-TR section 4.3)" : "legacy contiguous 0x0000");
+             NPK_REGISTER_PROFILE == NPK_PROFILE_CONTIGUOUS
+               ? "contiguous 0x0000-0x0006, all /10"
+               : "sparse, per JXBS-3001-TR section 4.3");
   out.printf("Port     : %s\r\n",
              NPK_USE_SOFTWARE_SERIAL ? "SoftwareSerial" : "hardware UART1");
   out.printf("RS-485   : %lu baud 8N1, slave 0x%02X, DE/RE on GPIO%d\r\n",
@@ -249,7 +250,18 @@ void NpkConsole::cmdRead(Print& out) {
   out.println();
   out.printf("%-14s %8s  %10s  %10s   %s\r\n",
              "channel", "raw", "scaled", "calibrated", "unit");
+  bool anyOutOfRange = false;
   for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
+    if (r.outOfRange[c]) {
+      // The register answered, so this is not a comms fault - the value is
+      // simply impossible, which means the map or the scale is wrong.
+      anyOutOfRange = true;
+      out.printf("%-14s %8u  %10.*f  %10s   %s  (limit %.4g..%.4g)\r\n",
+                 NPK_CHANNELS[c].key, (unsigned)r.raw[c],
+                 NPK_CHANNELS[c].decimals, r.scaled[c], "OUT OF RANGE",
+                 NPK_CHANNELS[c].unit, NPK_CHANNELS[c].lo, NPK_CHANNELS[c].hi);
+      continue;
+    }
     if (!r.valid[c]) {
       out.printf("%-14s %8s  %10s  %10s   %s\r\n",
                  NPK_CHANNELS[c].key, "-", "-", "no reply", NPK_CHANNELS[c].unit);
@@ -262,8 +274,17 @@ void NpkConsole::cmdRead(Print& out) {
                d, cal_->apply(c, r.scaled[c]),
                NPK_CHANNELS[c].unit);
   }
-  if (!r.complete) {
-    out.printf("%u transaction(s) failed: %s\r\n", r.failedOps, sensor_->lastError());
+  if (r.failedOps) {
+    out.printf("%u transaction(s) got no usable reply: %s\r\n",
+               r.failedOps, sensor_->lastError());
+  }
+  if (anyOutOfRange) {
+    out.println();
+    out.println(F("Those registers answered with a valid CRC, so the wiring is"));
+    out.println(F("fine - the value itself is impossible. This probe aliases"));
+    out.println(F("unimplemented addresses onto the low block, so a wrong"));
+    out.println(F("register profile looks like real data. Run \"scan\" and"));
+    out.println(F("switch NPK_REGISTER_PROFILE in NpkConfig.h."));
   }
   out.println();
 }
