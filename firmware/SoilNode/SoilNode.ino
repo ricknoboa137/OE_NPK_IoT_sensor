@@ -113,10 +113,30 @@ void setup() {
   }
 #endif
 
+  // WiFiManager only raises the AP when the stored credentials fail, so a node
+  // that is already on WiFi would otherwise offer no way in. Hold the BOOT
+  // button now to force the portal open.
+  pinMode(NPK_PORTAL_BTN_PIN, INPUT_PULLUP);
+  Serial.printf("[net] hold the BOOT button within %u s to open the config portal\r\n",
+                (unsigned)(NPK_PORTAL_BTN_WINDOW_MS / 1000));
+  bool forcePortal = false;
+  const uint32_t windowEnd = millis() + NPK_PORTAL_BTN_WINDOW_MS;
+  uint32_t heldSince = 0;
+  while ((int32_t)(millis() - windowEnd) < 0) {
+    if (digitalRead(NPK_PORTAL_BTN_PIN) == LOW) {
+      if (heldSince == 0) heldSince = millis();
+      if (millis() - heldSince >= NPK_PORTAL_BTN_HOLD_MS) { forcePortal = true; break; }
+    } else {
+      heldSince = 0;
+    }
+    delay(20);
+  }
+  if (forcePortal) Serial.println("[net] BOOT held - portal will open");
+
   // Console first: net.begin() subscribes to the command topic, and the
   // callback it installs dereferences the pointers the console holds.
   console.begin(&sensor, &calibration, &net);
-  net.begin(npkOnMqttMessage);
+  net.begin(npkOnMqttMessage, forcePortal);
 
   Serial.println("Console ready - type \"help\" for commands.");
   nextSample = millis();

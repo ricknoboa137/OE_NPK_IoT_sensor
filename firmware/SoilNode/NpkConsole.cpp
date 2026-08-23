@@ -92,6 +92,11 @@ bool NpkConsole::jsonToLine(const uint8_t* payload, unsigned int length,
   } else if (!strcmp(cmd, "mqtt")) {
     snprintf(out, cap, "mqtt %s %u", (const char*)(doc["host"] | ""),
              (unsigned)(doc["port"] | 1883));
+  } else if (!strcmp(cmd, "mqttauth") || !strcmp(cmd, "mqtt_auth")) {
+    const char* u = doc["user"].as<const char*>();
+    const char* w = doc["pass"].as<const char*>();
+    if (u == nullptr || *u == '\0') snprintf(out, cap, "mqttauth clear");
+    else snprintf(out, cap, "mqttauth %s %s", u, (w && *w) ? w : "");
   } else if (!strcmp(cmd, "wifi_portal")) {
     snprintf(out, cap, "wifi portal");
   } else if (!strcmp(cmd, "wifi_reset")) {
@@ -141,6 +146,19 @@ void NpkConsole::dispatch(char** argv, int argc, Print& out) {
     uint16_t port = (argc >= 3) ? (uint16_t)strtol(argv[2], nullptr, 10) : net_->port();
     if (net_->setBroker(argv[1], port)) out.printf("broker set to %s:%u\r\n", argv[1], port);
     else out.println("error: invalid broker");
+  } else if (!strcasecmp(cmd, "mqttauth")) {
+    if (argc < 2) {
+      out.println("usage: mqttauth <user> [password]   |   mqttauth clear");
+      return;
+    }
+    if (!strcasecmp(argv[1], "clear") || !strcasecmp(argv[1], "none")) {
+      net_->setAuth("", "");
+      out.println("MQTT auth cleared - connecting anonymously");
+      return;
+    }
+    net_->setAuth(argv[1], argc >= 3 ? argv[2] : "");
+    out.printf("MQTT auth set: user %s%s\r\n", argv[1],
+               argc >= 3 ? "" : " (password unchanged)");
   } else if (!strcasecmp(cmd, "wifi")) {
     if (argc >= 2 && !strcasecmp(argv[1], "reset")) {
       out.println("clearing WiFi credentials, rebooting");
@@ -176,7 +194,10 @@ void NpkConsole::cmdHelp(Print& out) {
   out.println(F("                            long scans are truncated over MQTT;"));
   out.println(F("                            run those on the serial console"));
   out.println(F("  mqtt <host> [port]        change broker, stored in NVS"));
-  out.println(F("  wifi portal | wifi reset  reopen the portal / forget WiFi"));
+  out.println(F("  mqttauth <user> [pass]    broker credentials, stored in NVS"));
+  out.println(F("  mqttauth clear            connect anonymously"));
+  out.println(F("  wifi portal               open the config portal now"));
+  out.println(F("  wifi reset                forget WiFi and reboot"));
   out.println(F("  reboot"));
   out.println();
   out.println(F("Calibration ---------------------------------------------------"));

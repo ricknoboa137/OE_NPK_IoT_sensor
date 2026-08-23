@@ -76,6 +76,21 @@ static const uint32_t NPK_BAUD_CANDIDATES[] = { 4800, 9600, 2400 };
 #define NPK_MQTT_PORT_DEFAULT   "1883"
 #define NPK_MQTT_ID_PREFIX      "NPK-"
 
+// Broker credentials. Leave both empty for an anonymous broker - PubSubClient
+// then sends no CONNECT username at all, which is what most local Mosquitto
+// setups with allow_anonymous expect.
+#define NPK_MQTT_USER_DEFAULT   ""
+#define NPK_MQTT_PASS_DEFAULT   ""
+
+// Hold this pin low during the first NPK_PORTAL_BTN_WINDOW_MS of boot to force
+// the configuration portal open even when stored WiFi credentials work. GPIO0
+// is the BOOT button on most dev boards; press it just after the board starts,
+// not while resetting, because holding GPIO0 low through reset puts the ESP32
+// into download mode instead.
+#define NPK_PORTAL_BTN_PIN        0
+#define NPK_PORTAL_BTN_WINDOW_MS  3000
+#define NPK_PORTAL_BTN_HOLD_MS     300
+
 // NPK_TOPIC_DATA must stay "NPKdata": the Node-RED flow subscribes to it, and
 // the JSON key names are fixed in NpkSensor.cpp.
 #define NPK_TOPIC_DATA    "NPKdata"

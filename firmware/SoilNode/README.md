@@ -59,6 +59,59 @@ the original sketch; set it to 0 to use hardware UART1 on the same pins, which
 is more robust under WiFi load because a bit-banged port can drop bytes when
 the radio takes an interrupt.
 
+## Provisioning
+
+On first boot with no stored WiFi credentials the node raises an access point
+called **`NPK_Sensor_V2`**. Join it, and the captive portal asks for:
+
+| Field | Notes |
+|---|---|
+| WiFi network and password | scanned from the air |
+| MQTT broker | hostname or IP |
+| MQTT port | 1883 by default |
+| MQTT username | **leave empty if the broker does not require it** |
+| MQTT password | leave empty if not required |
+
+All five are written to NVS and reloaded at boot. When the username is empty
+the node connects anonymously — PubSubClient then sends no CONNECT username
+at all, which is what a Mosquitto with `allow_anonymous true` expects. Sending
+an empty string instead makes some brokers refuse the connection.
+
+The password box is served **blank** even when a password is stored, so the
+stored one is never handed out over an open AP. Submitting it blank keeps the
+existing password; to remove it, clear the username field, which switches the
+node back to anonymous.
+
+### Why the AP may not appear
+
+`autoConnect()` only raises the AP when it **fails** to connect. If the board
+already has WiFi credentials — including ones saved by a previous sketch, since
+they live in the NVS partition and survive reflashing — it connects silently
+and no portal appears. That is working as intended, not a fault.
+
+Three ways to open the portal anyway:
+
+- **Hold the BOOT button** during the first three seconds after power-up. The
+  node prints a prompt and waits. Press it *after* the board starts, not while
+  resetting: GPIO0 held low through reset puts the ESP32 into download mode
+  instead. The pin and timing are `NPK_PORTAL_BTN_*` in `NpkConfig.h`.
+- **`wifi portal`** on the serial console, which opens it without dropping the
+  current WiFi connection.
+- **`wifi reset`**, which erases the credentials and reboots, so the AP comes
+  up on its own.
+
+The broker settings can also be changed without the portal at all:
+
+```
+mqtt 192.168.0.153 1883
+mqttauth myuser mypassword
+mqttauth clear             # back to anonymous
+```
+
+Both are stored in NVS and take effect on the next reconnect. If the broker
+rejects the connection, `status` decodes the reason rather than printing a bare
+number — state 4 is a bad username or password, state 5 is not authorised.
+
 ## Calibration
 
 Every channel carries two coefficients, and the node reports
@@ -139,7 +192,10 @@ read                      take a reading, show raw / scaled / calibrated
 status                    firmware, link and sensor state
 scan [first] [last]       probe Modbus registers
 mqtt <host> [port]        change broker, stored in NVS
-wifi portal | wifi reset
+mqttauth <user> [pass]    broker credentials, stored in NVS
+mqttauth clear            connect anonymously
+wifi portal               open the config portal now
+wifi reset                forget WiFi and reboot
 reboot
 ```
 
@@ -156,6 +212,9 @@ Over MQTT, publish either the plain text line or a JSON object to
 {"cmd":"read"}
 {"cmd":"status"}
 {"cmd":"scan","first":0,"last":48}
+{"cmd":"mqtt","host":"192.168.0.153","port":1883}
+{"cmd":"mqttauth","user":"myuser","pass":"mypassword"}
+{"cmd":"mqttauth"}
 ```
 
 ## Topics

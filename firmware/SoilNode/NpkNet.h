@@ -26,7 +26,9 @@ class NpkNet {
  public:
   typedef void (*MessageHandler)(char* topic, uint8_t* payload, unsigned int length);
 
-  bool begin(MessageHandler handler);
+  // forcePortal opens the configuration portal even when stored credentials
+  // would have connected, so the broker fields can be changed in the field.
+  bool begin(MessageHandler handler, bool forcePortal = false);
 
   // Pumps the MQTT client and retries the connection when it is down.
   // Never blocks for longer than one connection attempt.
@@ -39,8 +41,14 @@ class NpkNet {
   uint16_t    port() const { return port_; }
   const char* clientId() const { return clientId_; }
 
+  const char* user() const { return user_; }
+  bool hasAuth() const { return user_[0] != 0; }
+
   // Store a new broker and drop the current connection so loop() picks it up.
   bool setBroker(const char* host, uint16_t port);
+
+  // Broker credentials. Pass empty strings for an anonymous broker.
+  bool setAuth(const char* user, const char* pass);
 
   void startPortal();   // open the config portal on demand
   void forgetWiFi();    // clear stored credentials, then reboot
@@ -53,6 +61,8 @@ class NpkNet {
 
   char     host_[40] = { 0 };
   uint16_t port_ = 1883;
+  char     user_[33] = { 0 };
+  char     pass_[65] = { 0 };
   char     clientId_[24] = { 0 };
   uint32_t nextAttempt_ = 0;
   uint32_t backoff_ = 0;

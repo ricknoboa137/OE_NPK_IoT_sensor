@@ -137,9 +137,13 @@ void NpkSensor::begin() {
 }
 
 void NpkSensor::setBaud(uint32_t baud) {
+  // Only tear the port down if it was actually opened. Calling end() on a
+  // SoftwareSerial that was never begun touches buffers it has not allocated.
+  static bool started = false;
   baud_ = baud;
-  g_port.end();
+  if (started) g_port.end();
   npkPortBegin(baud);
+  started = true;
   delay(20);
 }
 
