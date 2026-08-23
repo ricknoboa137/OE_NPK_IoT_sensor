@@ -388,6 +388,28 @@ void NpkConsole::cmdSensor(char** argv, int argc, Print& out) {
   if (!strcasecmp(sub, "show") || !strcasecmp(sub, "list")) {
     out.println();
     out.println(F("Sensor-side calibration (stored in the probe, not the ESP32)"));
+
+    // These three are the only registers the manual gives factory defaults
+    // for, which makes them a free end-to-end check: if 0x0023 reads 55 and
+    // 0x0024 reads 50, then addressing, framing and decoding are all correct.
+    struct { const char* name; uint16_t reg; int dflt; } facs[] = {
+      { "conductivity factor", 0x0022,  0 },
+      { "salinity factor",     0x0023, 55 },
+      { "TDS factor",          0x0024, 50 },
+    };
+    for (uint8_t i = 0; i < 3; ++i) {
+      uint16_t v = 0;
+      if (sensor_->readRegisters(facs[i].reg, 1, &v)) {
+        out.printf("  0x%04X  %-20s %6u   factory default %d%s\r\n",
+                   facs[i].reg, facs[i].name, v, facs[i].dflt,
+                   ((int)v == facs[i].dflt) ? "" : "   <-- changed");
+      } else {
+        out.printf("  0x%04X  %-20s no reply (%s)\r\n", facs[i].reg, facs[i].name,
+                   sensor_->lastError());
+      }
+      delay(20);
+    }
+    out.println();
     struct { const char* name; uint16_t reg; float scale; } offs[] = {
       { "temperature offset", NPK_REG_TEMP_OFFSET, 10.0f },
       { "humidity offset",    NPK_REG_HUM_OFFSET,  10.0f },
@@ -419,6 +441,11 @@ void NpkConsole::cmdSensor(char** argv, int argc, Print& out) {
       out.println();
       delay(20);
     }
+    out.println();
+    out.println(F("The manual documents factory defaults only for 0x0022-0x0024."));
+    out.println(F("For the offsets and the N/P/K factors it states none, so what"));
+    out.println(F("they read here is whatever the unit shipped with - most likely"));
+    out.println(F("0 offsets and unit gains, but that is not promised anywhere."));
     out.println();
     out.println(F("  sensor offset <temp|hum|ec|ph> <raw>   write an offset register"));
     out.println(F("  sensor factor <n|p|k> <value>          write the gain float"));
