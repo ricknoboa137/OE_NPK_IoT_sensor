@@ -155,7 +155,14 @@ static const uint32_t NPK_BAUD_CANDIDATES[] = { 4800, 9600, 2400 };
 #define NPK_TOPIC_CMD     "NPKcommand"
 #define NPK_TOPIC_REPLY   "NPKreply"
 
-#define NPK_MQTT_BUFFER 768   // PubSubClient defaults to 256, too small here
+// PubSubClient defaults to 256. The reply to "sensor" is around 900 bytes
+// once every register has been read back, so the buffer has to clear that or
+// the reply arrives quietly cut in half.
+#define NPK_MQTT_BUFFER 1280
+
+// The measurement payload is far smaller than a console reply and does not
+// need the same allowance on the stack.
+#define NPK_DATA_JSON_MAX 256
 
 // ---------------------------------------------------------------------------
 // Calibration held in the ESP32 (separate from the sensor's own registers)

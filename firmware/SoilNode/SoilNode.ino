@@ -1,5 +1,5 @@
 /*
- * SoilNode - ESP32 node for the JXBS-3001-TR soil 7-in-1 probe.
+ * SoilNode - ESP32 node for the CWT soil sensor (NPK type), 5-pin probe.
  *
  *   RS-485 Modbus RTU  ->  linear per-channel calibration  ->  MQTT JSON
  *
@@ -15,9 +15,8 @@
  *   SoftwareSerial, ArduinoJson, WiFiManager (tzapu), WiFi, PubSubClient.
  *   Preferences ships with the ESP32 core and holds the calibration.
  *
- * Wiring (manual section 2.1): brown = 12-24 V +, black = 0 V,
- * yellow or grey = 485-A, blue = 485-B. The probe needs 12 V; it will not
- * answer reliably on the ESP32 3V3 rail.
+ * Wiring (manual page 2): brown = 4.5-30 V +, black = 0 V,
+ * yellow or green = 485-A, blue = 485-B. The 5 V rail is enough; 3V3 is not.
  *
  * Type "help" on the serial console at 115200 baud.
  */
@@ -91,7 +90,7 @@ static void publishReading(const NpkReading& r) {
   }
   doc["ok"] = r.complete && !calRejected;
 
-  char payload[NPK_MQTT_BUFFER];
+  char payload[NPK_DATA_JSON_MAX];
   serializeJson(doc, payload, sizeof(payload));
 
   Serial.println(payload);
@@ -110,7 +109,7 @@ void setup() {
   digitalWrite(NPK_LED_PIN, LOW);
 
   Serial.printf("\r\n%s %s\r\n", NPK_FW_NAME, NPK_FW_VERSION);
-  Serial.println("JXBS-3001-TR soil 7-in-1, Modbus RTU over RS-485");
+  Serial.println("CWT soil NPK 5-pin probe, Modbus RTU over RS-485");
 
   for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
     lastGood[c] = 0.0f;
@@ -126,7 +125,7 @@ void setup() {
     Serial.printf("responding at %lu\r\n", (unsigned long)sensor.baud());
   } else {
     Serial.printf("no reply, staying at %lu\r\n", (unsigned long)sensor.baud());
-    Serial.println("[sensor] check 12 V supply, A/B polarity and slave address,");
+    Serial.println("[sensor] check the supply, A/B polarity and slave address,");
     Serial.println("         then try the \"scan\" command.");
   }
 #endif

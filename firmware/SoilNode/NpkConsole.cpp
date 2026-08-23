@@ -53,6 +53,17 @@ void NpkConsole::handleMqtt(const uint8_t* payload, unsigned int length) {
 
   Serial.printf("[cmd] via mqtt: %s\r\n", line);
   Serial.print(reply.c_str());
+
+  // Say when the reply did not fit rather than publishing a half answer that
+  // looks complete. The serial copy above is never truncated.
+  if (reply.overflowed()) {
+    Serial.printf("[cmd] reply exceeded %u bytes and was cut short\r\n",
+                  (unsigned)sizeof(buf));
+    net_->publish(NPK_TOPIC_REPLY, reply.c_str());
+    net_->publish(NPK_TOPIC_REPLY,
+                  "[reply truncated - run this on the serial console for the rest]");
+    return;
+  }
   if (reply.length() > 0) net_->publish(NPK_TOPIC_REPLY, reply.c_str());
 }
 

@@ -25,7 +25,7 @@ class NpkBufferPrint : public Print {
     if (cap_) buf_[0] = '\0';
   }
   size_t write(uint8_t c) override {
-    if (len_ + 1 >= cap_) return 0;
+    if (len_ + 1 >= cap_) { overflowed_ = true; return 0; }
     buf_[len_++] = (char)c;
     buf_[len_] = '\0';
     return 1;
@@ -37,12 +37,16 @@ class NpkBufferPrint : public Print {
   }
   const char* c_str() const { return buf_; }
   size_t length() const { return len_; }
-  void clear() { len_ = 0; if (cap_) buf_[0] = '\0'; }
+  // Silent truncation is worse than none: a reply cut in half reads as though
+  // it were the whole answer. Callers check this and say so.
+  bool overflowed() const { return overflowed_; }
+  void clear() { len_ = 0; overflowed_ = false; if (cap_) buf_[0] = '\0'; }
 
  private:
   char*  buf_;
   size_t cap_;
   size_t len_ = 0;
+  bool   overflowed_ = false;
 };
 
 class NpkConsole {

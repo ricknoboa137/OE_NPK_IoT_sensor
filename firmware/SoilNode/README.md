@@ -182,7 +182,9 @@ reboot
 ```
 
 Over MQTT, publish either the plain text line or a JSON object to
-`NPKcommand`; replies come back on `NPKreply`.
+`NPKcommand`; replies come back on `NPKreply`. A reply that does not fit the
+buffer is published as far as it got, followed by an explicit truncation
+notice — it is never silently cut. The serial copy is always complete.
 
 ```json
 {"cmd":"cal_low",  "ch":"ph", "ref":4.00}
