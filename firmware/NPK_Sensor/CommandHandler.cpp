@@ -5,7 +5,7 @@
 static const int   kMaxArgs = 8;
 static const size_t kMqttReplyCap = MQTT_BUFFER_SIZE - 64;
 
-void CommandHandler::begin(SoilSensor* sensor, Calibration* cal, NetworkManager* net) {
+void CommandHandler::begin(SoilSensor* sensor, Calibration* cal, NetLink* net) {
   sensor_ = sensor;
   cal_ = cal;
   net_ = net;

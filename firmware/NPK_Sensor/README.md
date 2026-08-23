@@ -13,7 +13,7 @@ a per-channel linear calibration held in NVS.
 | `Channels.h/.cpp` | the seven quantities, their units and scale factors |
 | `SoilSensor.h/.cpp` | Modbus RTU master: CRC, turnaround, retries, register map |
 | `Calibration.h/.cpp` | A and B per channel, persisted in NVS |
-| `NetworkManager.h/.cpp` | WiFiManager provisioning, MQTT link, backoff |
+| `NetLink.h/.cpp` | WiFiManager provisioning, MQTT link, backoff |
 | `CommandHandler.h/.cpp` | console shared by the serial port and MQTT |
 | `JsonCompat.h` | one macro so it builds against ArduinoJson 6 and 7 |
 

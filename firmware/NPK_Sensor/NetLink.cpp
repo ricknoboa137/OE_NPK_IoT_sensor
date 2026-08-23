@@ -1,4 +1,4 @@
-#include "NetworkManager.h"
+#include "NetLink.h"
 #include "Config.h"
 
 #include <WiFi.h>
@@ -17,7 +17,7 @@ static char g_portalPort[6]  = MQTT_PORT_DEFAULT;
 static WiFiManagerParameter g_pHost("server", "MQTT broker", g_portalHost, sizeof(g_portalHost) - 1);
 static WiFiManagerParameter g_pPort("port",   "MQTT port",   g_portalPort, sizeof(g_portalPort) - 1);
 
-static NetworkManager* g_self = nullptr;
+static NetLink* g_self = nullptr;
 
 // Fires when the captive portal form is submitted.
 static void onSaveParams() {
@@ -31,7 +31,7 @@ static void onSaveParams() {
   }
 }
 
-void NetworkManager::loadSettings() {
+void NetLink::loadSettings() {
   g_net.begin("npknet", false);
   String h = g_net.getString("host", MQTT_SERVER_DEFAULT);
   port_ = g_net.getUShort("port", (uint16_t)strtol(MQTT_PORT_DEFAULT, nullptr, 10));
@@ -44,7 +44,7 @@ void NetworkManager::loadSettings() {
   snprintf(g_portalPort, sizeof(g_portalPort), "%u", (unsigned)port_);
 }
 
-bool NetworkManager::begin(MessageHandler handler) {
+bool NetLink::begin(MessageHandler handler) {
   g_self = this;
   loadSettings();
 
@@ -88,7 +88,7 @@ bool NetworkManager::begin(MessageHandler handler) {
   return up;
 }
 
-bool NetworkManager::setBroker(const char* host, uint16_t port) {
+bool NetLink::setBroker(const char* host, uint16_t port) {
   if (host == nullptr || *host == '\0' || port == 0) return false;
   strncpy(host_, host, sizeof(host_) - 1);
   host_[sizeof(host_) - 1] = '\0';
@@ -104,7 +104,7 @@ bool NetworkManager::setBroker(const char* host, uint16_t port) {
   return true;
 }
 
-bool NetworkManager::connectBroker() {
+bool NetLink::connectBroker() {
   if (WiFi.status() != WL_CONNECTED) return false;
 
   Serial.printf("[net] MQTT connect %s:%u as %s ... ", host_, port_, clientId_);
@@ -123,7 +123,7 @@ bool NetworkManager::connectBroker() {
   return ok;
 }
 
-void NetworkManager::loop() {
+void NetLink::loop() {
   if (WiFi.status() != WL_CONNECTED) {
     // WiFi.begin() has already been issued by WiFiManager; the ESP32 keeps
     // retrying on its own. Nothing to do but wait.
@@ -146,28 +146,28 @@ void NetworkManager::loop() {
   }
 }
 
-bool NetworkManager::connected() {
+bool NetLink::connected() {
   return WiFi.status() == WL_CONNECTED && g_mqtt.connected();
 }
 
-bool NetworkManager::publish(const char* topic, const char* payload, bool retain) {
+bool NetLink::publish(const char* topic, const char* payload, bool retain) {
   if (!g_mqtt.connected()) return false;
   return g_mqtt.publish(topic, payload, retain);
 }
 
-void NetworkManager::startPortal() {
+void NetLink::startPortal() {
   Serial.println("[net] opening config portal");
   g_wm.startConfigPortal(AP_NAME);
 }
 
-void NetworkManager::forgetWiFi() {
+void NetLink::forgetWiFi() {
   Serial.println("[net] clearing WiFi credentials and rebooting");
   g_wm.resetSettings();
   delay(500);
   ESP.restart();
 }
 
-void NetworkManager::printStatus(Print& out) {
+void NetLink::printStatus(Print& out) {
   out.printf("WiFi     : %s", WiFi.status() == WL_CONNECTED ? "connected" : "down");
   if (WiFi.status() == WL_CONNECTED) {
     out.printf("  ssid %s  ip %s  rssi %d dBm",

@@ -1,5 +1,9 @@
 /*
- * NetworkManager.h - WiFi provisioning and the MQTT link.
+ * NetLink.h - WiFi provisioning and the MQTT link.
+ *
+ * Named NetLink, not NetworkManager: arduino-esp32 3.x ships its own
+ * NetworkManager class in libraries/Network, which WiFi.h pulls in, and the
+ * two collide. Do not rename this back.
  *
  * Differences from the original sketch that matter in the field:
  *
@@ -13,12 +17,12 @@
  *  - Reconnection is non-blocking with backoff, so sampling continues while
  *    the broker is unreachable.
  */
-#ifndef NETWORK_MANAGER_H
-#define NETWORK_MANAGER_H
+#ifndef NET_LINK_H
+#define NET_LINK_H
 
 #include <Arduino.h>
 
-class NetworkManager {
+class NetLink {
  public:
   typedef void (*MessageHandler)(char* topic, uint8_t* payload, unsigned int length);
 
@@ -54,4 +58,4 @@ class NetworkManager {
   uint32_t backoff_ = 0;
 };
 
-#endif // NETWORK_MANAGER_H
+#endif // NET_LINK_H

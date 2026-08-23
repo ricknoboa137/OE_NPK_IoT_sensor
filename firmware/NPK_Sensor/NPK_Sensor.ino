@@ -8,7 +8,7 @@
  *   Channels.h/.cpp   the seven measured quantities and their scale factors
  *   SoilSensor.*      Modbus RTU master, CRC, register map, retries
  *   Calibration.*     A and B per channel, held in NVS
- *   NetworkManager.*  WiFiManager provisioning and the MQTT link
+ *   NetLink.*         WiFiManager provisioning and the MQTT link
  *   CommandHandler.*  console shared by the serial port and MQTT
  *
  * Wiring (manual section 2.1): brown = 12-24 V +, black = 0 V,
@@ -22,13 +22,13 @@
 #include "Channels.h"
 #include "SoilSensor.h"
 #include "Calibration.h"
-#include "NetworkManager.h"
+#include "NetLink.h"
 #include "CommandHandler.h"
 #include "JsonCompat.h"
 
 SoilSensor     sensor;
 Calibration    calibration;
-NetworkManager net;
+NetLink net;
 CommandHandler console;
 
 // Last successfully read value per channel, so a single dropped frame does

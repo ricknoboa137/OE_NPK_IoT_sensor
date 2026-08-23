@@ -16,7 +16,7 @@
 #include <Arduino.h>
 #include "SoilSensor.h"
 #include "Calibration.h"
-#include "NetworkManager.h"
+#include "NetLink.h"
 
 // A Print sink that accumulates into a caller-supplied buffer.
 class BufferedPrint : public Print {
@@ -47,7 +47,7 @@ class BufferedPrint : public Print {
 
 class CommandHandler {
  public:
-  void begin(SoilSensor* sensor, Calibration* cal, NetworkManager* net);
+  void begin(SoilSensor* sensor, Calibration* cal, NetLink* net);
 
   // Non-blocking; assembles one line at a time from the USB console.
   void pollSerial();
@@ -73,7 +73,7 @@ class CommandHandler {
 
   SoilSensor*     sensor_ = nullptr;
   Calibration*    cal_    = nullptr;
-  NetworkManager* net_    = nullptr;
+  NetLink* net_    = nullptr;
 
   char   serialBuf_[160];
   size_t serialLen_ = 0;
