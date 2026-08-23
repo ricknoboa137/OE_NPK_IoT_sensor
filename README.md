@@ -54,10 +54,10 @@ cal                   # list every channel
 persist in the hardware and follow it to any controller:
 
 ```
-sensor                # read them all back
-sensor offset ph -2
-sensor factor n 1.15
-sensor npk n 120      # write a lab-measured value into the N register
+sensor                    # read them all back
+sensor cal n low  50      # two-point against standards, solved and
+sensor cal n high 200     #   written into the probe itself
+sensor npk n 120          # or write a lab-measured value directly
 ```
 
 That last one matters: the manual is explicit that the built-in NPK figures

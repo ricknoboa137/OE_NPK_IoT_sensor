@@ -217,6 +217,8 @@ void NpkConsole::cmdHelp(Print& out) {
   out.println(F("this firmware interprets what it reports."));
   out.println();
   out.println(F("  sensor                    read the probe's own registers"));
+  out.println(F("  sensor cal <n|p|k> low  <ref>     two-point solve, written"));
+  out.println(F("  sensor cal <n|p|k> high <ref>     into the probe itself"));
   out.println(F("  sensor offset <temp|hum|ec|ph> <raw>"));
   out.println(F("  sensor factor <n|p|k> <value>     gain, IEEE-754 float"));
   out.println(F("  sensor npk    <n|p|k> <mg/kg>     write a lab-measured value"));
@@ -364,12 +366,36 @@ struct NpkNutrientReg {
   const char* key;
   uint16_t    measurement;   // the writable N/P/K reading register
   uint16_t    factorHigh;    // factor float, high word; +1 low, +2 offset
+  uint8_t     channel;       // the matching NpkChannelId, for taking readings
 };
 static const NpkNutrientReg kNutrients[] = {
-  { "n", NPK_REG_NITROGEN,   NPK_REG_N_FACTOR },
-  { "p", NPK_REG_PHOSPHORUS, NPK_REG_P_FACTOR },
-  { "k", NPK_REG_POTASSIUM,  NPK_REG_K_FACTOR },
+  { "n", NPK_REG_NITROGEN,   NPK_REG_N_FACTOR, NPK_NITROGEN   },
+  { "p", NPK_REG_PHOSPHORUS, NPK_REG_P_FACTOR, NPK_PHOSPHORUS },
+  { "k", NPK_REG_POTASSIUM,  NPK_REG_K_FACTOR, NPK_POTASSIUM  },
 };
+
+// Two-point capture for the probe-side coefficients. Held in RAM only, like
+// the firmware-side equivalent, so a reboot mid-procedure starts over.
+struct NpkSensorPoint {
+  bool  held;
+  float reference;   // what the standard actually is
+  float reported;    // what the probe said, with its current A and B applied
+};
+static NpkSensorPoint g_sensorLow[3];
+
+// Read the probe's current gain and offset for one nutrient.
+static bool npkReadAB(NpkSensor* s, const NpkNutrientReg* nr,
+                      float& a, float& b, const char** why) {
+  const char* dummy = nullptr;
+  if (why == nullptr) why = &dummy;
+  if (!s->readFloat(nr->factorHigh, a)) { *why = s->lastError(); return false; }
+  delay(NPK_INTERFRAME_MS * 2);
+  uint16_t raw = 0;
+  if (!s->readRegisters(nr->factorHigh + 2, 1, &raw)) { *why = s->lastError(); return false; }
+  b = (float)(int16_t)raw;
+  *why = "";
+  return true;
+}
 
 static const NpkNutrientReg* npkNutrientFromKey(const char* s) {
   if (!s) return nullptr;
@@ -447,6 +473,8 @@ void NpkConsole::cmdSensor(char** argv, int argc, Print& out) {
     out.println(F("they read here is whatever the unit shipped with - most likely"));
     out.println(F("0 offsets and unit gains, but that is not promised anywhere."));
     out.println();
+    out.println(F("  sensor cal <n|p|k> low  <ref>          two-point solve against"));
+    out.println(F("  sensor cal <n|p|k> high <ref>          the probe's own A and B"));
     out.println(F("  sensor offset <temp|hum|ec|ph> <raw>   write an offset register"));
     out.println(F("  sensor factor <n|p|k> <value>          write the gain float"));
     out.println(F("  sensor npk    <n|p|k> <mg/kg>          write a measured value"));
@@ -502,6 +530,151 @@ void NpkConsole::cmdSensor(char** argv, int argc, Print& out) {
       out.println("The probe now reports that value until it measures again.");
     } else {
       out.printf("error: write failed (%s)\r\n", sensor_->lastError());
+    }
+    return;
+  }
+
+  // -------------------------------------------------------------------------
+  // Guided two-point recalculation of the probe's own A and B
+  // -------------------------------------------------------------------------
+  // The probe already holds a gain and an offset per nutrient. Rather than
+  // overwrite them blindly, this reads the existing pair, measures against two
+  // standards, and composes a correction on top.
+  //
+  // Assuming the probe reports  y = A*x + B  over some internal x, and two
+  // standards give reported y1, y2 for true values r1, r2:
+  //
+  //     g  = (r2 - r1) / (y2 - y1)          the gain error, on the output
+  //     A' = A * g
+  //     B' = r1 - g * (y1 - B)
+  //
+  // x never appears, so the internal scaling does not need to be known. The
+  // one thing assumed is that the probe combines them linearly in that order,
+  // which the manual implies by calling them factor and offset but does not
+  // state outright - so the write is followed by a verification read.
+  if (!strcasecmp(sub, "cal")) {
+    if (argc < 5) {
+      out.println("usage: sensor cal <n|p|k> low  <reference>");
+      out.println("       sensor cal <n|p|k> high <reference>");
+      return;
+    }
+    const NpkNutrientReg* nr = npkNutrientFromKey(argv[2]);
+    if (!nr) { out.println("error: channel must be n, p or k"); return; }
+    const uint8_t slot = (uint8_t)(nr - kNutrients);
+    const float ref = strtof(argv[4], nullptr);
+    if (!isfinite(ref)) { out.println("error: reference must be a number"); return; }
+
+    float reported;
+    if (!captureRaw(nr->channel, reported, out)) return;
+
+    if (!strcasecmp(argv[3], "low")) {
+      g_sensorLow[slot] = { true, ref, reported };
+      out.printf("%s: low point held (probe reports %.1f, standard is %.1f)\r\n",
+                 nr->key, reported, ref);
+      out.printf("Move to the high standard, then: sensor cal %s high <ref>\r\n", nr->key);
+      return;
+    }
+
+    if (strcasecmp(argv[3], "high") != 0) {
+      out.println("error: second argument must be low or high");
+      return;
+    }
+    if (!g_sensorLow[slot].held) {
+      out.printf("error: capture the low point first (sensor cal %s low <ref>)\r\n", nr->key);
+      return;
+    }
+
+    const float r1 = g_sensorLow[slot].reference, y1 = g_sensorLow[slot].reported;
+    const float r2 = ref,                          y2 = reported;
+
+    if (fabsf(y2 - y1) < 1e-3f) {
+      out.println("error: the probe reported the same value at both standards");
+      out.println("       - it is not responding to the difference, so no gain");
+      out.println("       can be solved. Check the standards and let it settle.");
+      return;
+    }
+
+    float a = 0.0f, b = 0.0f;
+    const char* why = nullptr;
+    if (!npkReadAB(sensor_, nr, a, b, &why)) {
+      out.printf("error: could not read the current coefficients (%s)\r\n", why);
+      return;
+    }
+    if (!isfinite(a) || a == 0.0f) {
+      out.printf("error: current gain reads %.5f, which cannot be composed on.\r\n", a);
+      out.printf("       Set a sane starting point first: sensor factor %s 1.0\r\n", nr->key);
+      return;
+    }
+
+    const float g  = (r2 - r1) / (y2 - y1);
+    const float a2 = a * g;
+    const float b2 = r1 - g * (y1 - b);
+
+    if (!isfinite(a2) || !isfinite(b2) || a2 == 0.0f) {
+      out.println("error: the solve produced an unusable pair");
+      return;
+    }
+    if (fabsf(a2) > 1e3f || fabsf(b2) > 1e5f) {
+      out.printf("error: solved A=%.5f B=%.1f, which is implausible - check that\r\n", a2, b2);
+      out.println("       the two standards were not swapped");
+      return;
+    }
+
+    out.printf("%s: current A=%.5f B=%.1f\r\n", nr->key, a, b);
+    out.printf("%s: solved  A=%.5f B=%.1f  (from %.1f/%.1f and %.1f/%.1f)\r\n",
+               nr->key, a2, b2, y1, r1, y2, r2);
+
+    // A negative gain means the probe read *lower* at the higher standard.
+    // For a nutrient concentration that is almost always the two standards
+    // measured in the wrong order, and the verification below will NOT catch
+    // it: the fit is self-consistent against whatever labels it was given, so
+    // it reads back perfectly while being exactly backwards.
+    if (a2 < 0.0f) {
+      out.println("WARNING: the solved gain is negative, so the probe read lower");
+      out.println("         at the higher standard. Almost certainly the two");
+      out.println("         standards were measured the wrong way round. The");
+      out.println("         verification below cannot detect that - it will look");
+      out.println("         correct either way. Re-run if in any doubt.");
+    }
+    // The offset register is a single integer, so B is quantised to whole
+    // units - up to half a mg/kg of error that no amount of care removes.
+    if (fabsf(b2 - lroundf(b2)) > 0.01f) {
+      out.printf("note: offset %.2f will be stored as %ld - the register is an\r\n",
+                 b2, lroundf(b2));
+      out.println("      integer, so the fraction is lost.");
+    }
+
+    if (!sensor_->writeFloat(nr->factorHigh, a2)) {
+      out.printf("error: writing the gain failed (%s)\r\n", sensor_->lastError());
+      return;
+    }
+    delay(NPK_INTERFRAME_MS * 2);
+    if (!sensor_->writeRegister(nr->factorHigh + 2, (uint16_t)(int16_t)lroundf(b2))) {
+      out.printf("error: writing the offset failed (%s) - the gain was already\r\n",
+                 sensor_->lastError());
+      out.println("       written, so the probe is now half-updated. Re-run this.");
+      return;
+    }
+    g_sensorLow[slot].held = false;
+    out.println("written to the probe.");
+
+    // Read it back and measure. If the assumed model is wrong, this is where
+    // it shows, rather than silently producing bad data for months.
+    delay(300);
+    float back = 0.0f, boff = 0.0f;
+    if (npkReadAB(sensor_, nr, back, boff, &why)) {
+      out.printf("verify: probe now holds A=%.5f B=%.1f\r\n", back, boff);
+    }
+    float after;
+    if (captureRaw(nr->channel, after, out)) {
+      const float err = after - r2;
+      out.printf("verify: reads %.1f against a standard of %.1f  (error %+.1f)\r\n",
+                 after, r2, err);
+      if (fabsf(err) > fabsf(r2) * 0.1f + 1.0f) {
+        out.println("That is further off than it should be. The probe may not");
+        out.println("combine factor and offset the way this assumes - fall back");
+        out.println("to correcting in the firmware with \"cal\" instead.");
+      }
     }
     return;
   }

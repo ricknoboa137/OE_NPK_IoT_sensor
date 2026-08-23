@@ -171,6 +171,8 @@ mqtt <host> [port]        change broker, stored in NVS
 mqttauth <user> [pass]    broker credentials, stored in NVS
 mqttauth clear            connect anonymously
 sensor                    read the probe's own calibration registers
+sensor cal <n|p|k> low  <ref>    two-point solve, written into the probe
+sensor cal <n|p|k> high <ref>
 sensor offset <temp|hum|ec|ph> <raw>
 sensor factor <n|p|k> <value>
 sensor npk    <n|p|k> <mg/kg>
@@ -396,6 +398,50 @@ sensor                        read every calibration register back
 sensor factor n 1.15          nitrogen gain, IEEE-754 float over two registers
 sensor offset temp -5         raw offset register, here -0.5 °C
 ```
+
+### Recalculating the probe's A and B from standards
+
+The probe ships with a gain and an offset already set per nutrient. Rather
+than overwrite them blindly, `sensor cal` reads the existing pair, measures
+against two standards, and composes a correction on top:
+
+```
+sensor cal n low  50      probe in the 50 mg/kg standard
+sensor cal n high 200     probe in the 200 mg/kg standard
+```
+
+With the probe reporting `y = A·x + B` over some internal `x`, two standards
+`r1`, `r2` giving reported `y1`, `y2`:
+
+```
+g  = (r2 - r1) / (y2 - y1)
+A' = A · g
+B' = r1 - g · (y1 - B)
+```
+
+`x` never appears, so the probe's internal scaling does not need to be known,
+and the result is the same whatever the starting coefficients were. What *is*
+assumed is that the probe applies factor then offset in that order — the
+manual names both registers but never states the formula. So the write is
+followed by a read-back and a fresh measurement against the high standard, and
+the command says so if the result is further off than it should be.
+
+Three things worth knowing:
+
+- **A negative solved gain means the standards were swapped**, and the
+  verification cannot detect it — the fit is self-consistent against whatever
+  labels it was given, so it reads back perfectly while being backwards. The
+  command warns explicitly when this happens.
+- **The offset register is an integer**, so `B` is quantised to whole units.
+- **The gain write is two registers.** If the first succeeds and the second
+  fails, the probe is left half-updated; the command says so and the fix is to
+  re-run it.
+
+Only N, P and K have both a gain and an offset. Temperature, humidity,
+conductivity and pH have **offset only** — no gain register — so a span
+correction for those has to happen in the firmware layer with `cal`.
+
+### The two layers
 
 These live **in the probe** and persist there independently of this firmware.
 They are a different thing from the `cal` commands, which correct readings
