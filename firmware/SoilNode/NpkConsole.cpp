@@ -227,10 +227,8 @@ void NpkConsole::cmdHelp(Print& out) {
 void NpkConsole::cmdStatus(Print& out) {
   out.println();
   out.printf("Firmware : %s %s\r\n", NPK_FW_NAME, NPK_FW_VERSION);
-  out.printf("Profile  : %s\r\n",
-             NPK_REGISTER_PROFILE == NPK_PROFILE_CONTIGUOUS
-               ? "contiguous 0x0000-0x0006, all /10"
-               : "sparse, per JXBS-3001-TR section 4.3");
+  out.printf("Sensor   : VMS-3001-TR, %u registers from 0x%04X\r\n",
+             (unsigned)NPK_REGISTER_COUNT, (unsigned)NPK_REGISTER_START);
   out.printf("Port     : %s\r\n",
              NPK_USE_SOFTWARE_SERIAL ? "SoftwareSerial" : "hardware UART1");
   out.printf("RS-485   : %lu baud 8N1, slave 0x%02X, DE/RE on GPIO%d\r\n",
@@ -280,11 +278,10 @@ void NpkConsole::cmdRead(Print& out) {
   }
   if (anyOutOfRange) {
     out.println();
-    out.println(F("Those registers answered with a valid CRC, so the wiring is"));
-    out.println(F("fine - the value itself is impossible. This probe aliases"));
-    out.println(F("unimplemented addresses onto the low block, so a wrong"));
-    out.println(F("register profile looks like real data. Run \"scan\" and"));
-    out.println(F("switch NPK_REGISTER_PROFILE in NpkConfig.h."));
+    out.println(F("Those registers answered with a valid CRC, so the wiring"));
+    out.println(F("is fine - the value itself is impossible, which means the"));
+    out.println(F("scale or the slot mapping is wrong. Run \"scan\" and check"));
+    out.println(F("the read op in NpkSensor.cpp against the manual."));
   }
   out.println();
 }

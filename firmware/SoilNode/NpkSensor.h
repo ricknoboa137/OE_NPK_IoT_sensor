@@ -11,10 +11,12 @@
 
 #include <Arduino.h>
 
+// Conductivity sits at slot 2 of the register block but this unit does not
+// return it, so it is not a channel. To put it back: add NPK_CONDUCTIVITY
+// here, add a row to NPK_CHANNELS, and change the -1 in the read op to it.
 enum NpkChannelId : uint8_t {
   NPK_MOISTURE = 0,
   NPK_TEMPERATURE,
-  NPK_CONDUCTIVITY,
   NPK_PH,
   NPK_NITROGEN,
   NPK_PHOSPHORUS,

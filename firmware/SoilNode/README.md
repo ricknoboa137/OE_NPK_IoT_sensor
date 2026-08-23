@@ -1,8 +1,8 @@
 # SoilNode firmware
 
-ESP32 node for the **JXBS-3001-TR soil 7-in-1 probe** (moisture, temperature,
-conductivity, pH, N, P, K) over RS-485 Modbus RTU, publishing JSON to MQTT with
-a per-channel linear calibration held in NVS.
+ESP32 node for the **VMS-3001-TR soil probe** (moisture, temperature, pH)
+over RS-485 Modbus RTU, publishing JSON to MQTT with a per-channel linear
+calibration held in NVS.
 
 ## Files
 
@@ -36,17 +36,26 @@ the calibration coefficients across a power cycle.
 
 ## Wiring
 
-Manual section 2.1:
+Manual section 2.2.1:
 
 | Probe wire | Goes to |
 |---|---|
-| Brown | **12–24 V DC +** |
+| Brown | **4.5–30 V DC +** |
 | Black | 0 V, common with the ESP32 ground |
-| Yellow (grey on some batches) | RS-485 **A** |
+| Yellow | RS-485 **A** |
 | Blue | RS-485 **B** |
 
-The probe will not run off the ESP32 3V3 rail — it needs its own 12 V supply.
-Reversing A and B is the single most common reason for "no reply".
+Wide supply range, so the board's 5 V rail is enough — this probe does not
+need a separate 12 V supply. Maximum draw is 0.5 W at 24 V; it will be well
+under that at 5 V. It will *not* run off 3V3.
+
+Reversing A and B is the single most common reason for "no reply". Grounds
+must be common between the probe supply and the ESP32.
+
+Note the probe needs up to **5 minutes to stabilise** after power-up
+(manual section 1.3, 稳定时间 ≤5min), and conductivity only reflects the soil
+properly once volumetric moisture is above roughly 20 % — dry soil reads low
+regardless of its actual salt content.
 
 | ESP32 | Transceiver (MAX485 / similar) |
 |---|---|
@@ -126,8 +135,8 @@ offset. Defaults are A = 1, B = 0, which reproduces the uncalibrated reading
 exactly. Coefficients are written to NVS as soon as they are solved and survive
 a power cycle.
 
-Channel names: `moisture` `temperature` `conductivity` `ph` `nitrogen`
-`phosphorus` `potassium` (aliases: `humidity` `temp` `ec` `n` `p` `k`).
+Channel names: `moisture` `temperature` `ph` `nitrogen` `phosphorus`
+`potassium` (aliases: `humidity` `temp` `n` `p` `k`).
 
 ### Two-point — the right method for pH and EC
 
@@ -230,98 +239,133 @@ The data payload keeps the key names the original sketch used, so an existing
 Node-RED flow keeps working unchanged:
 
 ```json
-{"Humidity":34.6,"Temperature":21.4,"Conductivity":412,"PH":6.82,
- "Nitrogen":38,"Phosphorus":21,"Potassium":95,"ok":true}
+{"Humidity":34.6,"Temperature":21.4,"PH":6.8,
+ "Nitrogen":3.8,"Phosphorus":2.1,"Potassium":9.5,"ok":true}
 ```
 
 `ok` is false when at least one register did not answer this cycle; the
 affected channels then carry their last good value rather than a zero.
 
-## Register map
+## The sensor and its register map
 
-**This product family has variants that disagree with each other and with the
-manual.** Two profiles are provided; `NPK_REGISTER_PROFILE` in `NpkConfig.h`
-selects one.
+The probe is a **VMS-3001-TR-\*-N01**, 威盟士 (Weimengshi) five-pin soil
+transmitter. Its own manual — *五插针土壤四参数传感器（485型）*, Ver 2.0 — is the
+authority here, and unlike the JXBS manual this project started from, it is
+internally consistent: both example CRCs verify and every worked example
+decodes to the value it claims.
 
-### `NPK_PROFILE_CONTIGUOUS` — the default, and what the probe on this project speaks
+It is a **four-parameter** probe. Section 1.5 lists the whole model line:
 
-Seven registers in a row, every one scaled by 0.1:
+| Suffix | Measures |
+|---|---|
+| `THPH` | temperature, moisture, pH |
+| `ECPH` | conductivity, pH |
+| `ECTHPH` | conductivity, temperature, moisture, pH |
 
-| Register | Quantity | Unit |
-|---|---|---|
-| `0x0000` | Soil moisture | 0.1 %RH |
-| `0x0001` | Soil temperature | 0.1 °C, **signed** |
-| `0x0002` | Conductivity | 0.1 µS/cm |
-| `0x0003` | pH | 0.1 pH |
-| `0x0004` | Nitrogen | 0.1 mg/kg |
-| `0x0005` | Phosphorus | 0.1 mg/kg |
-| `0x0006` | Potassium | 0.1 mg/kg |
+### Registers (manual section 5.3)
 
-This is the block the original sketch read, and 83,883 logged samples confirm
-it: humidity 0–75.9 %, temperature 17.7–29.9 °C, NPK 0–45 mg/kg, and pH
-**3.9–9.0** against a datasheet spec of 3–9 pH. That pH range is hard to hit by
-accident with a wrong scale. Keeping ÷10 also keeps the new firmware's output
-continuous with that existing dataset.
-
-### `NPK_PROFILE_SPARSE` — the map printed in the manual
-
-| Register | Quantity | Unit | Scale |
+| Register | Content | Access | Scaling |
 |---|---|---|---|
-| `0x0006` | pH | 0.01 pH | ÷100 |
-| `0x0012` | Soil moisture | 0.1 %RH | ÷10 |
-| `0x0013` | Soil temperature | 0.1 °C | ÷10, **signed** |
-| `0x0015` | Conductivity | 1 µS/cm | ÷1 |
-| `0x001E` | Nitrogen | 1 mg/kg | ÷1 |
-| `0x001F` | Phosphorus | 1 mg/kg | ÷1 |
-| `0x0020` | Potassium | 1 mg/kg | ÷1 |
-| `0x0100` | Device address | | read/write |
-| `0x0101` | Baud rate | | read/write |
+| `0x0000` | Moisture | read | value ×10 → **÷10** for % |
+| `0x0001` | Temperature | read | value ×10 → **÷10** for °C, **signed** |
+| `0x0002` | Conductivity | read | **not scaled**, whole µS/cm |
+| `0x0003` | pH | read | value ×10 → **÷10** |
+| `0x0007` | Salinity | read | "for reference only" |
+| `0x0008` | TDS | read | "for reference only" |
+| `0x0022` | EC temperature coefficient | read/write | 0–100 = 0.0–10.0 %, default 0 |
+| `0x0023` | Salinity coefficient | read/write | 0–100 = 0.00–1.00, default 55 |
+| `0x0024` | TDS coefficient | read/write | 0–100 = 0.00–1.00, default 50 |
+| `0x0050` | Temperature calibration | read/write | integer ×10 |
+| `0x0051` | Moisture calibration | read/write | integer ×10 |
+| `0x0052` | Conductivity calibration | read/write | integer |
+| `0x0053` | pH calibration | read/write | integer |
+| `0x07D0` | Device address | read/write | 1–254, factory default 1 |
+| `0x07D1` | Baud rate | read/write | 0 = 2400, 1 = 4800, 2 = 9600 |
 
-Temperature is the only signed value: section 4.4.1 reads `FF9B` back as
-−10.1 °C.
+Serial defaults: 4800 baud, 8N1, no parity, slave address `0x01`.
 
-### Picking the wrong one does not fail cleanly
-
-This is the trap. The probe answers with a **valid CRC at addresses it does not
-implement**, aliasing them onto the low block. Reading it with the sparse map
-gives `0x0015` → the temperature register and `0x0006` → potassium, so the
-output is well-formed nonsense rather than a timeout:
+The manual's own worked example (section 5.4), which the firmware's scaling is
+checked against:
 
 ```
-"Humidity":152.4,"Temperature":151.7,"Conductivity":285,"PH":0,
-"Nitrogen":4090,"Phosphorus":0,"Potassium":0,"ok":true
+->  01 03 00 00 00 04 44 09
+<-  01 03 08 02 92 FF 9B 03 E8 00 38 57 B6
+
+    0x0292 =  658  /10  ->  65.8 %RH
+    0xFF9B = -101  /10  -> -10.1 °C     (two's complement below zero)
+    0x03E8 = 1000  /1   ->  1000 µS/cm
+    0x0038 =   56  /10  ->  5.6 pH
 ```
 
-`ok:true`, every CRC good, every number wrong. That is why `NPK_RANGE_CHECK`
-exists: readings outside the physical limits in datasheet section 1.3
-(0–100 %RH, −40…80 °C, 0–10000 µS/cm, 0–14 pH, 0–1999 mg/kg) are marked
-out of range, excluded from the payload, and reported by `read` with the
-raw register value and the limit that was breached. Set it to 0 to disable.
+Both CRCs recompute correctly, and all four values match the manual's text.
 
-If your probe matches neither profile, run `scan` — it prints every register
-that answers together with its ÷1, ÷10 and ÷100 interpretations, which is
-enough to identify the layout against known conditions. A pure scale mismatch
-needs no code change at all: a two-point calibration absorbs it into `A`.
+### What this firmware reads
 
-### What the manual gets wrong
+One transaction, byte for byte the request the original sketch sent:
 
-Worth knowing if you are checking any of this by hand: several of the printed
-CRCs do not match the frames they belong to. Recomputing CRC-16/MODBUS, the pH
-(`0x0006`), conductivity (`0x0015`) and potassium (`0x0020`) examples check
-out; the nitrogen and phosphorus examples have their CRCs *transposed* with
-each other; the three-register NPK read (§4.4.5) carries the CRC for `0x001F`
-rather than `0x001E`; and both moisture examples (§4.4.1, §4.4.2) carry CRCs
-computed for register `0x0002`, not the `0x0012` those same sections name.
-§4.4.4 says "0047H = 308" where the frame it just printed reads `0134H`. The
-firmware computes its CRCs rather than copying them.
+```
+01 03 00 00 00 07 04 08      (seven registers from 0x0000, CRC verified)
+```
 
-Baud is auto-probed at boot across 4800, 9600 and 2400 — 4800 first because
-that is what the original sketch used, though the datasheet says the factory
-default is 9600. Set `NPK_BAUD_AUTODETECT` to 0 to pin it.
+and the reply is sliced in the original decoder's slot order, so previously
+logged data stays comparable:
 
-If a channel comes back with a plausible number at the wrong magnitude — pH
-reading 0.68 instead of 6.8, say — that is a scale mismatch, and a two-point
-calibration absorbs it into A without touching the code.
+| Slot | Register | Mapped to | Scale |
+|---|---|---|---|
+| 0 | `0x0000` | moisture | ÷10 |
+| 1 | `0x0001` | temperature | ÷10, signed |
+| 2 | `0x0002` | *discarded* — this unit does not return conductivity | — |
+| 3 | `0x0003` | pH | ÷10 |
+| 4 | `0x0004` | nitrogen | ÷10 |
+| 5 | `0x0005` | phosphorus | ÷10 |
+| 6 | `0x0006` | potassium | ÷10 |
+
+To restore conductivity: add `NPK_CONDUCTIVITY` to the enum in `NpkSensor.h`,
+add a row to `NPK_CHANNELS`, and replace the `-1` in the read op with it.
+Note the scale is **÷1**, not ÷10 — the original sketch divided it by ten,
+which would have read 1000 µS/cm as 100.
+
+### N, P and K are not real on this sensor
+
+There are no nitrogen, phosphorus or potassium registers in this manual, and
+no NPK variant in the model line. Slots 4, 5 and 6 are undocumented. They are
+kept because the original decoder used them and the logged dataset carries
+them, but **whatever those registers hold, it is not soil NPK.** In the
+83,883 rows logged by the original firmware they sit nearly static — N ≈ 2.0,
+P ≈ 9.3, K ≈ 8.5 for hours while moisture and temperature move — which is what
+you would expect from something that is not a live measurement.
+
+Measuring actual NPK needs a probe that advertises it, such as the JXBS-3001
+seven-in-one. If you would rather have the two channels this sensor genuinely
+does provide, `0x0007` (salinity) and `0x0008` (TDS) are documented and only
+need the read extended to nine registers.
+
+### Range checking
+
+`NPK_RANGE_CHECK` tests every reading against the physical limits in manual
+section 1.3 — 0–100 %RH, −40…80 °C, 3–9 pH (widened to 0–14 so a badly
+calibrated probe still reports). Anything outside is marked out of range,
+excluded from the payload, and reported by `read` with the raw register value
+and the limit it breached.
+
+This exists because a wrong slot mapping does **not** fail cleanly on this
+hardware. The probe answers with a valid CRC at addresses it does not
+implement, aliasing them onto the low block, so the output is well-formed
+nonsense rather than a timeout — 152.4 %RH and 4090 mg/kg with `ok:true`. The
+CRC cannot catch that; only the physical limits can. Set it to 0 to disable.
+
+If a channel comes back plausible but at the wrong magnitude, that is a scale
+mismatch and needs no code change — a two-point calibration absorbs it into
+`A`. Use `scan` to see what every register actually returns, with its ÷1, ÷10
+and ÷100 interpretations side by side.
+
+### On-sensor calibration
+
+Separately from this firmware's `A`/`B` correction, the probe has its own
+calibration registers at `0x0050`–`0x0053` (offsets, written with function
+0x06). Those change what the sensor reports; the firmware's coefficients
+change how its output is interpreted. The firmware does not write them today —
+say the word if you want commands for it.
 
 ## Naming
 

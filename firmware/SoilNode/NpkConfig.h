@@ -49,25 +49,34 @@ static const uint32_t NPK_BAUD_CANDIDATES[] = { 4800, 9600, 2400 };
 // ---------------------------------------------------------------------------
 // Register profile
 // ---------------------------------------------------------------------------
-// NPK_PROFILE_CONTIGUOUS - seven registers at 0x0000, every value scaled by
-//                          0.1. This is what the probe on this project speaks,
-//                          and it is the default. Confirmed against 83,883
-//                          logged samples from the original firmware: every
-//                          channel physically plausible, and pH landing in
-//                          3.9-9.0 against a datasheet spec of 3-9 pH.
-// NPK_PROFILE_SPARSE     - the scattered map printed in section 4.3 of the
-//                          JXBS-3001-TR manual (pH 0x0006, moisture 0x0012,
-//                          temperature 0x0013, EC 0x0015, NPK 0x001E-0x0020),
-//                          with the per-register scales the manual gives.
+// The probe is a VMS-3001-TR-*-N01 (Weimengshi five-pin soil transmitter),
+// and its own manual, section 5.3, is the authority:
 //
-// The two are not interchangeable, and picking the wrong one does not fail
-// cleanly: this probe answers with a valid CRC at addresses it does not
-// implement, aliasing them onto the low block. Reading 0x0015 returns the
-// temperature register, and 0x0006 returns potassium rather than pH. Run
-// "scan" and compare against known conditions before switching.
-#define NPK_PROFILE_CONTIGUOUS 0
-#define NPK_PROFILE_SPARSE     1
-#define NPK_REGISTER_PROFILE   NPK_PROFILE_CONTIGUOUS
+//   0x0000  moisture      read-only,  value x10
+//   0x0001  temperature   read-only,  value x10, signed
+//   0x0002  conductivity  read-only,  us/cm, NOT scaled
+//   0x0003  pH            read-only,  value x10
+//   0x0007  salinity      read-only,  "for reference only"
+//   0x0008  TDS           read-only,  "for reference only"
+//   0x0022  EC temperature coefficient   read/write
+//   0x0023  salinity coefficient         read/write
+//   0x0024  TDS coefficient              read/write
+//   0x0050  temperature calibration      read/write, integer x10
+//   0x0051  moisture calibration         read/write, integer x10
+//   0x0052  conductivity calibration     read/write, integer
+//   0x0053  pH calibration               read/write, integer
+//   0x07D0  device address    read/write, 1-254, factory default 1
+//   0x07D1  baud rate         read/write, 0 = 2400, 1 = 4800, 2 = 9600
+//
+// Unlike the JXBS manual this project started from, this one is internally
+// consistent: both example CRCs verify, and every worked example decodes to
+// the value it claims.
+//
+// The node keeps sending the original sketch's single request - seven
+// registers from 0x0000 - and keeps the original slot order, so existing
+// decoders and logged data stay valid. See NpkSensor.cpp for the mapping.
+#define NPK_REGISTER_START  0x0000
+#define NPK_REGISTER_COUNT  7
 
 // Reject readings outside the physical range in section 1.3 of the datasheet.
 // A wrong register profile or scale shows up as 152 %RH or 4090 mg/kg, and

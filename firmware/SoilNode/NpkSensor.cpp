@@ -28,64 +28,51 @@
 // Channel table
 // ---------------------------------------------------------------------------
 /*
- * Two layouts, because this product family has variants that do not agree
- * with each other or with the manual.
+ * Scale factors come from section 5.3 of the VMS-3001-TR manual, and are
+ * confirmed by the worked example in section 5.4. That example reads
  *
- * CONTIGUOUS (default, and what the probe on this project speaks):
- *   0x0000 moisture, 0x0001 temperature, 0x0002 conductivity, 0x0003 pH,
- *   0x0004 N, 0x0005 P, 0x0006 K - every one scaled by 0.1.
- *   Established from 83,883 samples logged by the original firmware, which
- *   read exactly this block: humidity 0-75.9 %, temperature 17.7-29.9 C,
- *   pH 3.9-9.0 against a datasheet spec of 3-9 pH, NPK 0-45 mg/kg. All
- *   physically sensible, and the pH range in particular is hard to get by
- *   accident.
+ *     01 03 00 00 00 04 44 09
+ *  -> 01 03 08 02 92 FF 9B 03 E8 00 38 57 B6
  *
- * SPARSE (section 4.3 of the manual):
- *   0x0006 pH             unit 0.01 pH   -> 100 counts per pH
- *   0x0012 soil moisture  unit 0.1 %RH   ->  10 counts per %
- *   0x0013 soil temp      unit 0.1 degC  ->  10 counts per degC
- *   0x0015 conductivity   unit 1 us/cm   ->   1 count  per us/cm
- *   0x001E N, 0x001F P, 0x0020 K, unit 1 mg/kg
+ * and both CRCs verify. Decoding it:
  *
- * Temperature is the only signed value: section 4.4.1 reads FF9BH back as
- * -10.1 degC.
+ *   0x0000 moisture     0x0292 =  658  /10 -> 65.8 %     as documented
+ *   0x0001 temperature  0xFF9B = -101  /10 -> -10.1 degC as documented
+ *   0x0002 conductivity 0x03E8 = 1000  /1  -> 1000 us/cm as documented
+ *   0x0003 pH           0x0038 =   56  /10 -> 5.6 pH     as documented
  *
- * Reading this probe with the SPARSE map does not fail cleanly. It answers
- * with a valid CRC at addresses it does not implement, aliasing them onto the
- * low block: 0x0015 returns the temperature register and 0x0006 returns
- * potassium. The result is well-formed nonsense - 152.4 %RH, 4090 mg/kg - so
- * the range check below, not the CRC, is what catches a wrong profile.
+ * Temperature is the only signed value; below zero it is sent as a two's
+ * complement.
  *
- * If a unit disagrees with both profiles the calibration A coefficient
- * absorbs the difference: a probe reporting pH in 0.01 steps where this
- * expects 0.1 is corrected with A = 0.1, no code change needed.
+ * Note that conductivity is NOT scaled - the manual gives it in whole us/cm,
+ * and the resolution line in section 1.3 agrees at 1 us/cm. The original
+ * sketch divided it by ten. It is moot here because this unit does not
+ * return conductivity at all, but it matters if the channel is restored.
+ *
+ * N, P and K have no registers in this manual. This is a four-parameter
+ * probe - moisture, temperature, conductivity, pH - and the model-selection
+ * table in section 1.5 offers only THPH, ECPH and ECTHPH variants. Slots 4,
+ * 5 and 6 of the block read here are undocumented. They are kept because the
+ * original decoder used them and the logged dataset carries them, but
+ * whatever they hold is not soil nitrogen, phosphorus or potassium.
+ *
+ * A pure scale mismatch needs no code change: the calibration A coefficient
+ * absorbs it.
  */
-// Limits are the measurement ranges in section 1.3, widened a little where the
-// datasheet quotes a narrower spec than the register can express: pH is
-// specced 3-9 but 0-14 is allowed so a miscalibrated probe still reports
-// rather than silently dropping out.
-#if NPK_REGISTER_PROFILE == NPK_PROFILE_CONTIGUOUS
+// Limits are the measurement ranges in section 1.3, widened where the manual
+// quotes a narrower spec than the register can express: pH is specced 3-9 but
+// 0-14 is allowed so a badly calibrated probe still reports rather than
+// silently dropping out. The undocumented slots get a permissive 0-1999,
+// enough to catch a gross misread without pretending to know the range.
 const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT] = {
-  // key             jsonKey         unit     scale  signed dec     lo       hi
-  { "moisture",     "Humidity",     "%RH",    10.0f, false, 1,     0.0f,   100.0f },
-  { "temperature",  "Temperature",  "degC",   10.0f, true,  1,   -40.0f,    80.0f },
-  { "conductivity", "Conductivity", "us/cm",  10.0f, false, 1,     0.0f, 10000.0f },
-  { "ph",           "PH",           "pH",     10.0f, false, 2,     0.0f,    14.0f },
-  { "nitrogen",     "Nitrogen",     "mg/kg",  10.0f, false, 1,     0.0f,  1999.0f },
-  { "phosphorus",   "Phosphorus",   "mg/kg",  10.0f, false, 1,     0.0f,  1999.0f },
-  { "potassium",    "Potassium",    "mg/kg",  10.0f, false, 1,     0.0f,  1999.0f },
+  // key            jsonKey        unit     scale  signed dec     lo       hi
+  { "moisture",    "Humidity",    "%RH",    10.0f, false, 1,     0.0f,  100.0f },
+  { "temperature", "Temperature", "degC",   10.0f, true,  1,   -40.0f,   80.0f },
+  { "ph",          "PH",          "pH",     10.0f, false, 1,     0.0f,   14.0f },
+  { "nitrogen",    "Nitrogen",    "mg/kg",  10.0f, false, 1,     0.0f, 1999.0f },
+  { "phosphorus",  "Phosphorus",  "mg/kg",  10.0f, false, 1,     0.0f, 1999.0f },
+  { "potassium",   "Potassium",   "mg/kg",  10.0f, false, 1,     0.0f, 1999.0f },
 };
-#else
-const NpkChannel NPK_CHANNELS[NPK_CHANNEL_COUNT] = {
-  { "moisture",     "Humidity",     "%RH",    10.0f, false, 1,     0.0f,   100.0f },
-  { "temperature",  "Temperature",  "degC",   10.0f, true,  1,   -40.0f,    80.0f },
-  { "conductivity", "Conductivity", "us/cm",   1.0f, false, 0,     0.0f, 10000.0f },
-  { "ph",           "PH",           "pH",    100.0f, false, 2,     0.0f,    14.0f },
-  { "nitrogen",     "Nitrogen",     "mg/kg",   1.0f, false, 0,     0.0f,  1999.0f },
-  { "phosphorus",   "Phosphorus",   "mg/kg",   1.0f, false, 0,     0.0f,  1999.0f },
-  { "potassium",    "Potassium",    "mg/kg",   1.0f, false, 0,     0.0f,  1999.0f },
-};
-#endif
 
 int npkChannelFromKey(const char* key) {
   if (key == nullptr) return -1;
@@ -95,7 +82,6 @@ int npkChannelFromKey(const char* key) {
   }
   if (strcasecmp(key, "humidity") == 0) return NPK_MOISTURE;
   if (strcasecmp(key, "temp") == 0)     return NPK_TEMPERATURE;
-  if (strcasecmp(key, "ec") == 0)       return NPK_CONDUCTIVITY;
   if (strcasecmp(key, "n") == 0)        return NPK_NITROGEN;
   if (strcasecmp(key, "p") == 0)        return NPK_PHOSPHORUS;
   if (strcasecmp(key, "k") == 0)        return NPK_POTASSIUM;
@@ -113,24 +99,22 @@ struct NpkReadOp {
   int8_t   dest[7];
 };
 
-#if NPK_REGISTER_PROFILE == NPK_PROFILE_CONTIGUOUS
-// One transaction for all seven registers. This is the frame the original
-// sketch sent, and the 83,883 samples it logged confirm the layout.
+// One transaction, seven registers from 0x0000 - byte for byte the request
+// the original sketch sent (01 03 00 00 00 07, CRC 04 08), and the slots are
+// mapped in the order the original decoder used, so logged data stays
+// comparable. Slot 2 is conductivity, which this unit does not return, so it
+// is discarded rather than published.
 static const NpkReadOp kOps[] = {
-  { 0x0000, 7, { NPK_MOISTURE, NPK_TEMPERATURE, NPK_CONDUCTIVITY, NPK_PH,
-                 NPK_NITROGEN, NPK_PHOSPHORUS, NPK_POTASSIUM } },
+  { NPK_REGISTER_START, NPK_REGISTER_COUNT,
+    { NPK_MOISTURE,     // slot 0  0x0000  moisture
+      NPK_TEMPERATURE,  // slot 1  0x0001  temperature
+      -1,               // slot 2  0x0002  conductivity, not fitted
+      NPK_PH,           // slot 3  0x0003  pH
+      NPK_NITROGEN,     // slot 4  0x0004  undocumented
+      NPK_PHOSPHORUS,   // slot 5  0x0005  undocumented
+      NPK_POTASSIUM }   // slot 6  0x0006  undocumented
+  },
 };
-#else
-// Section 4.3 of the manual. That map is scattered, so this is four
-// transactions rather than one; each frame is one the manual prints verbatim
-// in section 4.4.
-static const NpkReadOp kOps[] = {
-  { 0x0006, 1, { NPK_PH, -1, -1, -1, -1, -1, -1 } },
-  { 0x0012, 2, { NPK_MOISTURE, NPK_TEMPERATURE, -1, -1, -1, -1, -1 } },
-  { 0x0015, 1, { NPK_CONDUCTIVITY, -1, -1, -1, -1, -1, -1 } },
-  { 0x001E, 3, { NPK_NITROGEN, NPK_PHOSPHORUS, NPK_POTASSIUM, -1, -1, -1, -1 } },
-};
-#endif
 
 static const uint8_t kOpCount = sizeof(kOps) / sizeof(kOps[0]);
 

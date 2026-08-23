@@ -2,12 +2,12 @@
 
 IoT soil sensor developed for Óbuda University.
 
-Soil monitoring node built around the **JXBS-3001-TR 7-in-1 probe** — moisture,
-temperature, conductivity, pH, nitrogen, phosphorus and potassium — read over
-RS-485 Modbus RTU by an ESP32 and published as JSON over MQTT.
+Soil monitoring node built around the **VMS-3001-TR probe** (Weimengshi
+five-pin soil transmitter) — moisture, temperature and pH — read over RS-485
+Modbus RTU by an ESP32 and published as JSON over MQTT.
 
 ```
-JXBS-3001-TR  --RS-485-->  ESP32  --MQTT/JSON-->  broker  -->  dashboard
+VMS-3001-TR   --RS-485-->  ESP32  --MQTT/JSON-->  broker  -->  dashboard
 ```
 
 ## Contents
@@ -26,8 +26,8 @@ procedure — is in
 Topic `NPKdata`:
 
 ```json
-{"Humidity":34.6,"Temperature":21.4,"Conductivity":412,"PH":6.82,
- "Nitrogen":38,"Phosphorus":21,"Potassium":95,"ok":true}
+{"Humidity":34.6,"Temperature":21.4,"PH":6.8,
+ "Nitrogen":3.8,"Phosphorus":2.1,"Potassium":9.5,"ok":true}
 ```
 
 `ok` is false when a register did not answer that cycle; the affected channels
