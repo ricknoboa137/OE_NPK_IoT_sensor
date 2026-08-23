@@ -1,0 +1,24 @@
+# Node-RED credentials - encrypted, but still a secret store. Never commit.
+flows_cred.json
+*_cred.json
+.flows_cred.json.backup
+
+# Local measurement databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Local backups
+*.backup
+.flows.json.backup
+
+# Build output
+build/
+.pio/
+.vscode/
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
