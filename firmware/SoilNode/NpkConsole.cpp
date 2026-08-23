@@ -539,8 +539,7 @@ void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
     const float b = strtof(argv[4], nullptr);
     const char* why = nullptr;
     if (!cal_->setChecked(ch, a, b, &why)) {
-      out.printf("error: %s
-", why);
+      out.printf("error: %s\r\n", why);
       return;
     }
     out.printf("%s: A=%.5f B=%.5f saved\r\n", NPK_CHANNELS[ch].key, a, b);
@@ -555,8 +554,7 @@ void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
     float raw;
     if (!captureRaw(ch, raw, out)) return;
     const char* why = nullptr;
-    if (!cal_->onePoint(ch, raw, ref, &why)) { out.printf("error: %s
-", why); return; }
+    if (!cal_->onePoint(ch, raw, ref, &why)) { out.printf("error: %s\r\n", why); return; }
     NpkCoeff k = cal_->get(ch);
     out.printf("%s: offset trimmed to reference %.*f -> A=%.5f B=%.5f saved\r\n",
                NPK_CHANNELS[ch].key, NPK_CHANNELS[ch].decimals, ref, k.a, k.b);
