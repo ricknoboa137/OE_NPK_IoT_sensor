@@ -3,9 +3,8 @@
 IoT soil sensor developed for Óbuda University.
 
 Soil monitoring node built around the **CWT soil sensor (NPK type)** five-pin
-probe — moisture, temperature, conductivity, pH, nitrogen, phosphorus and
-potassium — read over RS-485 Modbus RTU by an ESP32 and published as JSON over
-MQTT.
+probe — moisture, temperature, pH, nitrogen, phosphorus and potassium — read
+over RS-485 Modbus RTU by an ESP32 and published as JSON over MQTT.
 
 ```
 CWT NPK probe  --RS-485-->  ESP32  --MQTT/JSON-->  broker  -->  dashboard
@@ -27,14 +26,15 @@ dependencies, register map and the calibration procedure — is in
 Topic `NPKdata`:
 
 ```json
-{"Humidity":34.6,"Temperature":21.4,"PH":6.8,
+{"Humidity":34.6,"Temperature":21.4,"Conductivity":0,"PH":6.8,
  "Nitrogen":38,"Phosphorus":21,"Potassium":95,"ok":true}
 ```
 
 `ok` is false when a register did not answer that cycle; the affected channels
-then carry their last good value rather than a zero. Conductivity is read but
-not published — this unit does not return a usable value — and one define
-turns it back on.
+then carry their last good value rather than a zero.
+
+Conductivity always reads **0.0** on this unit — the register answers, but the
+probe does not measure it. That is expected, not a fault.
 
 ## Calibration
 

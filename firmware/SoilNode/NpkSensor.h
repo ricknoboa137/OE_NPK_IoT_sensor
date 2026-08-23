@@ -12,9 +12,10 @@
 #include <Arduino.h>
 #include "NpkConfig.h"
 
-// Conductivity is register 0x0002 and fully supported, but this unit does not
-// return a reading for it, so NPK_ENABLE_CONDUCTIVITY leaves it out of the
-// payload. Flipping that one define is all it takes to publish it.
+// Conductivity is register 0x0002, decoded and published like the rest.
+// This unit reports a constant 0 for it because it does not measure
+// conductivity - that is expected, not a fault. NPK_ENABLE_CONDUCTIVITY
+// drops it from the payload if the constant is more noise than it is worth.
 enum NpkChannelId : uint8_t {
   NPK_MOISTURE = 0,
   NPK_TEMPERATURE,

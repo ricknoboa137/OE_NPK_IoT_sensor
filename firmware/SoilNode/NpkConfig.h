@@ -102,10 +102,14 @@ static const uint32_t NPK_BAUD_CANDIDATES[] = { 4800, 9600, 2400 };
 #define NPK_REG_P_FACTOR       0x04F2
 #define NPK_REG_K_FACTOR       0x04FC
 
-// This particular unit does not return a conductivity reading, so it is left
-// out of the payload. Set to 1 to publish it - the register and its scaling
-// are fully supported, nothing else needs changing.
-#define NPK_ENABLE_CONDUCTIVITY 0
+// Conductivity is register 0x0002, slot 2 of the block already being read, so
+// it costs nothing to decode and publish. Expect a constant 0 from this unit:
+// the register answers, but the probe does not actually measure conductivity,
+// so the value is not a fault and not a comms problem. It is published anyway
+// to keep the payload shape stable for downstream consumers.
+//
+// Set to 0 to leave it out of the payload entirely.
+#define NPK_ENABLE_CONDUCTIVITY 1
 
 // Reject readings outside the measuring ranges on manual page 1. A wrong
 // scale or slot mapping shows up as 152 %RH or 4090 mg/kg, and without this

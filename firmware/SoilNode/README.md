@@ -102,8 +102,8 @@ offset. Defaults are A = 1, B = 0, which reproduces the uncalibrated reading
 exactly. Coefficients are written to NVS as soon as they are solved and survive
 a power cycle.
 
-Channel names: `moisture` `temperature` `ph` `nitrogen` `phosphorus`
-`potassium` (aliases: `humidity` `temp` `n` `p` `k`).
+Channel names: `moisture` `temperature` `conductivity` `ph` `nitrogen`
+`phosphorus` `potassium` (aliases: `humidity` `temp` `ec` `n` `p` `k`).
 
 ### Two-point — the right method for pH and EC
 
@@ -170,7 +170,7 @@ scan [first] [last]       probe Modbus registers
 mqtt <host> [port]        change broker, stored in NVS
 mqttauth <user> [pass]    broker credentials, stored in NVS
 mqttauth clear            connect anonymously
-sensor                    read the probe own calibration registers
+sensor                    read the probe's own calibration registers
 sensor offset <temp|hum|ec|ph> <raw>
 sensor factor <n|p|k> <value>
 sensor npk    <n|p|k> <mg/kg>
@@ -214,7 +214,7 @@ The data payload keeps the key names the original sketch used, so an existing
 Node-RED flow keeps working unchanged:
 
 ```json
-{"Humidity":34.6,"Temperature":21.4,"PH":6.8,
+{"Humidity":34.6,"Temperature":21.4,"Conductivity":0,"PH":6.8,
  "Nitrogen":38,"Phosphorus":21,"Potassium":95,"ok":true}
 ```
 
@@ -326,7 +326,7 @@ mapped in the original decoder's order, so previously logged data lines up:
 |---|---|---|---|
 | 0 | `0x0000` | moisture | ÷10 |
 | 1 | `0x0001` | temperature | ÷10, signed |
-| 2 | `0x0002` | conductivity — *not published, see below* | ÷1 |
+| 2 | `0x0002` | conductivity — published, always 0.0 here | ÷1 |
 | 3 | `0x0003` | pH | ÷10 |
 | 4 | `0x0004` | nitrogen | ÷1 |
 | 5 | `0x0005` | phosphorus | ÷1 |
@@ -337,14 +337,25 @@ means extending `NPK_REG_COUNT` to 9 and adding two channels.
 
 ### Conductivity
 
-Register `0x0002` is fully supported and correctly scaled, but this unit does
-not return a usable reading, so `NPK_ENABLE_CONDUCTIVITY` in `NpkConfig.h`
-keeps it out of the payload. Set it to **1** to publish it — that single
-define is all that changes; the enum, channel table and slot map all follow it.
+Register `0x0002` sits in the middle of the block already being read, so it is
+decoded and published like everything else.
 
-Worth knowing: the original firmware *did* read and publish conductivity. The
-reason it never appeared in the database is that the Node-RED flow's `INSERT`
-omits the column, not that the sensor was silent.
+**Expect a constant 0.0 from this unit.** The register answers with a valid
+CRC, but the probe does not actually measure conductivity, so zero is the
+correct reading rather than a fault or a comms failure. It is published anyway
+so the payload keeps a stable shape for whatever consumes it, and so a unit
+that *does* measure it needs no change at all.
+
+Zero sits inside the 0–20000 µS/cm range, so the range check passes it and
+`ok` stays true — a constant zero here is not treated as an error.
+
+`NPK_ENABLE_CONDUCTIVITY` in `NpkConfig.h` drops it from the payload if a
+constant zero is more noise than it is worth. That one define carries through
+the enum, the channel table and the slot map.
+
+Worth knowing separately: the original firmware also published conductivity.
+The reason it never reached the database is that the Node-RED flow's `INSERT`
+omits the column — a flow fix, not a firmware one.
 
 ### Scaling corrections against the original sketch
 
