@@ -1,26 +1,26 @@
-#include "NetLink.h"
-#include "Config.h"
+#include "NpkNet.h"
+#include "NpkConfig.h"
 
 #include <WiFi.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
 #include <Preferences.h>
 
-static WiFiManager   g_wm;
-static WiFiClient    g_wifiClient;
-static PubSubClient  g_mqtt(g_wifiClient);
-static Preferences   g_net;
+static WiFiManager  g_wm;
+static WiFiClient   g_wifiClient;
+static PubSubClient g_mqtt(g_wifiClient);
+static Preferences  g_netPrefs;
 
-static char g_portalHost[40] = MQTT_SERVER_DEFAULT;
-static char g_portalPort[6]  = MQTT_PORT_DEFAULT;
+static char g_portalHost[40] = NPK_MQTT_HOST_DEFAULT;
+static char g_portalPort[6]  = NPK_MQTT_PORT_DEFAULT;
 
 static WiFiManagerParameter g_pHost("server", "MQTT broker", g_portalHost, sizeof(g_portalHost) - 1);
 static WiFiManagerParameter g_pPort("port",   "MQTT port",   g_portalPort, sizeof(g_portalPort) - 1);
 
-static NetLink* g_self = nullptr;
+static NpkNet* g_self = nullptr;
 
 // Fires when the captive portal form is submitted.
-static void onSaveParams() {
+static void npkOnSaveParams() {
   const char* h = g_pHost.getValue();
   const char* p = g_pPort.getValue();
   if (g_self && h && *h) {
@@ -31,26 +31,27 @@ static void onSaveParams() {
   }
 }
 
-void NetLink::loadSettings() {
-  g_net.begin("npknet", false);
-  String h = g_net.getString("host", MQTT_SERVER_DEFAULT);
-  port_ = g_net.getUShort("port", (uint16_t)strtol(MQTT_PORT_DEFAULT, nullptr, 10));
+void NpkNet::loadSettings() {
+  g_netPrefs.begin("npknet", false);
+  String h = g_netPrefs.getString("host", NPK_MQTT_HOST_DEFAULT);
+  port_ = g_netPrefs.getUShort("port", (uint16_t)strtol(NPK_MQTT_PORT_DEFAULT, nullptr, 10));
   if (port_ == 0) port_ = 1883;
   strncpy(host_, h.c_str(), sizeof(host_) - 1);
   host_[sizeof(host_) - 1] = '\0';
 
   // Seed the portal fields with whatever is currently in force.
   strncpy(g_portalHost, host_, sizeof(g_portalHost) - 1);
+  g_portalHost[sizeof(g_portalHost) - 1] = '\0';
   snprintf(g_portalPort, sizeof(g_portalPort), "%u", (unsigned)port_);
 }
 
-bool NetLink::begin(MessageHandler handler) {
+bool NpkNet::begin(MessageHandler handler) {
   g_self = this;
   loadSettings();
 
   uint8_t mac[6];
   WiFi.macAddress(mac);
-  snprintf(clientId_, sizeof(clientId_), MQTT_CLIENT_PREFIX "%02X%02X%02X",
+  snprintf(clientId_, sizeof(clientId_), NPK_MQTT_ID_PREFIX "%02X%02X%02X",
            mac[3], mac[4], mac[5]);
 
   g_pHost.setValue(g_portalHost, sizeof(g_portalHost) - 1);
@@ -58,15 +59,15 @@ bool NetLink::begin(MessageHandler handler) {
 
   g_wm.addParameter(&g_pHost);
   g_wm.addParameter(&g_pPort);
-  g_wm.setSaveParamsCallback(onSaveParams);
-  g_wm.setConfigPortalTimeout(AP_CONFIG_TIMEOUT_S);
+  g_wm.setSaveParamsCallback(npkOnSaveParams);
+  g_wm.setConfigPortalTimeout(NPK_AP_TIMEOUT_S);
   g_wm.setClass("invert");   // dark mode
 
-  Serial.printf("[net] starting WiFi, AP fallback \"%s\"\r\n", AP_NAME);
-  const bool up = g_wm.autoConnect(AP_NAME);
+  Serial.printf("[net] starting WiFi, AP fallback \"%s\"\r\n", NPK_AP_NAME);
+  const bool up = g_wm.autoConnect(NPK_AP_NAME);
   if (!up) {
-    // Carry on regardless: the probe is still readable over the serial
-    // console and loop() keeps retrying the network in the background.
+    // Carry on regardless: the probe is still readable on the serial console
+    // and loop() keeps retrying the network in the background.
     Serial.println("[net] WiFi not connected - continuing offline");
   } else {
     Serial.printf("[net] WiFi up, ip %s\r\n", WiFi.localIP().toString().c_str());
@@ -79,7 +80,7 @@ bool NetLink::begin(MessageHandler handler) {
     setBroker(h, (p > 0 && p <= 65535) ? (uint16_t)p : port_);
   }
 
-  g_mqtt.setBufferSize(MQTT_BUFFER_SIZE);
+  g_mqtt.setBufferSize(NPK_MQTT_BUFFER);
   g_mqtt.setServer(host_, port_);
   g_mqtt.setCallback(handler);
   g_mqtt.setKeepAlive(30);
@@ -88,14 +89,14 @@ bool NetLink::begin(MessageHandler handler) {
   return up;
 }
 
-bool NetLink::setBroker(const char* host, uint16_t port) {
+bool NpkNet::setBroker(const char* host, uint16_t port) {
   if (host == nullptr || *host == '\0' || port == 0) return false;
   strncpy(host_, host, sizeof(host_) - 1);
   host_[sizeof(host_) - 1] = '\0';
   port_ = port;
 
-  g_net.putString("host", host_);
-  g_net.putUShort("port", port_);
+  g_netPrefs.putString("host", host_);
+  g_netPrefs.putUShort("port", port_);
 
   g_mqtt.disconnect();
   g_mqtt.setServer(host_, port_);
@@ -104,18 +105,18 @@ bool NetLink::setBroker(const char* host, uint16_t port) {
   return true;
 }
 
-bool NetLink::connectBroker() {
+bool NpkNet::connectBroker() {
   if (WiFi.status() != WL_CONNECTED) return false;
 
   Serial.printf("[net] MQTT connect %s:%u as %s ... ", host_, port_, clientId_);
 
-  // Last will, so the dashboard can tell a crashed node from a quiet one.
+  // Last will, so a dashboard can tell a crashed node from a quiet one.
   const bool ok = g_mqtt.connect(clientId_, nullptr, nullptr,
-                                 TOPIC_STATUS, 0, true, "offline");
+                                 NPK_TOPIC_STATUS, 0, true, "offline");
   if (ok) {
     Serial.println("connected");
-    g_mqtt.publish(TOPIC_STATUS, "online", true);
-    g_mqtt.subscribe(TOPIC_COMMAND);
+    g_mqtt.publish(NPK_TOPIC_STATUS, "online", true);
+    g_mqtt.subscribe(NPK_TOPIC_CMD);
     backoff_ = 0;
   } else {
     Serial.printf("failed, state %d\r\n", g_mqtt.state());
@@ -123,10 +124,10 @@ bool NetLink::connectBroker() {
   return ok;
 }
 
-void NetLink::loop() {
+void NpkNet::loop() {
   if (WiFi.status() != WL_CONNECTED) {
-    // WiFi.begin() has already been issued by WiFiManager; the ESP32 keeps
-    // retrying on its own. Nothing to do but wait.
+    // WiFiManager has already issued WiFi.begin(); the ESP32 keeps retrying
+    // on its own. Nothing to do but wait.
     return;
   }
 
@@ -139,35 +140,35 @@ void NetLink::loop() {
   if ((int32_t)(now - nextAttempt_) < 0) return;
 
   if (!connectBroker()) {
-    backoff_ = backoff_ ? min(backoff_ * 2, (uint32_t)MQTT_MAX_BACKOFF_MS)
-                        : (uint32_t)MQTT_RETRY_INTERVAL_MS;
+    backoff_ = backoff_ ? min(backoff_ * 2, (uint32_t)NPK_MQTT_MAX_BACKOFF_MS)
+                        : (uint32_t)NPK_MQTT_RETRY_MS;
     nextAttempt_ = now + backoff_;
     Serial.printf("[net] retrying in %lu ms\r\n", (unsigned long)backoff_);
   }
 }
 
-bool NetLink::connected() {
+bool NpkNet::connected() {
   return WiFi.status() == WL_CONNECTED && g_mqtt.connected();
 }
 
-bool NetLink::publish(const char* topic, const char* payload, bool retain) {
+bool NpkNet::publish(const char* topic, const char* payload, bool retain) {
   if (!g_mqtt.connected()) return false;
   return g_mqtt.publish(topic, payload, retain);
 }
 
-void NetLink::startPortal() {
+void NpkNet::startPortal() {
   Serial.println("[net] opening config portal");
-  g_wm.startConfigPortal(AP_NAME);
+  g_wm.startConfigPortal(NPK_AP_NAME);
 }
 
-void NetLink::forgetWiFi() {
+void NpkNet::forgetWiFi() {
   Serial.println("[net] clearing WiFi credentials and rebooting");
   g_wm.resetSettings();
   delay(500);
   ESP.restart();
 }
 
-void NetLink::printStatus(Print& out) {
+void NpkNet::printStatus(Print& out) {
   out.printf("WiFi     : %s", WiFi.status() == WL_CONNECTED ? "connected" : "down");
   if (WiFi.status() == WL_CONNECTED) {
     out.printf("  ssid %s  ip %s  rssi %d dBm",

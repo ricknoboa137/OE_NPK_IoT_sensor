@@ -14,12 +14,12 @@ JXBS-3001-TR  --RS-485-->  ESP32  --MQTT/JSON-->  broker  -->  dashboard
 
 | Path | What it is |
 |---|---|
-| [`firmware/NPK_Sensor/`](firmware/NPK_Sensor/) | the firmware — Modbus master, calibration, MQTT |
+| [`firmware/SoilNode/`](firmware/SoilNode/) | the firmware — Modbus master, calibration, MQTT |
 | [`firmware/original/`](firmware/original/) | the single-file sketch this replaced, kept for reference |
 
 Full documentation — wiring, dependencies, register map and the calibration
 procedure — is in
-**[firmware/NPK_Sensor/README.md](firmware/NPK_Sensor/README.md)**.
+**[firmware/SoilNode/README.md](firmware/SoilNode/README.md)**.
 
 ## What it publishes
 

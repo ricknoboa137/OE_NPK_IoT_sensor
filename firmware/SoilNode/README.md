@@ -1,4 +1,4 @@
-# NPK_Sensor firmware
+# SoilNode firmware
 
 ESP32 node for the **JXBS-3001-TR soil 7-in-1 probe** (moisture, temperature,
 conductivity, pH, N, P, K) over RS-485 Modbus RTU, publishing JSON to MQTT with
@@ -8,26 +8,31 @@ a per-channel linear calibration held in NVS.
 
 | File | Responsibility |
 |---|---|
-| `NPK_Sensor.ino` | setup/loop, sample scheduling, payload assembly |
-| `Config.h` | every tunable: pins, baud, topics, intervals, register profile |
-| `Channels.h/.cpp` | the seven quantities, their units and scale factors |
-| `SoilSensor.h/.cpp` | Modbus RTU master: CRC, turnaround, retries, register map |
-| `Calibration.h/.cpp` | A and B per channel, persisted in NVS |
-| `NetLink.h/.cpp` | WiFiManager provisioning, MQTT link, backoff |
-| `CommandHandler.h/.cpp` | console shared by the serial port and MQTT |
-| `JsonCompat.h` | one macro so it builds against ArduinoJson 6 and 7 |
+| `SoilNode.ino` | setup/loop, sample scheduling, payload assembly |
+| `NpkConfig.h` | every tunable: pins, baud, topics, intervals, register profile |
+| `NpkSensor.h/.cpp` | the seven channels, and the Modbus RTU master |
+| `NpkCal.h/.cpp` | A and B per channel, persisted in NVS |
+| `NpkNet.h/.cpp` | WiFiManager provisioning, MQTT link, backoff |
+| `NpkConsole.h/.cpp` | console shared by the serial port and MQTT |
+| `NpkJson.h` | one macro so it builds against ArduinoJson 6 and 7 |
+
+Every file and every type is prefixed `Npk`. That is deliberate — see
+[Naming](#naming) below.
 
 ## Dependencies
 
-Board: **ESP32 Dev Module** (Arduino-ESP32 core 2.x or 3.x).
+Board: **ESP32 Dev Module** (Arduino-ESP32 core 2.x or 3.x; tested against
+3.2.1). The library set is the same one the original sketch used.
 
 | Library | Notes |
 |---|---|
 | [WiFiManager](https://github.com/tzapu/WiFiManager) | tzapu |
 | [PubSubClient](https://github.com/knolleary/pubsubclient) | 2.8 or newer, for `setBufferSize` |
 | [ArduinoJson](https://arduinojson.org/) | 6 or 7 |
+| EspSoftwareSerial | ships with the ESP32 core |
 
-`Preferences`, `WiFi` and `HardwareSerial` ship with the ESP32 core.
+`Preferences` and `WiFi` also ship with the core. `Preferences` is what holds
+the calibration coefficients across a power cycle.
 
 ## Wiring
 
@@ -49,7 +54,10 @@ Reversing A and B is the single most common reason for "no reply".
 | GPIO19 | DI |
 | GPIO4 | DE and RE, tied together |
 
-Pins are set in `Config.h`.
+Pins are set in `NpkConfig.h`. `NPK_USE_SOFTWARE_SERIAL` defaults to 1, matching
+the original sketch; set it to 0 to use hardware UART1 on the same pins, which
+is more robust under WiFi load because a bit-banged port can drop bytes when
+the radio takes an interrupt.
 
 ## Calibration
 
@@ -89,10 +97,10 @@ Rinse, move to the high standard, let it settle:
 cal high ph 7.00
 ```
 
-Each capture averages `CAL_SAMPLE_COUNT` sweeps (8 by default) so a single
-noisy frame cannot end up in the coefficients. The low point lives in RAM
-only — rebooting between the two steps starts over. A solve is rejected if the
-two raw readings are closer together than `CAL_MIN_RAW_SPAN`.
+Each capture averages `NPK_CAL_SAMPLES` sweeps (8 by default) so a single noisy
+frame cannot end up in the coefficients. The low point lives in RAM only —
+rebooting between the two steps starts over. A solve is rejected if the two raw
+readings are closer together than `NPK_CAL_MIN_SPAN`.
 
 ### One-point — offset trim
 
@@ -159,8 +167,8 @@ Over MQTT, publish either the plain text line or a JSON object to
 | `NPKcommand` | subscribe | console command, text or JSON |
 | `NPKreply` | publish | console output |
 
-The data payload keeps the key names the original sketch used, so the Node-RED
-flow in this repository keeps working unchanged:
+The data payload keeps the key names the original sketch used, so an existing
+Node-RED flow keeps working unchanged:
 
 ```json
 {"Humidity":34.6,"Temperature":21.4,"Conductivity":412,"PH":6.82,
@@ -191,9 +199,9 @@ Temperature is the only signed value: section 4.4.1 reads `FF9B` back as
 
 **The map is sparse — it is not seven contiguous registers starting at
 `0x0000`.** The original sketch sent `01 03 00 00 00 07` and sliced the reply
-into seven values; on a probe that matches this manual that block does not hold
-the measurements at all. The firmware issues four transactions instead, each
-one a frame the manual prints verbatim in section 4.4.
+into seven values; on a probe that matches this manual, that block does not
+hold the measurements at all. The firmware issues four transactions instead,
+each one a frame the manual prints verbatim in section 4.4.
 
 Two cautions, both found by checking the manual against itself:
 
@@ -212,16 +220,47 @@ Two cautions, both found by checking the manual against itself:
    block at `0x0000`, which is presumably where the original sketch's frame
    came from. If the datasheet profile returns nothing, run `scan` to see what
    your unit actually answers on, then set
-   `SENSOR_REGISTER_PROFILE = PROFILE_LEGACY` in `Config.h` if the contiguous
-   block is the live one.
+   `NPK_REGISTER_PROFILE` to `NPK_PROFILE_LEGACY` in `NpkConfig.h` if the
+   contiguous block is the live one.
 
-Baud is auto-probed at boot across 9600, 4800 and 2400 (factory default is
-9600; the original sketch used 4800). Set `SENSOR_BAUD_AUTODETECT` to 0 to pin
-it.
+Baud is auto-probed at boot across 4800, 9600 and 2400 — 4800 first because
+that is what the original sketch used, though the datasheet says the factory
+default is 9600. Set `NPK_BAUD_AUTODETECT` to 0 to pin it.
 
 If a channel comes back with a plausible number at the wrong magnitude — pH
 reading 0.68 instead of 6.8, say — that is a scale mismatch, and a two-point
 calibration absorbs it into A without touching the code.
+
+## Naming
+
+Every file and type in this sketch is prefixed `Npk`, and it needs to stay
+that way.
+
+arduino-esp32 3.x declares `class NetworkManager` in
+`libraries/Network/src/NetworkManager.h`, which `WiFi.h` pulls in
+transitively. An earlier revision of this firmware had its own
+`NetworkManager` class, and the two collided:
+
+```
+error: redefinition of 'class NetworkManager'
+```
+
+The prefix makes that whole class of clash impossible. Checked against the
+3.2.1 tree: no file or type name in this sketch collides with anything the
+core declares.
+
+### If you rename a file in this sketch
+
+Arduino leaves the old copy behind in its build folder and keeps compiling it
+([arduino-cli#1699](https://github.com/arduino/arduino-cli/issues/1699)), which
+produces errors pointing at a file that no longer exists on disk. Clear the
+cache after any rename:
+
+```
+%LOCALAPPDATA%\arduino\sketches
+```
+
+Deleting that folder is safe; it is rebuilt on the next compile.
 
 ## Changes from the original sketch
 
@@ -247,14 +286,13 @@ Behavioural fixes, beyond the reorganisation:
   broker is down.
 - The MQTT callback no longer writes an unterminated payload into a fixed
   20-byte buffer.
-- Hardware UART1 instead of `SoftwareSerial`, which drops bytes under WiFi
-  load. Set `NPK_USE_SOFTWARE_SERIAL` to 1 to go back.
 - Unique MQTT client ID derived from the MAC, so two nodes no longer evict each
   other from the broker.
 
 ## Status
 
 The calibration algebra and the Modbus CRC were verified against the
-datasheet's own example frames. **The firmware has not been compiled or run on
-hardware** — there is no Arduino toolchain on the machine it was written on.
-Build it before trusting it.
+datasheet's own example frames, and the sketch was checked statically for
+unresolved includes, declared-but-undefined methods and name collisions
+against the 3.2.1 core. **It has not been compiled or run on hardware** —
+there is no Arduino toolchain on the machine it was written on.

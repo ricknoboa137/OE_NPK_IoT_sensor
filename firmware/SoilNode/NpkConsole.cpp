@@ -1,11 +1,11 @@
-#include "CommandHandler.h"
-#include "Config.h"
-#include "JsonCompat.h"
+#include "NpkConsole.h"
+#include "NpkConfig.h"
+#include "NpkJson.h"
 
-static const int   kMaxArgs = 8;
-static const size_t kMqttReplyCap = MQTT_BUFFER_SIZE - 64;
+static const int    kMaxArgs     = 8;
+static const size_t kReplyCap    = NPK_MQTT_BUFFER - 64;
 
-void CommandHandler::begin(SoilSensor* sensor, Calibration* cal, NetLink* net) {
+void NpkConsole::begin(NpkSensor* sensor, NpkCal* cal, NpkNet* net) {
   sensor_ = sensor;
   cal_ = cal;
   net_ = net;
@@ -17,7 +17,7 @@ void CommandHandler::begin(SoilSensor* sensor, Calibration* cal, NetLink* net) {
 // Transports
 // ---------------------------------------------------------------------------
 
-void CommandHandler::pollSerial() {
+void NpkConsole::pollSerial() {
   while (Serial.available()) {
     char c = (char)Serial.read();
     if (c == '\r') continue;
@@ -33,12 +33,12 @@ void CommandHandler::pollSerial() {
   }
 }
 
-void CommandHandler::handleMqtt(const uint8_t* payload, unsigned int length) {
+void NpkConsole::handleMqtt(const uint8_t* payload, unsigned int length) {
   char line[160];
 
   if (length > 0 && payload[0] == '{') {
     if (!jsonToLine(payload, length, line, sizeof(line))) {
-      net_->publish(TOPIC_REPLY, "error: could not parse JSON command");
+      net_->publish(NPK_TOPIC_REPLY, "error: could not parse JSON command");
       return;
     }
   } else {
@@ -47,18 +47,18 @@ void CommandHandler::handleMqtt(const uint8_t* payload, unsigned int length) {
     line[n] = '\0';
   }
 
-  char buf[kMqttReplyCap];
-  BufferedPrint reply(buf, sizeof(buf));
+  char buf[kReplyCap];
+  NpkBufferPrint reply(buf, sizeof(buf));
   execute(line, reply);
 
   Serial.printf("[cmd] via mqtt: %s\r\n", line);
   Serial.print(reply.c_str());
-  if (reply.length() > 0) net_->publish(TOPIC_REPLY, reply.c_str());
+  if (reply.length() > 0) net_->publish(NPK_TOPIC_REPLY, reply.c_str());
 }
 
 // Normalise a JSON command object into the text form.
-bool CommandHandler::jsonToLine(const uint8_t* payload, unsigned int length,
-                                char* out, size_t cap) {
+bool NpkConsole::jsonToLine(const uint8_t* payload, unsigned int length,
+                            char* out, size_t cap) {
   NPK_JSON_DOC(doc, 512);
   if (deserializeJson(doc, payload, length) != DeserializationError::Ok) return false;
 
@@ -106,7 +106,7 @@ bool CommandHandler::jsonToLine(const uint8_t* payload, unsigned int length,
 // Parsing
 // ---------------------------------------------------------------------------
 
-void CommandHandler::execute(const char* line, Print& out) {
+void NpkConsole::execute(const char* line, Print& out) {
   char work[160];
   strncpy(work, line, sizeof(work) - 1);
   work[sizeof(work) - 1] = '\0';
@@ -123,7 +123,7 @@ void CommandHandler::execute(const char* line, Print& out) {
   dispatch(argv, argc, out);
 }
 
-void CommandHandler::dispatch(char** argv, int argc, Print& out) {
+void NpkConsole::dispatch(char** argv, int argc, Print& out) {
   const char* cmd = argv[0];
 
   if (!strcasecmp(cmd, "help") || !strcmp(cmd, "?")) {
@@ -167,16 +167,16 @@ void CommandHandler::dispatch(char** argv, int argc, Print& out) {
 // Commands
 // ---------------------------------------------------------------------------
 
-void CommandHandler::cmdHelp(Print& out) {
+void NpkConsole::cmdHelp(Print& out) {
   out.println();
   out.println(F("Commands ------------------------------------------------------"));
-  out.println(F("  read                      take a reading and show raw + calibrated"));
+  out.println(F("  read                      take a reading, raw + calibrated"));
   out.println(F("  status                    firmware, link and sensor state"));
-  out.println(F("  scan [first] [last]       probe Modbus registers (hex or decimal)"));
+  out.println(F("  scan [first] [last]       probe Modbus registers"));
   out.println(F("                            long scans are truncated over MQTT;"));
   out.println(F("                            run those on the serial console"));
   out.println(F("  mqtt <host> [port]        change broker, stored in NVS"));
-  out.println(F("  wifi portal | wifi reset  reopen the captive portal / forget WiFi"));
+  out.println(F("  wifi portal | wifi reset  reopen the portal / forget WiFi"));
   out.println(F("  reboot"));
   out.println();
   out.println(F("Calibration ---------------------------------------------------"));
@@ -185,7 +185,7 @@ void CommandHandler::cmdHelp(Print& out) {
   out.println(F("  cal                       list A and B for every channel"));
   out.println(F("  cal set  <ch> <A> <B>     write both coefficients directly"));
   out.println(F("  cal 1p   <ch> <ref>       offset trim: keep A, solve B"));
-  out.println(F("  cal low  <ch> <ref>       two-point step 1: capture low reference"));
+  out.println(F("  cal low  <ch> <ref>       two-point step 1: low reference"));
   out.println(F("  cal high <ch> <ref>       two-point step 2: solve A and B"));
   out.println(F("  cal clear <ch|all>        back to A=1, B=0"));
   out.println();
@@ -198,19 +198,21 @@ void CommandHandler::cmdHelp(Print& out) {
   out.println(F("    (rinse, move to the 7.00 buffer, wait again)"));
   out.println(F("    cal high ph 7.00"));
   out.println();
-  out.println(F("  Each capture averages several sweeps, so give the probe time"));
-  out.println(F("  to settle before typing the command."));
+  out.println(F("  Each capture averages several sweeps, so give the probe"));
+  out.println(F("  time to settle before typing the command."));
   out.println();
 }
 
-void CommandHandler::cmdStatus(Print& out) {
+void NpkConsole::cmdStatus(Print& out) {
   out.println();
-  out.printf("Firmware : %s %s\r\n", FW_NAME, FW_VERSION);
+  out.printf("Firmware : %s %s\r\n", NPK_FW_NAME, NPK_FW_VERSION);
   out.printf("Profile  : %s\r\n",
-             SENSOR_REGISTER_PROFILE == PROFILE_DATASHEET
+             NPK_REGISTER_PROFILE == NPK_PROFILE_DATASHEET
                ? "datasheet (JXBS-3001-TR section 4.3)" : "legacy contiguous 0x0000");
+  out.printf("Port     : %s\r\n",
+             NPK_USE_SOFTWARE_SERIAL ? "SoftwareSerial" : "hardware UART1");
   out.printf("RS-485   : %lu baud 8N1, slave 0x%02X, DE/RE on GPIO%d\r\n",
-             (unsigned long)sensor_->baud(), SENSOR_SLAVE_ID, RS485_DE_RE_PIN);
+             (unsigned long)sensor_->baud(), NPK_SLAVE_ID, NPK_DE_RE_PIN);
   out.printf("Last err : %s\r\n",
              *sensor_->lastError() ? sensor_->lastError() : "none");
   out.printf("Uptime   : %lu s   free heap %u B\r\n",
@@ -219,25 +221,25 @@ void CommandHandler::cmdStatus(Print& out) {
   listCalibration(out);
 }
 
-void CommandHandler::cmdRead(Print& out) {
-  Reading r;
+void NpkConsole::cmdRead(Print& out) {
+  NpkReading r;
   sensor_->read(r);
 
   out.println();
   out.printf("%-14s %8s  %10s  %10s   %s\r\n",
              "channel", "raw", "scaled", "calibrated", "unit");
-  for (uint8_t c = 0; c < CH_COUNT; ++c) {
+  for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
     if (!r.valid[c]) {
       out.printf("%-14s %8s  %10s  %10s   %s\r\n",
-                 CHANNELS[c].key, "-", "-", "no reply", CHANNELS[c].unit);
+                 NPK_CHANNELS[c].key, "-", "-", "no reply", NPK_CHANNELS[c].unit);
       continue;
     }
-    const int d = CHANNELS[c].decimals;
+    const int d = NPK_CHANNELS[c].decimals;
     out.printf("%-14s %8u  %10.*f  %10.*f   %s\r\n",
-               CHANNELS[c].key, (unsigned)r.raw[c],
+               NPK_CHANNELS[c].key, (unsigned)r.raw[c],
                d, r.scaled[c],
                d, cal_->apply(c, r.scaled[c]),
-               CHANNELS[c].unit);
+               NPK_CHANNELS[c].unit);
   }
   if (!r.complete) {
     out.printf("%u transaction(s) failed: %s\r\n", r.failedOps, sensor_->lastError());
@@ -245,7 +247,7 @@ void CommandHandler::cmdRead(Print& out) {
   out.println();
 }
 
-void CommandHandler::cmdScan(char** argv, int argc, Print& out) {
+void NpkConsole::cmdScan(char** argv, int argc, Print& out) {
   uint16_t first = 0x0000;
   uint16_t last  = 0x0030;
   if (argc >= 2) first = (uint16_t)strtol(argv[1], nullptr, 0);
@@ -255,45 +257,45 @@ void CommandHandler::cmdScan(char** argv, int argc, Print& out) {
   sensor_->scanRegisters(first, last, out);
 }
 
-int CommandHandler::resolveChannel(const char* name, Print& out) {
-  int ch = channelFromKey(name);
+int NpkConsole::resolveChannel(const char* name, Print& out) {
+  int ch = npkChannelFromKey(name);
   if (ch < 0) {
     out.printf("error: unknown channel \"%s\". Try:", name ? name : "");
-    for (uint8_t i = 0; i < CH_COUNT; ++i) out.printf(" %s", CHANNELS[i].key);
+    for (uint8_t i = 0; i < NPK_CHANNEL_COUNT; ++i) out.printf(" %s", NPK_CHANNELS[i].key);
     out.println();
   }
   return ch;
 }
 
 // Average several sweeps so a single noisy frame cannot skew the coefficients.
-bool CommandHandler::captureRaw(uint8_t ch, float& rawOut, Print& out) {
-  out.printf("sampling %s (%u sweeps) ...\r\n", CHANNELS[ch].key, CAL_SAMPLE_COUNT);
-  Reading r;
-  sensor_->readAveraged(r, CAL_SAMPLE_COUNT);
+bool NpkConsole::captureRaw(uint8_t ch, float& rawOut, Print& out) {
+  out.printf("sampling %s (%u sweeps) ...\r\n", NPK_CHANNELS[ch].key, NPK_CAL_SAMPLES);
+  NpkReading r;
+  sensor_->readAveraged(r, NPK_CAL_SAMPLES);
   if (!r.valid[ch]) {
     out.printf("error: no valid reading for %s (%s)\r\n",
-               CHANNELS[ch].key, sensor_->lastError());
+               NPK_CHANNELS[ch].key, sensor_->lastError());
     return false;
   }
   rawOut = r.scaled[ch];
-  out.printf("  raw average = %.*f %s\r\n", CHANNELS[ch].decimals, rawOut,
-             CHANNELS[ch].unit);
+  out.printf("  raw average = %.*f %s\r\n", NPK_CHANNELS[ch].decimals, rawOut,
+             NPK_CHANNELS[ch].unit);
   return true;
 }
 
-void CommandHandler::listCalibration(Print& out) {
+void NpkConsole::listCalibration(Print& out) {
   out.println();
   out.printf("%-14s %12s %12s   %s\r\n", "channel", "A (gain)", "B (offset)", "state");
-  for (uint8_t c = 0; c < CH_COUNT; ++c) {
-    Coefficients k = cal_->get(c);
+  for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
+    NpkCoeff k = cal_->get(c);
     const char* state = cal_->isDefault(c) ? "default" : "calibrated";
     if (cal_->hasPendingLow(c)) state = "low point captured";
-    out.printf("%-14s %12.5f %12.5f   %s\r\n", CHANNELS[c].key, k.a, k.b, state);
+    out.printf("%-14s %12.5f %12.5f   %s\r\n", NPK_CHANNELS[c].key, k.a, k.b, state);
   }
   out.println();
 }
 
-void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
+void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
   if (argc < 2 || !strcasecmp(argv[1], "list")) {
     listCalibration(out);
     return;
@@ -310,7 +312,7 @@ void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
       int ch = resolveChannel(argv[2], out);
       if (ch < 0) return;
       cal_->resetChannel(ch);
-      out.printf("%s reset to A=1, B=0\r\n", CHANNELS[ch].key);
+      out.printf("%s reset to A=1, B=0\r\n", NPK_CHANNELS[ch].key);
     }
     return;
   }
@@ -325,7 +327,7 @@ void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
       out.println("error: A must be non-zero and both values finite");
       return;
     }
-    out.printf("%s: A=%.5f B=%.5f saved\r\n", CHANNELS[ch].key, a, b);
+    out.printf("%s: A=%.5f B=%.5f saved\r\n", NPK_CHANNELS[ch].key, a, b);
     return;
   }
 
@@ -337,9 +339,9 @@ void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
     float raw;
     if (!captureRaw(ch, raw, out)) return;
     if (!cal_->onePoint(ch, raw, ref)) { out.println("error: could not solve"); return; }
-    Coefficients k = cal_->get(ch);
+    NpkCoeff k = cal_->get(ch);
     out.printf("%s: offset trimmed to reference %.*f -> A=%.5f B=%.5f saved\r\n",
-               CHANNELS[ch].key, CHANNELS[ch].decimals, ref, k.a, k.b);
+               NPK_CHANNELS[ch].key, NPK_CHANNELS[ch].decimals, ref, k.a, k.b);
     return;
   }
 
@@ -352,10 +354,10 @@ void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
     if (!captureRaw(ch, raw, out)) return;
     cal_->captureLow(ch, raw, ref);
     out.printf("%s: low point held (raw %.*f -> ref %.*f).\r\n",
-               CHANNELS[ch].key, CHANNELS[ch].decimals, raw,
-               CHANNELS[ch].decimals, ref);
+               NPK_CHANNELS[ch].key, NPK_CHANNELS[ch].decimals, raw,
+               NPK_CHANNELS[ch].decimals, ref);
     out.printf("Now move the probe to the high reference and run: cal high %s <ref>\r\n",
-               CHANNELS[ch].key);
+               NPK_CHANNELS[ch].key);
     return;
   }
 
@@ -365,7 +367,7 @@ void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
     if (ch < 0) return;
     if (!cal_->hasPendingLow(ch)) {
       out.printf("error: capture the low point first (cal low %s <ref>)\r\n",
-                 CHANNELS[ch].key);
+                 NPK_CHANNELS[ch].key);
       return;
     }
     const float ref = strtof(argv[3], nullptr);
@@ -377,9 +379,9 @@ void CommandHandler::cmdCal(char** argv, int argc, Print& out) {
       out.printf("error: %s\r\n", err);
       return;
     }
-    Coefficients k = cal_->get(ch);
+    NpkCoeff k = cal_->get(ch);
     out.printf("%s: two-point solve -> A=%.5f B=%.5f saved\r\n",
-               CHANNELS[ch].key, k.a, k.b);
+               NPK_CHANNELS[ch].key, k.a, k.b);
     return;
   }
 
