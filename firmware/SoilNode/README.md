@@ -201,9 +201,23 @@ notice — it is never silently cut. The serial copy is always complete.
 {"cmd":"mqttauth"}
 ```
 
-The `sensor` commands have no JSON form, but the plain-text line works over
-MQTT too — publish `sensor npk n 120` to `NPKcommand` and the reply comes
-back on `NPKreply` exactly as it would on the console.
+The `sensor` commands have no dedicated JSON mapping, but they still work over
+MQTT two ways. Publish the plain-text line:
+
+```
+sensor
+sensor cal n low 50
+```
+
+or wrap it, since any unrecognised `cmd` is passed through to the parser
+verbatim:
+
+```json
+{"cmd":"sensor"}
+{"cmd":"sensor cal n low 50"}
+```
+
+Both end up at the same parser as the serial console.
 
 ## Topics
 
