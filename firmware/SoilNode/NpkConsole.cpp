@@ -4,6 +4,38 @@
 
 static const int    kMaxArgs     = 8;
 static const size_t kReplyCap    = NPK_MQTT_BUFFER - 64;
+static const size_t kMaxLineHeld = 192;   // longest line kept back across a split
+
+// Publish everything up to the last complete line, mark it as continuing, and
+// keep the partial trailing line for the next part.
+void NpkChunkedPrint::flushPart() {
+  if (len_ == 0) return;
+
+  size_t split = (lastNewline_ > 0) ? lastNewline_ : len_;
+  size_t tailLen = len_ - split;
+
+  // A single line longer than the hold buffer cannot be carried over, so it
+  // is cut here instead. Nothing this firmware prints comes close.
+  char tail[kMaxLineHeld];
+  if (tailLen >= sizeof(tail)) {
+    split = len_;
+    tailLen = 0;
+  }
+  memcpy(tail, buf_ + split, tailLen);
+
+  memcpy(buf_ + split, NPK_REPLY_CONTINUES, sizeof(NPK_REPLY_CONTINUES) - 1);
+  buf_[split + sizeof(NPK_REPLY_CONTINUES) - 1] = '\0';
+  if (net_) net_->publish(topic_, buf_);
+  parts_++;
+
+  memcpy(buf_, tail, tailLen);
+  len_ = tailLen;
+  buf_[len_] = '\0';
+  lastNewline_ = 0;
+  for (size_t i = 0; i < len_; ++i) {
+    if (buf_[i] == '\n') lastNewline_ = i + 1;
+  }
+}
 
 void NpkConsole::begin(NpkSensor* sensor, NpkCal* cal, NpkNet* net) {
   sensor_ = sensor;
@@ -47,24 +79,19 @@ void NpkConsole::handleMqtt(const uint8_t* payload, unsigned int length) {
     line[n] = '\0';
   }
 
-  char buf[kReplyCap];
-  NpkBufferPrint reply(buf, sizeof(buf));
-  execute(line, reply);
-
   Serial.printf("[cmd] via mqtt: %s\r\n", line);
-  Serial.print(reply.c_str());
 
-  // Say when the reply did not fit rather than publishing a half answer that
-  // looks complete. The serial copy above is never truncated.
-  if (reply.overflowed()) {
-    Serial.printf("[cmd] reply exceeded %u bytes and was cut short\r\n",
-                  (unsigned)sizeof(buf));
-    net_->publish(NPK_TOPIC_REPLY, reply.c_str());
-    net_->publish(NPK_TOPIC_REPLY,
-                  "[reply truncated - run this on the serial console for the rest]");
-    return;
+  // Output streams out as it is produced, split across as many NPKreply
+  // messages as it takes, so nothing is ever truncated however long it runs.
+  // The serial echo happens inside the sink and is not chunked.
+  char buf[kReplyCap];
+  NpkChunkedPrint reply(net_, NPK_TOPIC_REPLY, buf, sizeof(buf), true);
+  execute(line, reply);
+  reply.finish();
+
+  if (reply.parts() > 1) {
+    Serial.printf("[cmd] reply sent as %u parts\r\n", (unsigned)reply.parts());
   }
-  if (reply.length() > 0) net_->publish(NPK_TOPIC_REPLY, reply.c_str());
 }
 
 // Normalise a JSON command object into the text form.
@@ -113,7 +140,22 @@ bool NpkConsole::jsonToLine(const uint8_t* payload, unsigned int length,
   } else if (!strcmp(cmd, "wifi_reset")) {
     snprintf(out, cap, "wifi reset");
   } else {
-    snprintf(out, cap, "%s", cmd);   // help, status, read, reboot
+    // Deliberate passthrough, not a gap in the mapping.
+    //
+    // Anything without a structured form above is handed to the text parser
+    // verbatim, so every console command is reachable over MQTT without a
+    // second grammar to keep in step. This is what carries the bare commands
+    // (help, status, read, reboot) and the whole "sensor" family, including
+    // arguments: {"cmd":"sensor cal n low 50"} arrives at the same parser as
+    // typing that line.
+    //
+    // The parser splits on spaces and tabs only, so the one thing that must
+    // not get through is an embedded newline or control character - those
+    // would let a single JSON field inject what looks like a second command.
+    for (const char* p = cmd; *p; ++p) {
+      if ((unsigned char)*p < 0x20 || *p == 0x7F) return false;
+    }
+    snprintf(out, cap, "%s", cmd);
   }
   return true;
 }
@@ -204,8 +246,9 @@ void NpkConsole::cmdHelp(Print& out) {
   out.println(F("  read                      take a reading, raw + calibrated"));
   out.println(F("  status                    firmware, link and sensor state"));
   out.println(F("  scan [first] [last]       probe Modbus registers"));
-  out.println(F("                            long scans are truncated over MQTT;"));
-  out.println(F("                            run those on the serial console"));
+  out.println(F("  scan nz [first] [last]    ... skipping the zeros. This probe"));
+  out.println(F("                            answers at every address, so a plain"));
+  out.println(F("                            sweep is mostly meaningless lines."));
   out.println(F("  mqtt <host> [port]        change broker, stored in NVS"));
   out.println(F("  mqttauth <user> [pass]    broker credentials, stored in NVS"));
   out.println(F("  mqttauth clear            connect anonymously"));
@@ -222,6 +265,10 @@ void NpkConsole::cmdHelp(Print& out) {
   out.println(F("  cal low  <ch> <ref>       two-point step 1: low reference"));
   out.println(F("  cal high <ch> <ref>       two-point step 2: solve A and B"));
   out.println(F("  cal clear <ch|all>        back to A=1, B=0"));
+  out.println(F("  cal json                  the same table, machine readable"));
+  out.println(F("  cal export                replayable \"cal set\" lines - this"));
+  out.println(F("                            is the backup, since calibration"));
+  out.println(F("                            lives in this board's NVS"));
   out.println();
   out.println(F("The probe has its own calibration registers, separate from"));
   out.println(F("the above. Those change what it reports; \"cal\" changes how"));
@@ -312,13 +359,34 @@ void NpkConsole::cmdRead(Print& out) {
 }
 
 void NpkConsole::cmdScan(char** argv, int argc, Print& out) {
+  int argi = 1;
+  bool nonZeroOnly = false;
+  if (argc > argi && (!strcasecmp(argv[argi], "nz") ||
+                      !strcasecmp(argv[argi], "nonzero"))) {
+    nonZeroOnly = true;
+    argi++;
+  }
+
   uint16_t first = 0x0000;
   uint16_t last  = 0x0030;
-  if (argc >= 2) first = (uint16_t)strtol(argv[1], nullptr, 0);
-  if (argc >= 3) last  = (uint16_t)strtol(argv[2], nullptr, 0);
+  if (argc > argi)     first = (uint16_t)strtol(argv[argi], nullptr, 0);
+  if (argc > argi + 1) last  = (uint16_t)strtol(argv[argi + 1], nullptr, 0);
   if (last < first) { out.println("error: last register is below first"); return; }
-  if (last - first > 512) { out.println("error: range limited to 512 registers"); return; }
-  sensor_->scanRegisters(first, last, out);
+
+  // A verbose sweep prints a line per address, and this probe answers at all
+  // of them, so the useful range is small. A filtered sweep is mostly silent
+  // and can cover far more ground.
+  const uint32_t span = (uint32_t)last - first + 1;
+  const uint32_t cap = nonZeroOnly ? 8192UL : 512UL;
+  if (span > cap) {
+    out.printf("error: %lu registers exceeds the %lu limit for this mode\r\n",
+               (unsigned long)span, (unsigned long)cap);
+    if (!nonZeroOnly) {
+      out.println("       use \"scan nz <first> <last>\" for a wider sweep");
+    }
+    return;
+  }
+  sensor_->scanRegisters(first, last, out, nonZeroOnly);
 }
 
 int NpkConsole::resolveChannel(const char* name, Print& out) {
@@ -344,6 +412,18 @@ bool NpkConsole::captureRaw(uint8_t ch, float& rawOut, Print& out) {
   rawOut = r.scaled[ch];
   out.printf("  raw average = %.*f %s\r\n", NPK_CHANNELS[ch].decimals, rawOut,
              NPK_CHANNELS[ch].unit);
+
+  // A hard zero is a poor thing to anchor a calibration on. Nitrogen reads
+  // exactly 0 in some soils, and the firmware cannot tell that apart from the
+  // probe bottoming out - the register answered, with a good CRC, saying zero.
+  // Not refused, because a genuine zero reference is legitimate, but a
+  // two-point fit anchored here inherits whatever the floor is doing.
+  if (rawOut == 0.0f) {
+    out.printf("note: %s is reading exactly 0. That may be real, or the probe\r\n",
+               NPK_CHANNELS[ch].key);
+    out.println("      bottoming out - the two are indistinguishable from here.");
+    out.println("      Prefer a point where the channel is actually responding.");
+  }
   return true;
 }
 
@@ -700,6 +780,36 @@ void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
   }
 
   const char* sub = argv[1];
+
+  // The calibration lives in ESP32 NVS, so this is what needs backing up.
+  // Emitting it as command lines rather than a report means restoring is
+  // replaying the output - no parser, no format to keep in step.
+  if (!strcasecmp(sub, "export")) {
+    out.println();
+    out.println(F("# SoilNode calibration - paste back to restore"));
+    for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
+      NpkCoeff k = cal_->get(c);
+      out.printf("cal set %s %.5f %.5f\r\n", NPK_CHANNELS[c].key, k.a, k.b);
+    }
+    out.println();
+    return;
+  }
+
+  // Machine-readable form of the same table. Bounded: seven channels at about
+  // 55 bytes each stays well inside one MQTT message, so it never splits and
+  // arrives parseable in one piece.
+  if (!strcasecmp(sub, "json")) {
+    out.print('{');
+    for (uint8_t c = 0; c < NPK_CHANNEL_COUNT; ++c) {
+      NpkCoeff k = cal_->get(c);
+      const char* state = cal_->isDefault(c) ? "default" : "calibrated";
+      if (cal_->hasPendingLow(c)) state = "pending_high";
+      out.printf("%s\"%s\":{\"a\":%.5f,\"b\":%.5f,\"state\":\"%s\"}",
+                 c ? "," : "", NPK_CHANNELS[c].key, k.a, k.b, state);
+    }
+    out.println('}');
+    return;
+  }
 
   if (!strcasecmp(sub, "clear") || !strcasecmp(sub, "reset")) {
     if (argc < 3) { out.println("usage: cal clear <channel|all>"); return; }

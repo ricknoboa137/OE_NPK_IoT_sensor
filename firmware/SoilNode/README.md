@@ -154,9 +154,34 @@ cal set ph 0.94044 -0.06270
 
 ```
 cal                  list A and B for every channel
+cal json             the same, machine readable
+cal export           replayable "cal set" lines - this is the backup
 cal clear ph         one channel back to A=1, B=0
 cal clear all
 ```
+
+### Backing it up
+
+The calibration lives in this board's NVS, so that is what needs saving. `cal
+export` emits it as commands rather than a report, which makes restoring it a
+paste rather than a parsing exercise:
+
+```
+# SoilNode calibration - paste back to restore
+cal set moisture     1.00000 0.00000
+cal set temperature  1.00000 0.00000
+...
+```
+
+`cal json` gives the same data for a dashboard:
+
+```json
+{"moisture":{"a":1.00000,"b":0.00000,"state":"default"}, ...}
+```
+
+`state` is `default`, `calibrated`, or `pending_high` when a low point has been
+captured and the matching high point has not. The fixed-width `cal` table is
+unchanged.
 
 ## Console
 
@@ -167,6 +192,9 @@ Type `help` for the full list.
 read                      take a reading, show raw / scaled / calibrated
 status                    firmware, link and sensor state
 scan [first] [last]       probe Modbus registers
+scan nz [first] [last]    ... skipping the zeros
+cal json                  coefficients, machine readable
+cal export                coefficients as replayable commands
 mqtt <host> [port]        change broker, stored in NVS
 mqttauth <user> [pass]    broker credentials, stored in NVS
 mqttauth clear            connect anonymously
@@ -182,9 +210,20 @@ reboot
 ```
 
 Over MQTT, publish either the plain text line or a JSON object to
-`NPKcommand`; replies come back on `NPKreply`. A reply that does not fit the
-buffer is published as far as it got, followed by an explicit truncation
-notice — it is never silently cut. The serial copy is always complete.
+`NPKcommand`; replies come back on `NPKreply`.
+
+**Long replies are split, never truncated.** Output streams out as it is
+produced, across as many `NPKreply` messages as it takes. Every part except the
+last ends with a line reading exactly `[continues]`; a reply that fits in one
+message carries no marker at all, exactly as before. Splits only ever happen at
+line boundaries, so a register line is never cut in half.
+
+A consumer therefore accumulates parts until it receives one that does *not*
+end in `[continues]`. Raising the buffer instead would not have worked: `scan`
+output is unbounded, and this probe answers at all 65536 addresses, so a full
+sweep is over half a megabyte.
+
+The serial console is never chunked and never truncated.
 
 ```json
 {"cmd":"cal_low",  "ch":"ph", "ref":4.00}
@@ -484,6 +523,14 @@ CRC cannot catch that; only the physical limits can. Set it to 0 to disable.
 `scan` prints every register that answers together with its ÷1, ÷10 and ÷100
 interpretations, which is the quickest way to check a unit against known
 conditions.
+
+**Use `scan nz` for anything wider than a few dozen registers.** This probe
+answers at *every* address, returning zero for registers it does not implement
+rather than a Modbus exception, so a plain sweep is almost entirely
+meaningless lines — "it answered" carries no information at all. `scan nz`
+prints only non-zero registers and allows a range of 8192 rather than 512.
+Both print an estimated duration up front, because a wide sweep runs for
+minutes and otherwise looks like a hang.
 
 ## Naming
 

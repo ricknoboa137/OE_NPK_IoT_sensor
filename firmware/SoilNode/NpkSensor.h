@@ -82,8 +82,14 @@ class NpkSensor {
   uint32_t baud() const { return baud_; }
   void setBaud(uint32_t baud);
 
-  // Read registers one at a time across a range and report which answer.
-  void scanRegisters(uint16_t first, uint16_t last, Print& out);
+  // Read registers one at a time across a range and report what they hold.
+  //
+  // This probe answers at EVERY address, returning zero for registers it does
+  // not implement rather than a Modbus exception, so "it answered" carries no
+  // information at all. nonZeroOnly skips the zeros, which is the difference
+  // between a readable sweep and thousands of meaningless lines.
+  void scanRegisters(uint16_t first, uint16_t last, Print& out,
+                     bool nonZeroOnly = false);
 
   // --- direct register access, for the sensor's own calibration ------------
   // These reach registers outside the measurement block: the offsets at

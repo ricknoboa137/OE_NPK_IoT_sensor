@@ -384,18 +384,35 @@ bool NpkSensor::writeFloat(uint16_t addrHigh, float value) {
   return writeRegister(addrHigh + 1, (uint16_t)(bits & 0xFFFF));
 }
 
-void NpkSensor::scanRegisters(uint16_t first, uint16_t last, Print& out) {
-  out.printf("Scanning 0x%04X..0x%04X at %lu baud, slave 0x%02X\r\n",
-             first, last, (unsigned long)baud_, NPK_SLAVE_ID);
-  uint16_t found = 0;
+void NpkSensor::scanRegisters(uint16_t first, uint16_t last, Print& out,
+                              bool nonZeroOnly) {
+  const uint32_t count = (uint32_t)last - first + 1;
+  out.printf("Scanning 0x%04X..0x%04X at %lu baud, slave 0x%02X%s\r\n",
+             first, last, (unsigned long)baud_, NPK_SLAVE_ID,
+             nonZeroOnly ? ", non-zero only" : "");
+  // A transaction is 8 bytes out and 7 back, plus the interframe gap. Worth
+  // stating up front: a wide sweep runs for minutes and looks like a hang.
+  const uint32_t perReg = (15UL * 10UL * 1000UL) / baud_ + NPK_INTERFRAME_MS + 5;
+  out.printf("%lu registers, roughly %lu s\r\n",
+             (unsigned long)count, (unsigned long)(count * perReg / 1000UL));
+
+  uint16_t found = 0, answered = 0;
   for (uint32_t a = first; a <= last; ++a) {
     uint16_t v = 0;
     if (transaction((uint16_t)a, 1, &v)) {
+      answered++;
+      // Zero here means nothing: this probe answers at every address and
+      // returns zero for registers it does not implement.
+      if (nonZeroOnly && v == 0) { delay(NPK_INTERFRAME_MS); continue; }
       out.printf("  0x%04X = %5u  (0x%04X)  signed %6d   /10 %.1f  /100 %.2f\r\n",
                  (unsigned)a, v, v, (int)(int16_t)v, v / 10.0f, v / 100.0f);
       found++;
     }
     delay(NPK_INTERFRAME_MS);
   }
-  out.printf("Scan finished: %u register(s) answered.\r\n", found);
+  if (nonZeroOnly) {
+    out.printf("Scan finished: %u answered, %u non-zero.\r\n", answered, found);
+  } else {
+    out.printf("Scan finished: %u register(s) answered.\r\n", found);
+  }
 }

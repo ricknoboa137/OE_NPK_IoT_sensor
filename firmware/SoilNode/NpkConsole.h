@@ -18,16 +18,44 @@
 #include "NpkCal.h"
 #include "NpkNet.h"
 
-// A Print sink that accumulates into a caller-supplied buffer.
-class NpkBufferPrint : public Print {
+// Appended as the last line of every part except the last one. A reply that
+// fits in a single message carries no marker at all, so short replies look
+// exactly as they always did. The dashboard accumulates parts until it
+// receives one that does NOT end in this.
+#define NPK_REPLY_CONTINUES "[continues]"
+
+// A Print sink that publishes console output to MQTT, splitting it across as
+// many messages as it takes.
+//
+// Raising the buffer alone cannot solve this: "scan" over a wide range
+// produces unbounded output, and this probe answers at every address, so a
+// full sweep is tens of kilobytes. Chunking keeps RAM constant however long
+// the reply is. Splits happen only at line boundaries, so no register line is
+// ever cut in half.
+//
+// Everything written is also echoed to the serial console, which is never
+// chunked and never truncated.
+class NpkChunkedPrint : public Print {
  public:
-  NpkBufferPrint(char* buf, size_t capacity) : buf_(buf), cap_(capacity) {
+  NpkChunkedPrint(NpkNet* net, const char* topic, char* buf, size_t capacity,
+                  bool echoSerial)
+      : net_(net), topic_(topic), buf_(buf), cap_(capacity), echo_(echoSerial) {
+    // Reserve room for the continuation marker so a split can always carry
+    // one. Without this a chunk could fill exactly and be published unmarked,
+    // which reads as the end of the reply.
+    usable_ = (cap_ > sizeof(NPK_REPLY_CONTINUES) + 1)
+                  ? cap_ - sizeof(NPK_REPLY_CONTINUES) - 1
+                  : cap_;
     if (cap_) buf_[0] = '\0';
   }
+
   size_t write(uint8_t c) override {
-    if (len_ + 1 >= cap_) { overflowed_ = true; return 0; }
+    if (echo_) Serial.write(c);
+    if (len_ + 1 >= usable_) flushPart();
+    if (len_ + 1 >= usable_) return 0;      // pathological: buffer far too small
     buf_[len_++] = (char)c;
     buf_[len_] = '\0';
+    if (c == '\n') lastNewline_ = len_;
     return 1;
   }
   size_t write(const uint8_t* data, size_t n) override {
@@ -35,18 +63,31 @@ class NpkBufferPrint : public Print {
     while (w < n && write(data[w])) ++w;
     return w;
   }
-  const char* c_str() const { return buf_; }
-  size_t length() const { return len_; }
-  // Silent truncation is worse than none: a reply cut in half reads as though
-  // it were the whole answer. Callers check this and say so.
-  bool overflowed() const { return overflowed_; }
-  void clear() { len_ = 0; overflowed_ = false; if (cap_) buf_[0] = '\0'; }
+
+  // Publish whatever is left, without a continuation marker.
+  void finish() {
+    if (len_ == 0) return;
+    if (net_) net_->publish(topic_, buf_);
+    parts_++;
+    len_ = 0;
+    lastNewline_ = 0;
+    if (cap_) buf_[0] = '\0';
+  }
+
+  uint16_t parts() const { return parts_; }
 
  private:
-  char*  buf_;
-  size_t cap_;
-  size_t len_ = 0;
-  bool   overflowed_ = false;
+  void flushPart();
+
+  NpkNet*     net_;
+  const char* topic_;
+  char*       buf_;
+  size_t      cap_;
+  size_t      usable_ = 0;
+  size_t      len_ = 0;
+  size_t      lastNewline_ = 0;   // index just past the most recent '\n'
+  uint16_t    parts_ = 0;
+  bool        echo_;
 };
 
 class NpkConsole {
