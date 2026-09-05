@@ -1,0 +1,654 @@
+===== page 1 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 1                                                                                        Version: V1.4 
+ 
+℃
+℃
+±
+℃
+℃
+≤
+℃
+≤
+≤
+≤
+±
+≤
+≤
+±
+≤
+≤
+：
+＜
+Protection class
+IP68, long-term immersion in water use
+Cable length
+2M
+Operating environment
+℃
+℃
+Overall dimensions
+45 * 15 * 123mm
+===== page 2 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 2                                                                                        Version: V1.4 
+ 
+reen
+===== page 3 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 3                                                                                        Version: V1.4 
+ 
+ 
+Default device address is 1, RS485 Default parameters: 4800,n,8,1 
+Register map: 
+Read status registers, read function code: 0x30 
+Register 
+address 
+(Hex) 
+PLC 
+Address 
+(decimal) 
+meaning 
+Number 
+of bytes 
+content 
+remark 
+0000 
+40001 
+ 
+2 
+0.1%RH 
+read 
+0001 
+40002 
+Temperature 
+2 
+0.1℃ 
+read 
+0002 
+40003 
+Conductivity 
+2 
+1 
+ 
+read 
+0003 
+40004 
+PH 
+2 
+0.1 
+read 
+0004 
+40005 
+Nitrogen (N) 
+2 
+1 mg/kg 
+read / write 
+0005 
+40006 
+Phosphorus (P) 
+2 
+1 mg/kg 
+read / write 
+0006 
+40007 
+Potassium (K) 
+2 
+1 mg/kg 
+read / write 
+0007 
+40008 
+Salinity 
+2 
+1 mg/L 
+read 
+0008 
+40009 
+TDS 
+2 
+1 mg/L 
+read 
+0022 
+40035 
+Conductivity factor 
+2 
+0-100 correspond 
+to 0.0%-10.0% 
+Default 0.0% 
+read / write 
+===== page 4 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 4                                                                                        Version: V1.4 
+ 
+0023 
+40036 
+Salinity factor 
+2 
+0-100 correspond 
+to 0.00-1.00 
+Default 55 (0.55) 
+read / write 
+0024 
+40037 
+TDS factor 
+2 
+0-100 correspond 
+to 0.00-1.00 
+Default 50 (0.5) 
+read / write 
+0050 
+40081 
+Temperature offset 
+2 
+0.1 
+read / write 
+0051 
+40082 
+Humidity offset 
+2 
+0.1 
+read / write 
+0052 
+40083 
+Conductivity offset 
+2 
+1 
+read / write 
+0053 
+40084 
+PH offset 
+2 
+1 
+read / write 
+04E8 
+41257 
+Nitrogen(N) factor high byte  
+2 
+real value 
+(float) 
+read / write 
+04E9 
+41258 
+Nitrogen(N) factor low byte  
+2 
+04EA 
+41259 
+Nitrogen(N) offset 
+2 
+ 
+read / write 
+04F2 
+41267 
+Phosphorus(P) factor high byte 
+2 
+real value 
+(float) 
+read / write 
+04F3 
+41268 
+Phosphorus(P) factor low byte 
+2 
+04F4 
+41269 
+Phosphorus(P) offset 
+2 
+ 
+read / write 
+04FC 
+41277 
+Potassium(K) factor low byte 
+2 
+real value 
+(float) 
+read / write 
+04FD 
+41278 
+Potassium(K) factor low byte 
+2 
+04FE 
+41279 
+Potassium(K) offset 
+2 
+ 
+read / write 
+Parameters registers, read function code: 0x30, write function code: 0x60 
+07D0 
+42001 
+Slave ID 
+2 
+1-254 
+read / write 
+07D1 
+42002 
+baud rate 
+2 
+0: 2400 
+1: 4800 
+2: 9600 
+Default 4800 
+read / write 
+ 
+ 
+ 
+Read 
+E.g., Read Humidity, temperature, conductivity, PH, N, P, K together: 
+Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+Number 
+of 
+Points 
+(Hi) 
+Number 
+of 
+Points 
+(Lo) 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x03 
+0x00 
+0x00 
+0x00 
+0x07 
+0x04 
+0x08 
+ 
+===== page 5 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 5                                                                                        Version: V1.4 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Number of 
+byte 
+humidity 
+temperature 
+conductivity 
+PH 
+N 
+P 
+K 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x03 
+0x0E 
+0x01 
+0xD0 
+0x01 
+0x4C 
+0x00 
+0x2C 
+0x00 
+0x5A 
+0x00 
+0x20 
+0x00 
+0x58 
+0x00 
+0x68 
+0x70 
+0x29 
+ 
+Temperature: 14C H= 332=> temperature= 33.2℃ 
+Humidity: 1D0 H= 464 => humidity= 46.4% 
+Conductivity: 2C H= 44 => Conductivity = 44 us/cm 
+PH: 5A H= 56 => PH= 9 
+Nitrogen (N): 20 H= 56 => N= 32 mg/kg 
+Phosphorus (P): 58 H= 56 => P= 88 mg/kg 
+Potassium (K): 68 H= 104 => K= 104 mg/kg 
+ 
+ 
+Write Nitrogen (N) 
+E.g., write 32 into Nitrogen register, Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+N 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x00 
+0x04 
+0x00 0x20 
+0xC9 
+0xD3 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+N 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x00 
+0x04 
+0x00 0x20 
+0xC9 
+0xD3 
+ 
+ 
+Write Phosphorus (P) 
+E.g., write 88 into Phosphorus register, Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+P 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x00 
+0x05 
+0x00 0x58 
+0x98 
+0x31 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+P 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x00 
+0x05 
+0x00 0x58 
+0x98 
+0x31 
+ 
+===== page 6 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 6                                                                                        Version: V1.4 
+ 
+Write Potassium (K) 
+E.g., write 104 into Potassium register, Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+K 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x00 
+0x06 
+0x00 0x68 
+0x68 
+0x25 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+K 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x00 
+0x06 
+0x00 0x68 
+0x68 
+0x25 
+ 
+ 
+Set slave ID 
+E.g., set slave ID=2, Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+ID 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x07 
+0xD0 
+0x00 0x02 
+0x08 
+0x86 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+ID 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x07 
+0xD0 
+0x00 0x02 
+0x08 
+0x86 
+ 
+Set baud rate 
+E.g., set baud rate to 9600, Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+command 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x07 
+0xD1 
+0x00 0x02 
+0x59 
+0x46 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+command 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0x01 
+0x06 
+0x07 
+0xD1 
+0x00 0x02 
+0x59 
+0x46 
+ 
+ 
+===== page 7 =====
+深圳市盈科互动科技有限公司CWT CO., LIMITED  
+TEL：+86-755-26719954 ｜ www.comwintop.com  
+Page: 7                                                                                        Version: V1.4 
+ 
+Enquiry slave ID 
+Master sends 
+Address 
+Function 
+Code 
+Start 
+Address 
+(Hi) 
+Start 
+Address 
+(Lo) 
+Number 
+of 
+Points 
+(Hi) 
+Number 
+of 
+Points 
+(Lo) 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0xFF 
+0x03 
+0x07 
+0xD0 
+0x00 
+0x01 
+0x91 
+0x59 
+ 
+Sensor responds: 
+Address 
+Function 
+Code 
+Number 
+of 
+Points 
+address 
+Error 
+Check 
+(Lo) 
+Error 
+Check 
+(Hi) 
+0xFF 
+0x03 
+0x02 
+0x00 0x01 
+0x50 
+0x50 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

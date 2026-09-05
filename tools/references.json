@@ -1,0 +1,21 @@
+{
+  "_comment": "True values for each soil, used by solve_firmware_cal.js to fit the microcontroller-side A and B. Fill in what you know; leave null to skip that channel. Units: moisture %RH, temperature degC, ph pH, nitrogen/phosphorus/potassium mg/kg.",
+  "soils": {
+    "GOOD": {
+      "moisture": null,
+      "temperature": null,
+      "ph": null,
+      "nitrogen": null,
+      "phosphorus": null,
+      "potassium": null
+    },
+    "GARDENING": {
+      "moisture": null,
+      "temperature": null,
+      "ph": null,
+      "nitrogen": null,
+      "phosphorus": null,
+      "potassium": null
+    }
+  }
+}

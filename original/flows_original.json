@@ -1,0 +1,1015 @@
+[
+    {
+        "id": "55ef81d4c950013b",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b4c9b453f39b484d",
+        "type": "mqtt in",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "topic": "NPKdata",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "f639ae45855d6769",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 460,
+        "y": 280,
+        "wires": [
+            [
+                "c09e2b1ce24c1799",
+                "5bb543e621456bd9",
+                "64c65deb41f54259",
+                "ff9a23457bcffece",
+                "c55a5aae53fc6412",
+                "c458537bc94aaaf0",
+                "2e90080fca29c5a6",
+                "06fee8be07ade0d1"
+            ]
+        ]
+    },
+    {
+        "id": "9d5f4a78f7065376",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "2b6e2e1da35fe392",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 700,
+        "y": 80,
+        "wires": [
+            [
+                "9d5f4a78f7065376"
+            ]
+        ]
+    },
+    {
+        "id": "64c65deb41f54259",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "117f0ad31ac9c6f9",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "PH",
+        "label": "PH",
+        "format": "{{msg.payload.PH}}",
+        "min": 0,
+        "max": 10,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ff9a23457bcffece",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fb904fc976af759f",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "N",
+        "label": "mg/Kg",
+        "format": "{{msg.payload.Nitrogen}}",
+        "min": 0,
+        "max": "25",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#43cb3a"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c458537bc94aaaf0",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fb904fc976af759f",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "K",
+        "label": "mg/Kg",
+        "format": "{{msg.payload.Potassium}}",
+        "min": 0,
+        "max": "25",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#40df20"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c55a5aae53fc6412",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fb904fc976af759f",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "P",
+        "label": "mg/Kg",
+        "format": "{{msg.payload.Phosphorus}}",
+        "min": 0,
+        "max": "25",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#3acb4a"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5bb543e621456bd9",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "117f0ad31ac9c6f9",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "ºC",
+        "format": "{{msg.payload.Temperature}}",
+        "min": "-20",
+        "max": "55",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 950,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c09e2b1ce24c1799",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "117f0ad31ac9c6f9",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{msg.payload.Humidity}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 940,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8ca9efddfa25bc49",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "CREATE table NPKv1 (humidity, temperature, PH, N, P, K);",
+        "payload": "",
+        "payloadType": "date",
+        "x": 460,
+        "y": 80,
+        "wires": [
+            [
+                "2b6e2e1da35fe392"
+            ]
+        ]
+    },
+    {
+        "id": "2e90080fca29c5a6",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "36a7f23d8851cb03",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "02673b1a6fde3fd6",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 800,
+        "y": 540,
+        "wires": [
+            [
+                "36a7f23d8851cb03"
+            ]
+        ]
+    },
+    {
+        "id": "d6b1fa5bdec07d3d",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "delete from NPKv1;",
+        "payload": "",
+        "payloadType": "date",
+        "x": 540,
+        "y": 540,
+        "wires": [
+            [
+                "02673b1a6fde3fd6"
+            ]
+        ]
+    },
+    {
+        "id": "06fee8be07ade0d1",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "function 1",
+        "func": "\nlet d= new Date();\nlet NEW_FORMAT = \"yyyy-MM-dd HH:mm:ss\";\nlet timestamp = d.getTime();\n\nlet timeStamp = d.getFullYear+\"-\"+d.getMonth+\"-\"+d.getDay+\" \"+d.getHours+\":\"+d.getMinutes+\":\"+d.getSeconds; \nlet humidity = msg.payload.Humidity;\nlet temperature = msg.payload.Temperature;\nlet ph = msg.payload.PH;\nlet N = msg.payload.Nitrogen;\nlet P = msg.payload.Phosphorus;\nlet K = msg.payload.Potassium;\nconst sensorData = msg.payload;\n\nconst params = {\n    timestamp: new Date().toISOString(),\n    temperature: sensorData.Temperature,\n    humidity: sensorData.Humidity,\n    ph: sensorData.PH,\n    N: sensorData.Nitrogen,\n    P: sensorData.Phosphorus,\n    K: sensorData.Potassium,\n};\nconst sql = \"INSERT INTO NPKv1 (humidity, temperature, ph, N, P, K, timestamp) VALUES (\"+humidity+\",\"+ temperature+\",\" + ph+\", \"+N+\", \"+P+\", \"+K+\", \"+timestamp+\");\";\nmsg.topic = sql;\nmsg.params = params;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 440,
+        "wires": [
+            [
+                "02673b1a6fde3fd6"
+            ]
+        ]
+    },
+    {
+        "id": "f5c50ae8e3103725",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "b3b2ba7659a6611a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature [ºC]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1090,
+        "y": 620,
+        "wires": [
+            [
+                "a2cfa3698ca572f0"
+            ]
+        ]
+    },
+    {
+        "id": "444577de7c3d52e3",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData",
+        "func": "const imp = msg.payload;\n\nvar outObj = [{\n    series: [\"Sensor Temp\"],\n    data:[[]],\n    labels: [\"\"]\n}]\n\nfor (let item of msg.payload) {\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.temperature\n    })\n}\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 620,
+        "wires": [
+            [
+                "f5c50ae8e3103725"
+            ]
+        ]
+    },
+    {
+        "id": "f794c8e7bc416e61",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "d91c5f0cac293037",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Refresh",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "select * from NPKv1;",
+        "payloadType": "str",
+        "topic": "select * from NPKv1;",
+        "topicType": "str",
+        "x": 500,
+        "y": 620,
+        "wires": [
+            [
+                "6c521fc6f2276524"
+            ]
+        ]
+    },
+    {
+        "id": "6c521fc6f2276524",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 660,
+        "y": 620,
+        "wires": [
+            [
+                "444577de7c3d52e3",
+                "f3a810c6c804fea7",
+                "765ce5f385f25cf2",
+                "2d0025fada26f1a6",
+                "e204e982b7dd2d0a",
+                "eb8d5f38547b608e",
+                "62e57cdd1dc5eeaa"
+            ]
+        ]
+    },
+    {
+        "id": "a2cfa3698ca572f0",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "781414fade39dcce",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "b3b2ba7659a6611a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Moisture  [%]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1070,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f3a810c6c804fea7",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData",
+        "func": "const imp = msg.payload;\n\nvar outObj = [{\n    series: [\"Sensor Temp\"],\n    data:[[]],\n    labels: [\"\"]\n}]\n\nfor (let item of msg.payload) {\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.humidity\n    })\n}\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 660,
+        "wires": [
+            [
+                "781414fade39dcce"
+            ]
+        ]
+    },
+    {
+        "id": "bc40c6c966966db6",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "b3b2ba7659a6611a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "pH",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1050,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "765ce5f385f25cf2",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData",
+        "func": "const imp = msg.payload;\n\nvar outObj = [{\n    series: [\"Sensor Temp\"],\n    data:[[]],\n    labels: [\"\"]\n}]\n\nfor (let item of msg.payload) {\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.PH\n    })\n}\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 700,
+        "wires": [
+            [
+                "bc40c6c966966db6"
+            ]
+        ]
+    },
+    {
+        "id": "f37fe8a41957eac6",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fece59b930caf4ae",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "N  [mg/Kg]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1060,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2d0025fada26f1a6",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData",
+        "func": "const imp = msg.payload;\n\nvar outObj = [{\n    series: [\"Sensor Temp\"],\n    data:[[]],\n    labels: [\"\"]\n}]\n\nfor (let item of msg.payload) {\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.N\n    })\n}\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 740,
+        "wires": [
+            [
+                "f37fe8a41957eac6"
+            ]
+        ]
+    },
+    {
+        "id": "b0a088358ead9f5e",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fece59b930caf4ae",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "P [mg/Kg]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1060,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e204e982b7dd2d0a",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData",
+        "func": "const imp = msg.payload;\n\nvar outObj = [{\n    series: [\"Sensor Temp\"],\n    data:[[]],\n    labels: [\"\"]\n}]\n\nfor (let item of msg.payload) {\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.P\n    })\n}\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 780,
+        "wires": [
+            [
+                "b0a088358ead9f5e"
+            ]
+        ]
+    },
+    {
+        "id": "ea1fc58237731cbc",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fece59b930caf4ae",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "K [mg/Kg]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1060,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb8d5f38547b608e",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData",
+        "func": "const imp = msg.payload;\n\nvar outObj = [{\n    series: [\"Sensor Temp\"],\n    data:[[]],\n    labels: [\"\"]\n}]\n\nfor (let item of msg.payload) {\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.K\n    })\n}\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 820,
+        "wires": [
+            [
+                "ea1fc58237731cbc"
+            ]
+        ]
+    },
+    {
+        "id": "7f38779fb25f8321",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select datetime(timestamp,'auto') from NPKv1 where datetime(timestamp,'auto') between datetime('now', '-7 days') and  datetime('now');",
+        "payload": "",
+        "payloadType": "date",
+        "x": 500,
+        "y": 680,
+        "wires": [
+            [
+                "3555b4cf7dcedf25"
+            ]
+        ]
+    },
+    {
+        "id": "3555b4cf7dcedf25",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 640,
+        "y": 760,
+        "wires": [
+            [
+                "47b7de0abefbe68f"
+            ]
+        ]
+    },
+    {
+        "id": "47b7de0abefbe68f",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "62e57cdd1dc5eeaa",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "f639ae45855d6769",
+        "type": "mqtt-broker",
+        "name": "Ricks-laptop",
+        "broker": "192.168.0.174",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "e9b358432d3979d4",
+        "type": "sqlitedb",
+        "db": "D:\\Erick\\Obuda\\SoilSensor\\DB_01.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "117f0ad31ac9c6f9",
+        "type": "ui_group",
+        "name": "Variables",
+        "tab": "4acae2cc0c2d260d",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fb904fc976af759f",
+        "type": "ui_group",
+        "name": "NPK",
+        "tab": "4acae2cc0c2d260d",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b3b2ba7659a6611a",
+        "type": "ui_group",
+        "name": "Parameter",
+        "tab": "630f332be254f042",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d91c5f0cac293037",
+        "type": "ui_group",
+        "name": "buttons",
+        "tab": "630f332be254f042",
+        "order": 3,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fece59b930caf4ae",
+        "type": "ui_group",
+        "name": "NPK",
+        "tab": "630f332be254f042",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4acae2cc0c2d260d",
+        "type": "ui_tab",
+        "name": "Lectures",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "630f332be254f042",
+        "type": "ui_tab",
+        "name": "Charts",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "49ef2555e045ac6e",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-sqlite": "1.1.0",
+            "node-red-dashboard": "3.6.5"
+        }
+    }
+]

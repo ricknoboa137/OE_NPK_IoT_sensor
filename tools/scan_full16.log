@@ -1,0 +1,193 @@
+resuming: 2048 registers already recorded
+connected to mqtt://192.168.0.153:1883  (read-only scan)
+--- 0x0000..0xFFFF   explicit range
+  at 0x0807   2056 recorded, 44 non-zero, 0 retries
+  at 0x0A07   2568 recorded, 45 non-zero, 0 retries
+  at 0x0C07   3080 recorded, 45 non-zero, 0 retries
+  at 0x0E07   3592 recorded, 45 non-zero, 0 retries
+  at 0x1007   4104 recorded, 45 non-zero, 0 retries
+  at 0x1207   4616 recorded, 45 non-zero, 0 retries
+  at 0x1407   5128 recorded, 45 non-zero, 0 retries
+  at 0x1607   5640 recorded, 45 non-zero, 0 retries
+  at 0x1807   6152 recorded, 45 non-zero, 0 retries
+  at 0x1A07   6664 recorded, 45 non-zero, 0 retries
+  at 0x1C07   7176 recorded, 45 non-zero, 0 retries
+  at 0x1E07   7688 recorded, 45 non-zero, 0 retries
+  at 0x2007   8200 recorded, 45 non-zero, 0 retries
+  at 0x2207   8712 recorded, 45 non-zero, 0 retries
+  at 0x2407   9224 recorded, 45 non-zero, 0 retries
+  at 0x2607   9736 recorded, 45 non-zero, 0 retries
+  at 0x2807   10248 recorded, 45 non-zero, 0 retries
+  at 0x2A07   10760 recorded, 45 non-zero, 0 retries
+  at 0x2C07   11272 recorded, 45 non-zero, 0 retries
+  at 0x2E07   11784 recorded, 45 non-zero, 0 retries
+  at 0x3007   12296 recorded, 45 non-zero, 0 retries
+  at 0x3207   12808 recorded, 45 non-zero, 0 retries
+  at 0x3407   13320 recorded, 45 non-zero, 0 retries
+  at 0x3607   13832 recorded, 45 non-zero, 0 retries
+  at 0x3807   14344 recorded, 45 non-zero, 0 retries
+  at 0x3A07   14856 recorded, 45 non-zero, 0 retries
+  at 0x3C07   15368 recorded, 45 non-zero, 0 retries
+  at 0x3E07   15880 recorded, 45 non-zero, 0 retries
+  at 0x4007   16392 recorded, 45 non-zero, 0 retries
+  at 0x4207   16904 recorded, 45 non-zero, 0 retries
+  at 0x4407   17416 recorded, 45 non-zero, 0 retries
+  at 0x4607   17928 recorded, 45 non-zero, 0 retries
+  at 0x4807   18440 recorded, 45 non-zero, 0 retries
+  at 0x4A07   18952 recorded, 45 non-zero, 0 retries
+  at 0x4C07   19464 recorded, 45 non-zero, 0 retries
+  at 0x4E07   19976 recorded, 45 non-zero, 0 retries
+  at 0x5007   20488 recorded, 45 non-zero, 0 retries
+  at 0x5207   21000 recorded, 45 non-zero, 0 retries
+  at 0x5407   21512 recorded, 45 non-zero, 0 retries
+  at 0x5607   22024 recorded, 46 non-zero, 0 retries
+  at 0x5807   22536 recorded, 46 non-zero, 0 retries
+  at 0x5A07   23048 recorded, 46 non-zero, 0 retries
+  at 0x5C07   23560 recorded, 46 non-zero, 0 retries
+  at 0x5E07   24072 recorded, 46 non-zero, 0 retries
+  at 0x6007   24584 recorded, 46 non-zero, 0 retries
+  at 0x6207   25096 recorded, 46 non-zero, 0 retries
+  at 0x6407   25608 recorded, 46 non-zero, 0 retries
+  at 0x6607   26120 recorded, 46 non-zero, 0 retries
+  at 0x6807   26632 recorded, 46 non-zero, 0 retries
+  at 0x6A07   27144 recorded, 46 non-zero, 0 retries
+  at 0x6C07   27656 recorded, 46 non-zero, 0 retries
+  at 0x6E07   28168 recorded, 46 non-zero, 0 retries
+  at 0x7007   28680 recorded, 46 non-zero, 0 retries
+  at 0x7207   29192 recorded, 46 non-zero, 0 retries
+  at 0x7407   29704 recorded, 46 non-zero, 0 retries
+  at 0x7607   30216 recorded, 46 non-zero, 0 retries
+  at 0x7807   30728 recorded, 46 non-zero, 0 retries
+  at 0x7A07   31240 recorded, 46 non-zero, 0 retries
+  at 0x7C07   31752 recorded, 46 non-zero, 0 retries
+  at 0x7E07   32264 recorded, 46 non-zero, 0 retries
+  at 0x8007   32776 recorded, 46 non-zero, 0 retries
+  at 0x8207   33288 recorded, 46 non-zero, 0 retries
+  at 0x8407   33800 recorded, 46 non-zero, 0 retries
+  at 0x8607   34312 recorded, 46 non-zero, 0 retries
+  at 0x8807   34824 recorded, 46 non-zero, 0 retries
+  at 0x8A07   35336 recorded, 46 non-zero, 0 retries
+  at 0x8C07   35848 recorded, 46 non-zero, 0 retries
+  at 0x8E07   36360 recorded, 46 non-zero, 0 retries
+  at 0x9007   36872 recorded, 46 non-zero, 0 retries
+  at 0x9207   37384 recorded, 46 non-zero, 0 retries
+  at 0x9407   37896 recorded, 46 non-zero, 0 retries
+  at 0x9607   38408 recorded, 46 non-zero, 0 retries
+  at 0x9807   38920 recorded, 46 non-zero, 0 retries
+  at 0x9A07   39432 recorded, 46 non-zero, 0 retries
+  at 0x9C07   39944 recorded, 46 non-zero, 0 retries
+  at 0x9E07   40456 recorded, 46 non-zero, 0 retries
+  at 0xA007   40968 recorded, 46 non-zero, 0 retries
+  at 0xA207   41480 recorded, 46 non-zero, 0 retries
+  at 0xA407   41992 recorded, 46 non-zero, 0 retries
+  at 0xA607   42504 recorded, 46 non-zero, 0 retries
+  at 0xA807   43016 recorded, 46 non-zero, 0 retries
+  at 0xAA07   43528 recorded, 46 non-zero, 0 retries
+  at 0xAC07   44040 recorded, 46 non-zero, 0 retries
+  at 0xAE07   44552 recorded, 46 non-zero, 0 retries
+  at 0xB007   45064 recorded, 46 non-zero, 0 retries
+  at 0xB207   45576 recorded, 46 non-zero, 0 retries
+  at 0xB407   46088 recorded, 46 non-zero, 0 retries
+  at 0xB607   46600 recorded, 46 non-zero, 0 retries
+  at 0xB807   47112 recorded, 46 non-zero, 0 retries
+  at 0xBA07   47624 recorded, 46 non-zero, 0 retries
+  at 0xBC07   48136 recorded, 46 non-zero, 0 retries
+  at 0xBE07   48648 recorded, 46 non-zero, 0 retries
+  at 0xC007   49160 recorded, 46 non-zero, 0 retries
+  at 0xC207   49672 recorded, 46 non-zero, 0 retries
+  at 0xC407   50184 recorded, 46 non-zero, 0 retries
+  at 0xC607   50696 recorded, 46 non-zero, 0 retries
+  at 0xC807   51208 recorded, 46 non-zero, 0 retries
+  at 0xCA07   51720 recorded, 46 non-zero, 0 retries
+  at 0xCC07   52232 recorded, 46 non-zero, 0 retries
+  at 0xCE07   52744 recorded, 46 non-zero, 0 retries
+  at 0xD007   53256 recorded, 46 non-zero, 0 retries
+  at 0xD207   53768 recorded, 46 non-zero, 0 retries
+  at 0xD407   54280 recorded, 46 non-zero, 0 retries
+  at 0xD607   54792 recorded, 46 non-zero, 0 retries
+  at 0xD807   55304 recorded, 46 non-zero, 0 retries
+  at 0xDA07   55816 recorded, 46 non-zero, 0 retries
+  at 0xDC07   56328 recorded, 46 non-zero, 0 retries
+  at 0xDE07   56840 recorded, 46 non-zero, 0 retries
+  at 0xE007   57352 recorded, 46 non-zero, 0 retries
+  at 0xE207   57864 recorded, 46 non-zero, 0 retries
+  at 0xE407   58376 recorded, 46 non-zero, 0 retries
+  at 0xE607   58888 recorded, 46 non-zero, 0 retries
+  at 0xE807   59400 recorded, 46 non-zero, 0 retries
+  at 0xEA07   59912 recorded, 46 non-zero, 0 retries
+  at 0xEC07   60424 recorded, 46 non-zero, 0 retries
+  at 0xEE07   60936 recorded, 46 non-zero, 0 retries
+  at 0xF007   61448 recorded, 46 non-zero, 0 retries
+  at 0xF207   61960 recorded, 46 non-zero, 0 retries
+  at 0xF407   62472 recorded, 46 non-zero, 0 retries
+  at 0xF607   62984 recorded, 46 non-zero, 0 retries
+  at 0xF807   63496 recorded, 46 non-zero, 0 retries
+  at 0xFA07   64008 recorded, 46 non-zero, 0 retries
+  at 0xFC07   64520 recorded, 46 non-zero, 0 retries
+  at 0xFE07   65032 recorded, 46 non-zero, 0 retries
+
+scanned 63488 new, skipped 2048 already recorded
+=== non-zero registers ===
+  0x0000 = 245
+  0x0001 = 249
+  0x0003 = 84
+  0x0004 = 45
+  0x0005 = 152
+  0x0006 = 145
+  0x0009 = 1543
+  0x000B = 9
+  0x000C = 3565
+  0x000D = 2253
+  0x0010 = 16320
+  0x0011 = 33554
+  0x0012 = 1651
+  0x0013 = 1644
+  0x0014 = 249
+  0x0015 = 250
+  0x001D = 3565
+  0x001E = 3565
+  0x0023 = 55
+  0x0024 = 50
+  0x0025 = 16281
+  0x0026 = 39322
+  0x0045 = 16256
+  0x00F0 = 55973
+  0x00FF = 84
+  0x0100 = 2703
+  0x0110 = 17579
+  0x0111 = 32768
+  0x0112 = 16928
+  0x0120 = 17683
+  0x0121 = 57344
+  0x0122 = 17036
+  0x0130 = 17713
+  0x0131 = 57344
+  0x0132 = 17076
+  0x0150 = 16256
+  0x0190 = 16318
+  0x0191 = 16318
+  0x0210 = 16258
+  0x0211 = 64012
+  0x07D0 = 1
+  0x07D1 = 1
+  0x07D3 = 26233
+  0x07D4 = 14676
+  0x0820 = 403
+  0x55AA = 85
+
+=== float pairs (big-endian) in a plausible range ===
+  0x0010/0x0011 = 1.503999948501587
+  0x0025/0x0026 = 1.2000000476837158
+  0x0045/0x0046 = 1
+  0x0110/0x0111 = 1372
+  0x0112/0x0113 = 40
+  0x0120/0x0121 = 2366
+  0x0122/0x0123 = 70
+  0x0130/0x0131 = 2846
+  0x0132/0x0133 = 90
+  0x0150/0x0151 = 1
+  0x0190/0x0191 = 1.4863202571868896
+  0x0191/0x0192 = 1.484375
+  0x0210/0x0211 = 1.0232558250427246
+
+65536 registers recorded, 46 non-zero

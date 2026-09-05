@@ -1,0 +1,2112 @@
+[
+    {
+        "id": "55ef81d4c950013b",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f639ae45855d6769",
+        "type": "mqtt-broker",
+        "name": "Rick'sWork",
+        "broker": "192.168.0.153",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "e9b358432d3979d4",
+        "type": "sqlitedb",
+        "db": "C:\\Users\\User\\Documents\\GitHub\\NPK_Sensor\\DB_01.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "4acae2cc0c2d260d",
+        "type": "ui_tab",
+        "name": "Lectures",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "630f332be254f042",
+        "type": "ui_tab",
+        "name": "Charts",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "49ef2555e045ac6e",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-sqlite": "1.1.0",
+            "node-red-dashboard": "3.6.5"
+        }
+    },
+    {
+        "id": "117f0ad31ac9c6f9",
+        "type": "ui_group",
+        "name": "Variables",
+        "tab": "4acae2cc0c2d260d",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fb904fc976af759f",
+        "type": "ui_group",
+        "name": "NPK",
+        "tab": "4acae2cc0c2d260d",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b3b2ba7659a6611a",
+        "type": "ui_group",
+        "name": "Parameter",
+        "tab": "630f332be254f042",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d91c5f0cac293037",
+        "type": "ui_group",
+        "name": "Controls",
+        "tab": "630f332be254f042",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fece59b930caf4ae",
+        "type": "ui_group",
+        "name": "NPK",
+        "tab": "630f332be254f042",
+        "order": 3,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a79b5d90f6d40bf9",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "6c414a6c07090bf9",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "192.168.0.153",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "b4c9b453f39b484d",
+        "type": "mqtt in",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "topic": "NPKdata",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "6c414a6c07090bf9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 460,
+        "y": 280,
+        "wires": [
+            [
+                "c09e2b1ce24c1799",
+                "5bb543e621456bd9",
+                "64c65deb41f54259",
+                "ff9a23457bcffece",
+                "c55a5aae53fc6412",
+                "c458537bc94aaaf0",
+                "2e90080fca29c5a6",
+                "06fee8be07ade0d1"
+            ]
+        ]
+    },
+    {
+        "id": "9d5f4a78f7065376",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "2b6e2e1da35fe392",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 700,
+        "y": 80,
+        "wires": [
+            [
+                "9d5f4a78f7065376"
+            ]
+        ]
+    },
+    {
+        "id": "64c65deb41f54259",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "117f0ad31ac9c6f9",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "pH",
+        "label": "pH",
+        "format": "{{msg.payload.PH}}",
+        "min": 0,
+        "max": "14",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ff9a23457bcffece",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fb904fc976af759f",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "N",
+        "label": "mg/Kg",
+        "format": "{{msg.payload.Nitrogen}}",
+        "min": 0,
+        "max": "25",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#43cb3a"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c458537bc94aaaf0",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fb904fc976af759f",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "K",
+        "label": "mg/Kg",
+        "format": "{{msg.payload.Potassium}}",
+        "min": 0,
+        "max": "25",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#40df20"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c55a5aae53fc6412",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fb904fc976af759f",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "P",
+        "label": "mg/Kg",
+        "format": "{{msg.payload.Phosphorus}}",
+        "min": 0,
+        "max": "25",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#3acb4a"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5bb543e621456bd9",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "117f0ad31ac9c6f9",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "ºC",
+        "format": "{{msg.payload.Temperature}}",
+        "min": "-20",
+        "max": "55",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 950,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c09e2b1ce24c1799",
+        "type": "ui_gauge",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "117f0ad31ac9c6f9",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Moisture",
+        "label": "%",
+        "format": "{{msg.payload.Humidity}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 940,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8ca9efddfa25bc49",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "create table",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.5,
+        "topic": "CREATE TABLE IF NOT EXISTS NPKv1 (timestamp INTEGER, ts_utc TEXT, humidity REAL, temperature REAL, conductivity REAL, PH REAL, N REAL, P REAL, K REAL, ok INTEGER);",
+        "payload": "",
+        "payloadType": "date",
+        "x": 460,
+        "y": 80,
+        "wires": [
+            [
+                "2b6e2e1da35fe392"
+            ]
+        ]
+    },
+    {
+        "id": "2e90080fca29c5a6",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "36a7f23d8851cb03",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "02673b1a6fde3fd6",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "delete rows",
+        "x": 800,
+        "y": 540,
+        "wires": [
+            [
+                "36a7f23d8851cb03"
+            ]
+        ]
+    },
+    {
+        "id": "d6b1fa5bdec07d3d",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "delete from NPKv1;",
+        "payload": "",
+        "payloadType": "date",
+        "x": 540,
+        "y": 540,
+        "wires": [
+            [
+                "02673b1a6fde3fd6"
+            ]
+        ]
+    },
+    {
+        "id": "06fee8be07ade0d1",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "build insert params",
+        "func": "const p = msg.payload;\n\nif (p === null || typeof p !== \"object\" || Array.isArray(p)) {\n    node.warn(\"NPKdata payload is not an object, ignoring: \" + JSON.stringify(p));\n    return null;\n}\n\n// null rather than a broken statement when a field is missing or non-numeric\nconst num = function (v) {\n    if (v === undefined || v === null || v === \"\") { return null; }\n    const n = Number(v);\n    return isNaN(n) ? null : n;\n};\n\nconst now = new Date();\n\nmsg.params = {\n    $ts: Math.floor(now.getTime() / 1000),                        // unix seconds, UTC\n    $ts_utc: now.toISOString().slice(0, 19).replace(\"T\", \" \"),    // human readable, UTC\n    $humidity: num(p.Humidity),\n    $temperature: num(p.Temperature),\n    $conductivity: num(p.Conductivity),   // 7th channel, SoilNode 2.1.0\n    $ph: num(p.PH),\n    $n: num(p.Nitrogen),\n    $p: num(p.Phosphorus),\n    $k: num(p.Potassium),\n    // firmware sets ok=false when the sweep was partial and some values are\n    // carried over from the previous reading\n    $ok: (p.ok === undefined) ? null : (p.ok ? 1 : 0)\n};\n\nnode.status({ fill: p.ok === false ? \"yellow\" : \"green\", shape: \"dot\",\n              text: msg.params.$ts_utc + (p.ok === false ? \" partial\" : \"\") });\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 440,
+        "wires": [
+            [
+                "a1b2c3d4e5f60001"
+            ]
+        ]
+    },
+    {
+        "id": "f5c50ae8e3103725",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "b3b2ba7659a6611a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature [ºC]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 730,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1090,
+        "y": 620,
+        "wires": [
+            [
+                "a2cfa3698ca572f0"
+            ]
+        ]
+    },
+    {
+        "id": "444577de7c3d52e3",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData temperature",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\n\nconst out = [{\n    series: [\"Temperature\"],\n    data: [[]],\n    labels: [\"\"]\n}];\n\nfor (const item of rows) {\n    if (item.temperature === null || item.temperature === undefined) { continue; }\n    out[0].data[0].push({\n        x: item.timestamp * 1000,   // stored as unix seconds, chart wants ms\n        y: item.temperature\n    });\n}\n\nmsg.payload = out;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 620,
+        "wires": [
+            [
+                "f5c50ae8e3103725"
+            ]
+        ]
+    },
+    {
+        "id": "f794c8e7bc416e61",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "d91c5f0cac293037",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Refresh",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "refresh",
+        "topicType": "str",
+        "x": 380,
+        "y": 680,
+        "wires": [
+            [
+                "aa11bb22cc33dd02"
+            ]
+        ]
+    },
+    {
+        "id": "6c521fc6f2276524",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 620,
+        "y": 680,
+        "wires": [
+            [
+                "444577de7c3d52e3",
+                "f3a810c6c804fea7",
+                "765ce5f385f25cf2",
+                "2d0025fada26f1a6",
+                "e204e982b7dd2d0a",
+                "eb8d5f38547b608e",
+                "62e57cdd1dc5eeaa",
+                "aa11bb22cc33dd03"
+            ]
+        ]
+    },
+    {
+        "id": "a2cfa3698ca572f0",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1320,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "781414fade39dcce",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "b3b2ba7659a6611a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Moisture  [%]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 730,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1070,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f3a810c6c804fea7",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData humidity",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\n\nconst out = [{\n    series: [\"Moisture\"],\n    data: [[]],\n    labels: [\"\"]\n}];\n\nfor (const item of rows) {\n    if (item.humidity === null || item.humidity === undefined) { continue; }\n    out[0].data[0].push({\n        x: item.timestamp * 1000,   // stored as unix seconds, chart wants ms\n        y: item.humidity\n    });\n}\n\nmsg.payload = out;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 660,
+        "wires": [
+            [
+                "781414fade39dcce"
+            ]
+        ]
+    },
+    {
+        "id": "bc40c6c966966db6",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "b3b2ba7659a6611a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "pH",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 730,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1050,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "765ce5f385f25cf2",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData PH",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\n\nconst out = [{\n    series: [\"pH\"],\n    data: [[]],\n    labels: [\"\"]\n}];\n\nfor (const item of rows) {\n    if (item.PH === null || item.PH === undefined) { continue; }\n    out[0].data[0].push({\n        x: item.timestamp * 1000,   // stored as unix seconds, chart wants ms\n        y: item.PH\n    });\n}\n\nmsg.payload = out;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 700,
+        "wires": [
+            [
+                "bc40c6c966966db6"
+            ]
+        ]
+    },
+    {
+        "id": "f37fe8a41957eac6",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fece59b930caf4ae",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "N  [mg/Kg]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 730,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1060,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2d0025fada26f1a6",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData N",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\n\nconst out = [{\n    series: [\"Nitrogen\"],\n    data: [[]],\n    labels: [\"\"]\n}];\n\nfor (const item of rows) {\n    if (item.N === null || item.N === undefined) { continue; }\n    out[0].data[0].push({\n        x: item.timestamp * 1000,   // stored as unix seconds, chart wants ms\n        y: item.N\n    });\n}\n\nmsg.payload = out;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 740,
+        "wires": [
+            [
+                "f37fe8a41957eac6"
+            ]
+        ]
+    },
+    {
+        "id": "b0a088358ead9f5e",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fece59b930caf4ae",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "P [mg/Kg]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 730,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1060,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e204e982b7dd2d0a",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData P",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\n\nconst out = [{\n    series: [\"Phosphorus\"],\n    data: [[]],\n    labels: [\"\"]\n}];\n\nfor (const item of rows) {\n    if (item.P === null || item.P === undefined) { continue; }\n    out[0].data[0].push({\n        x: item.timestamp * 1000,   // stored as unix seconds, chart wants ms\n        y: item.P\n    });\n}\n\nmsg.payload = out;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 780,
+        "wires": [
+            [
+                "b0a088358ead9f5e"
+            ]
+        ]
+    },
+    {
+        "id": "ea1fc58237731cbc",
+        "type": "ui_chart",
+        "z": "55ef81d4c950013b",
+        "name": "",
+        "group": "fece59b930caf4ae",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "K [mg/Kg]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 730,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1060,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb8d5f38547b608e",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "ToPlotData K",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\n\nconst out = [{\n    series: [\"Potassium\"],\n    data: [[]],\n    labels: [\"\"]\n}];\n\nfor (const item of rows) {\n    if (item.K === null || item.K === undefined) { continue; }\n    out[0].data[0].push({\n        x: item.timestamp * 1000,   // stored as unix seconds, chart wants ms\n        y: item.K\n    });\n}\n\nmsg.payload = out;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 820,
+        "wires": [
+            [
+                "ea1fc58237731cbc"
+            ]
+        ]
+    },
+    {
+        "id": "7f38779fb25f8321",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "last 7 days",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select *, datetime(timestamp,'unixepoch') as utc from NPKv1 where timestamp between strftime('%s','now','-7 days') and strftime('%s','now') order by timestamp;",
+        "payload": "",
+        "payloadType": "date",
+        "x": 440,
+        "y": 760,
+        "wires": [
+            [
+                "3555b4cf7dcedf25"
+            ]
+        ]
+    },
+    {
+        "id": "3555b4cf7dcedf25",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "NPK-Sensor_01",
+        "x": 580,
+        "y": 880,
+        "wires": [
+            [
+                "47b7de0abefbe68f"
+            ]
+        ]
+    },
+    {
+        "id": "47b7de0abefbe68f",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 5",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "62e57cdd1dc5eeaa",
+        "type": "debug",
+        "z": "55ef81d4c950013b",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "a1b2c3d4e5f60001",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "prepared",
+        "sql": "INSERT INTO NPKv1 (timestamp, ts_utc, humidity, temperature, conductivity, PH, N, P, K, ok) VALUES ($ts, $ts_utc, $humidity, $temperature, $conductivity, $ph, $n, $p, $k, $ok)",
+        "name": "insert reading",
+        "x": 800,
+        "y": 440,
+        "wires": [
+            [
+                "36a7f23d8851cb03"
+            ]
+        ]
+    },
+    {
+        "id": "aa11bb22cc33dd01",
+        "type": "ui_dropdown",
+        "z": "55ef81d4c950013b",
+        "name": "range",
+        "label": "Time range",
+        "tooltip": "How much history to plot",
+        "place": "Select range",
+        "group": "d91c5f0cac293037",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Last 24 hours",
+                "value": "1",
+                "type": "str"
+            },
+            {
+                "label": "Last 7 days",
+                "value": "7",
+                "type": "str"
+            },
+            {
+                "label": "Last 15 days",
+                "value": "15",
+                "type": "str"
+            },
+            {
+                "label": "Last month",
+                "value": "30",
+                "type": "str"
+            },
+            {
+                "label": "Last 3 months",
+                "value": "90",
+                "type": "str"
+            },
+            {
+                "label": "All data",
+                "value": "all",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "range",
+        "topicType": "str",
+        "className": "",
+        "x": 390,
+        "y": 600,
+        "wires": [
+            [
+                "aa11bb22cc33dd02"
+            ]
+        ]
+    },
+    {
+        "id": "aa11bb22cc33dd02",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "build range query",
+        "func": "// Build the chart query from two independent selections, each remembered in\n// flow context so either dropdown (or the Refresh button) can trigger a reload.\n//\n//   range     : 7 / 15 / 30 / 90 days, or \"all\"\n//   averaging : N consecutive readings per plotted point (1 = raw)\n//\n// Averaging is by row count, not by time bucket, so widening the range does not\n// coarsen the trace - it only adds points.\n\nconst RANGES = [\"1\", \"7\", \"15\", \"30\", \"90\", \"all\"];\nconst in_ = String(msg.payload === undefined ? \"\" : msg.payload);\n\nif (in_.indexOf(\"avg:\") === 0) {\n    const n = parseInt(in_.slice(4), 10);\n    if (!isNaN(n) && n > 0) { flow.set(\"avgN\", n); }\n}\nelse if (RANGES.indexOf(in_) !== -1) {\n    flow.set(\"range\", in_);\n}\n// anything else (the Refresh button) just reuses what is stored\n\nconst range = flow.get(\"range\") || \"7\";\nconst N = flow.get(\"avgN\") || 5;\n\nconst where = (range === \"all\")\n    ? \"\"\n    : \" where timestamp >= strftime('%s','now') - \" + (parseInt(range, 10) * 86400);\n\nconst COLS = \"humidity, temperature, conductivity, PH, N, P, K\";\n\nlet sql;\nif (N === 1) {\n    sql = \"select timestamp, \" + COLS + \" from NPKv1\" + where + \" order by timestamp;\";\n}\nelse {\n    // group consecutive readings into blocks of N\n    sql =\n        \"with r as (select timestamp, \" + COLS + \",\" +\n        \" (row_number() over (order by timestamp) - 1)/\" + N + \" as g\" +\n        \" from NPKv1\" + where + \")\" +\n        \" select cast(avg(timestamp) as integer) as timestamp,\" +\n        \" avg(humidity) as humidity, avg(temperature) as temperature,\" +\n        \" avg(conductivity) as conductivity, avg(PH) as PH,\" +\n        \" avg(N) as N, avg(P) as P, avg(K) as K, count(*) as n_raw\" +\n        \" from r group by g order by timestamp;\";\n}\n\nmsg.topic = sql;\n\nconst rangeLabel = function (r) {\n    if (r === \"all\") { return \"all data\"; }\n    if (r === \"1\")   { return \"last 24 h\"; }\n    return \"last \" + r + \" days\";\n};\nconst rangeTxt = rangeLabel(range);\nnode.status({ fill: \"blue\", shape: \"dot\",\n              text: rangeTxt + \", avg of \" + N });\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 600,
+        "wires": [
+            [
+                "6c521fc6f2276524"
+            ]
+        ]
+    },
+    {
+        "id": "aa11bb22cc33dd03",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "point count",
+        "func": "const rows = Array.isArray(msg.payload) ? msg.payload : [];\nconst N = flow.get(\"avgN\") || 5;\nconst range = flow.get(\"range\") || \"7\";\nconst rangeTxt = (range === \"all\") ? \"all data\"\n    : (range === \"1\") ? \"last 24 h\" : \"last \" + range + \"d\";\n\nif (rows.length === 0) {\n    msg.payload = \"no data in \" + rangeTxt;\n    node.status({ fill: \"yellow\", shape: \"ring\", text: \"0 points\" });\n    return msg;\n}\n\n// short form: 08-15 13:20\nconst fmt = function (secs) {\n    return new Date(secs * 1000).toISOString().slice(5, 16).replace(\"T\", \" \");\n};\n\nlet readings = 0;\nfor (const r of rows) { readings += (r.n_raw || 1); }\n\nconst pts = rows.length;\nconst total = pts * 6;\n\nmsg.payload =\n    pts.toLocaleString() + \" pts/chart · \" +\n    (N > 1 ? \"avg \" + N : \"raw\") + \" · \" +\n    readings.toLocaleString() + \" readings\\n\" +\n    fmt(rows[0].timestamp) + \" → \" + fmt(rows[rows.length - 1].timestamp);\n\nif (total > 20000) {\n    msg.payload += \" · heavy (\" + total.toLocaleString() + \" on screen)\";\n    node.status({ fill: \"red\", shape: \"dot\", text: pts + \" x6 = \" + total });\n} else {\n    node.status({ fill: \"green\", shape: \"dot\", text: pts + \" x6 = \" + total });\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 560,
+        "wires": [
+            [
+                "aa11bb22cc33dd04"
+            ]
+        ]
+    },
+    {
+        "id": "aa11bb22cc33dd04",
+        "type": "ui_text",
+        "z": "55ef81d4c950013b",
+        "group": "d91c5f0cac293037",
+        "order": 4,
+        "width": 6,
+        "height": 2,
+        "name": "showing",
+        "label": "",
+        "format": "<div style=\"white-space:pre-line;line-height:1.4\">{{msg.payload}}</div>",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 13,
+        "color": "#000000",
+        "x": 1050,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "aa11bb22cc33dd05",
+        "type": "ui_dropdown",
+        "z": "55ef81d4c950013b",
+        "name": "averaging",
+        "label": "Averaging",
+        "tooltip": "How many readings collapse into one plotted point",
+        "place": "Select averaging",
+        "group": "d91c5f0cac293037",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Raw (every reading)",
+                "value": "avg:1",
+                "type": "str"
+            },
+            {
+                "label": "Average of 5",
+                "value": "avg:5",
+                "type": "str"
+            },
+            {
+                "label": "Average of 10",
+                "value": "avg:10",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "averaging",
+        "topicType": "str",
+        "className": "",
+        "x": 480,
+        "y": 540,
+        "wires": [
+            [
+                "aa11bb22cc33dd02"
+            ]
+        ]
+    },
+    {
+        "id": "aa11bb22cc33dd06",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "load charts at start",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "3",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 480,
+        "y": 500,
+        "wires": [
+            [
+                "aa11bb22cc33dd02"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000010",
+        "type": "ui_tab",
+        "name": "Calibration",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "ca11b0a000000011",
+        "type": "ui_group",
+        "name": "Calibrate",
+        "tab": "ca11b0a000000010",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ca11b0a000000012",
+        "type": "ui_group",
+        "name": "Node",
+        "tab": "ca11b0a000000010",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ca11b0a000000020",
+        "type": "ui_dropdown",
+        "z": "55ef81d4c950013b",
+        "name": "cal channel",
+        "label": "Channel",
+        "tooltip": "Which channel to calibrate",
+        "place": "Select channel",
+        "group": "ca11b0a000000011",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Nitrogen (probe)",
+                "value": "ch:nitrogen",
+                "type": "str"
+            },
+            {
+                "label": "Phosphorus (probe)",
+                "value": "ch:phosphorus",
+                "type": "str"
+            },
+            {
+                "label": "Potassium (probe)",
+                "value": "ch:potassium",
+                "type": "str"
+            },
+            {
+                "label": "pH (firmware)",
+                "value": "ch:ph",
+                "type": "str"
+            },
+            {
+                "label": "Moisture (firmware)",
+                "value": "ch:moisture",
+                "type": "str"
+            },
+            {
+                "label": "Temperature (firmware)",
+                "value": "ch:temperature",
+                "type": "str"
+            },
+            {
+                "label": "Conductivity (firmware)",
+                "value": "ch:conductivity",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "channel",
+        "topicType": "str",
+        "className": "",
+        "x": 460,
+        "y": 1060,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000021",
+        "type": "ui_text_input",
+        "z": "55ef81d4c950013b",
+        "name": "reference",
+        "label": "Reference value",
+        "tooltip": "Known value of the standard, e.g. 7.00 for pH buffer",
+        "group": "ca11b0a000000011",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "mode": "number",
+        "delay": "600",
+        "topic": "ref",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 460,
+        "y": 1100,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000002a",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "One-point trim",
+        "group": "ca11b0a000000011",
+        "order": 6,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "One-point trim",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "act:1p",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1140,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000002b",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "Two-point: LOW",
+        "group": "ca11b0a000000011",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Two-point: LOW",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "act:low",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1180,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000002c",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "Two-point: HIGH",
+        "group": "ca11b0a000000011",
+        "order": 4,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Two-point: HIGH",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "act:high",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1220,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000002d",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "Read firmware A/B",
+        "group": "ca11b0a000000011",
+        "order": 8,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Read firmware A/B",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "act:list",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1260,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000002e",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "Reset channel (firmware)",
+        "group": "ca11b0a000000011",
+        "order": 9,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Reset channel (firmware)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#b71c1c",
+        "className": "",
+        "icon": "",
+        "payload": "act:reset",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1300,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000002f",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "name": "Reset ALL (firmware)",
+        "group": "ca11b0a000000011",
+        "order": 10,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Reset ALL (firmware)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#b71c1c",
+        "className": "",
+        "icon": "",
+        "payload": "act:resetall",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1340,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000022",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "build cal command",
+        "func": "// Turn dashboard input into a console command for the SoilNode.\n//\n// Two calibration layers exist and they are not interchangeable:\n//\n//   probe side  \"sensor cal <n|p|k> low|high <ref>\"\n//               Reads the gain and offset the probe itself holds, solves a\n//               correction against two standards and writes it back, so the\n//               probe reports corrected values to anything that reads it.\n//               Only N, P and K have a gain register.\n//\n//   firmware    \"cal low|high|1p <channel> <ref>\"\n//               A*raw+B applied on the ESP32 after reading. Works for every\n//               channel, including the four the probe can only offset.\n//\n// Commands go out as plain text: NpkConsole::jsonToLine has no mapping for\n// the \"sensor\" family, and handleMqtt only parses JSON when the payload\n// starts with '{'.\n\nconst NUTRIENTS = [\"nitrogen\", \"phosphorus\", \"potassium\"];\n\nconst in_ = msg.payload;\nconst s = (in_ === undefined || in_ === null) ? \"\" : String(in_);\n\nif (s.indexOf(\"ch:\") === 0) {\n    flow.set(\"calChannel\", s.slice(3));\n    return null;\n}\n\nif (s.indexOf(\"act:\") !== 0) {\n    const n = Number(s.replace(\",\", \".\"));      // accept 7.00 and 7,00\n    if (!isNaN(n)) { flow.set(\"calRef\", n); }\n    return null;\n}\n\nconst act = s.slice(4);\nconst ch = flow.get(\"calChannel\") || \"\";\nconst ref = flow.get(\"calRef\");\nconst onProbe = NUTRIENTS.indexOf(ch) !== -1;\n\nconst fail = function (why) {\n    node.status({ fill: \"red\", shape: \"ring\", text: why });\n    return [null, { payload: { line: \"cannot send: \" + why, kind: \"error\" } }];\n};\n\nconst needsChannel = (act !== \"resetall\" && act !== \"sensor\" && act !== \"list\");\nif (needsChannel && !ch) { return fail(\"choose a channel first\"); }\n\nconst needsRef = (act === \"1p\" || act === \"low\" || act === \"high\");\nif (needsRef && (ref === undefined || ref === null || isNaN(ref))) {\n    return fail(\"enter a reference value first\");\n}\n\nconst r = String(ref);\nlet line = \"\";\nlet note = \"\";\n\nif (act === \"low\" || act === \"high\") {\n    if (onProbe) {\n        line = \"sensor cal \" + ch + \" \" + act + \" \" + r;\n        note = \"probe-side two-point on \" + ch;\n    } else {\n        // the probe has no gain register for this channel\n        line = \"cal \" + act + \" \" + ch + \" \" + r;\n        note = ch + \" has no gain register in the probe, using the firmware layer\";\n    }\n} else if (act === \"1p\") {\n    line = \"cal 1p \" + ch + \" \" + r;\n    note = \"offset-only trim, firmware layer\";\n} else if (act === \"gain1\") {\n    if (!onProbe) { return fail(ch + \" has no gain register in the probe\"); }\n    // cmdSensor refuses to solve on a zero or NaN gain; this is the\n    // reset it tells you to run first\n    line = \"sensor factor \" + ch + \" 1.0\";\n    note = \"starting point for a probe-side solve, writes to the probe\";\n} else if (act === \"sensor\") {\n    line = \"sensor\";\n    note = \"reading the probe's own registers\";\n} else if (act === \"list\") {\n    line = \"cal\";\n    note = \"reading the firmware-side coefficients\";\n} else if (act === \"reset\") {\n    line = \"cal clear \" + ch;\n    note = \"firmware layer only - probe registers are not touched\";\n} else if (act === \"resetall\") {\n    line = \"cal clear all\";\n    note = \"firmware layer only - probe registers are not touched\";\n} else {\n    return fail(\"unknown action \" + act);\n}\n\nnode.status({ fill: \"blue\", shape: \"dot\", text: line });\n\nreturn [\n    { topic: \"NPKcommand\", payload: line },\n    { payload: { line: \"> \" + line + \"\\n  (\" + note + \")\", kind: \"sent\" } }\n];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1120,
+        "wires": [
+            [
+                "ca11b0a000000023"
+            ],
+            [
+                "ca11b0a000000025"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000023",
+        "type": "mqtt out",
+        "z": "55ef81d4c950013b",
+        "name": "NPKcommand",
+        "topic": "NPKcommand",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6c414a6c07090bf9",
+        "x": 930,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "ca11b0a000000024",
+        "type": "mqtt in",
+        "z": "55ef81d4c950013b",
+        "name": "NPKreply",
+        "topic": "NPKreply",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "6c414a6c07090bf9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 460,
+        "y": 1400,
+        "wires": [
+            [
+                "ca11b0a000000025",
+                "ca11b0a000000044"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000025",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "cal log",
+        "func": "// Rolling log of commands sent and replies received.\n// Replies are multi-line fixed-width text from the firmware console\n// (see NpkConsole::listCalibration), so they are shown verbatim in a <pre>.\n\nconst MAX_LINES = 120;\n\nlet entry, kind;\nif (msg.payload && typeof msg.payload === \"object\" && msg.payload.line !== undefined) {\n    entry = msg.payload.line;              // from the command builder\n    kind = msg.payload.kind || \"sent\";\n} else {\n    entry = String(msg.payload).replace(/\\r/g, \"\");   // reply from the node\n    kind = \"reply\";\n}\n\nconst stamp = new Date().toTimeString().slice(0, 8);\n\nlet lines = flow.get(\"calLog\") || [];\nfor (const raw of entry.split(\"\\n\")) {\n    if (raw.trim() === \"\" && kind === \"reply\") { continue; }\n    lines.push({ t: stamp, k: kind, s: raw });\n}\nif (lines.length > MAX_LINES) { lines = lines.slice(lines.length - MAX_LINES); }\nflow.set(\"calLog\", lines);\n\nconst esc = function (s) {\n    return s.replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\");\n};\nconst colour = { sent: \"#1565c0\", reply: \"#222\", error: \"#b71c1c\" };\n\n// newest first, so the latest reply is visible without scrolling\nconst html = lines.slice().reverse().map(function (l) {\n    return '<div style=\"color:' + (colour[l.k] || \"#222\") + '\">' +\n           '<span style=\"opacity:.55\">' + l.t + '</span>  ' + esc(l.s) + '</div>';\n}).join(\"\");\n\nmsg.payload = '<pre style=\"margin:0;font-size:12px;line-height:1.35;' +\n              'white-space:pre-wrap;word-break:break-word\">' + html + '</pre>';\nnode.status({ fill: \"grey\", shape: \"dot\", text: lines.length + \" lines\" });\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1400,
+        "wires": [
+            [
+                "ca11b0a000000026"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000026",
+        "type": "ui_template",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000012",
+        "name": "console log",
+        "order": 2,
+        "width": 6,
+        "height": 8,
+        "format": "<div style=\"height:100%;overflow:auto\" ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 930,
+        "y": 1400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ca11b0a000000027",
+        "type": "mqtt in",
+        "z": "55ef81d4c950013b",
+        "name": "NPKstatus",
+        "topic": "NPKstatus",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "6c414a6c07090bf9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 460,
+        "y": 1340,
+        "wires": [
+            [
+                "ca11b0a000000028"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000028",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "node status",
+        "func": "// NPKstatus is retained: \"online\" or \"sensor-unreachable\" (SoilNode.ino).\nconst s = String(msg.payload);\nconst stamp = new Date().toTimeString().slice(0, 8);\n\nif (s === \"online\") {\n    msg.payload = \"sensor online · \" + stamp;\n    node.status({ fill: \"green\", shape: \"dot\", text: \"online\" });\n} else if (s === \"sensor-unreachable\") {\n    msg.payload = \"SENSOR UNREACHABLE · \" + stamp;\n    node.status({ fill: \"red\", shape: \"dot\", text: \"unreachable\" });\n} else {\n    msg.payload = s + \" · \" + stamp;\n    node.status({ fill: \"grey\", shape: \"dot\", text: s });\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1340,
+        "wires": [
+            [
+                "ca11b0a000000029"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000029",
+        "type": "ui_text",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000012",
+        "name": "status",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 14,
+        "color": "#000000",
+        "x": 930,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "ca11b0a000000030",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000011",
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "tooltip": "",
+        "color": "",
+        "className": "",
+        "icon": "",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1260,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ],
+        "name": "Read probe registers",
+        "label": "Read probe registers",
+        "payload": "act:sensor",
+        "order": 7,
+        "bgcolor": ""
+    },
+    {
+        "id": "ca11b0a000000031",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000011",
+        "name": "Set probe gain to 1.0",
+        "label": "Set probe gain to 1.0",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "tooltip": "Required once before a two-point solve if the gain reads 0",
+        "color": "",
+        "bgcolor": "#ef6c00",
+        "className": "",
+        "icon": "",
+        "payload": "act:gain1",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1220,
+        "wires": [
+            [
+                "ca11b0a000000022"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000040",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000011",
+        "name": "Backup probe registers",
+        "label": "Backup probe registers",
+        "order": 11,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#2e7d32",
+        "className": "",
+        "icon": "",
+        "payload": "act:backup",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1720,
+        "wires": [
+            [
+                "ca11b0a000000043"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000041",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000011",
+        "name": "Restore factory backup",
+        "label": "Restore factory backup",
+        "order": 12,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#ef6c00",
+        "className": "",
+        "icon": "",
+        "payload": "act:restore",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1740,
+        "wires": [
+            [
+                "ca11b0a000000043"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000042",
+        "type": "ui_button",
+        "z": "55ef81d4c950013b",
+        "group": "ca11b0a000000011",
+        "name": "List backups",
+        "label": "List backups",
+        "order": 13,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "act:backups",
+        "payloadType": "str",
+        "topic": "action",
+        "topicType": "str",
+        "x": 460,
+        "y": 1760,
+        "wires": [
+            [
+                "ca11b0a000000043"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000043",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "backup control",
+        "func": "// Backup / restore controller.\n//\n//   act:backup   ask the node for its register dump and arm the parser\n//   act:restore  read the OLDEST snapshot and replay it onto the probe\n//   act:backups  list what has been captured\n//\n// outputs: [ MQTT command, SQLite query, console log ]\n\nconst s = String(msg.payload === undefined ? \"\" : msg.payload);\n\nif (s === \"act:backup\") {\n    // the parser only stores a dump that was asked for here, so pressing\n    // \"Read probe registers\" on its own never creates a snapshot\n    flow.set(\"pendingBackup\", Date.now());\n    node.status({ fill: \"blue\", shape: \"dot\", text: \"awaiting dump\" });\n    return [\n        { topic: \"NPKcommand\", payload: \"sensor\" },\n        null,\n        { payload: { line: \"> sensor  (capturing a backup)\", kind: \"sent\" } }\n    ];\n}\n\nif (s === \"act:restore\") {\n    // oldest first: the earliest snapshot is the closest thing to factory\n    flow.set(\"restoreMode\", \"apply\");\n    return [null,\n        { topic: \"select * from probe_cal_backup order by ts limit 1;\" },\n        { payload: { line: \"> reading the oldest backup\", kind: \"sent\" } }];\n}\n\nif (s === \"act:backups\") {\n    flow.set(\"restoreMode\", \"list\");\n    return [null,\n        { topic: \"select ts, ts_utc, note from probe_cal_backup order by ts;\" },\n        { payload: { line: \"> listing backups\", kind: \"sent\" } }];\n}\n\nreturn null;\n",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1560,
+        "wires": [
+            [
+                "ca11b0a000000023"
+            ],
+            [
+                "ca11b0a000000046"
+            ],
+            [
+                "ca11b0a000000025"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000044",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "parse sensor dump",
+        "func": "// Parse the \"sensor\" register dump into a snapshot row.\n//\n// Runs only when a backup was requested (flow.pendingBackup), so a manual\n// \"Read probe registers\" press does not silently create snapshots.\n//\n// Lines look like:\n//   0x0050  temperature offset   raw      0  -> 0.00\n//   0x04E8  n factor 0.00000   offset 0\n//   0x0022  conductivity factor       0   factory default 0\n// Classified by register number rather than by wording, which is sturdier.\n\nconst NL = String.fromCharCode(10);\nconst text = String(msg.payload);\n\nif (text.indexOf(\"Sensor-side calibration\") === -1) { return null; }   // not a dump\n\nconst asked = flow.get(\"pendingBackup\");\nif (!asked) { return null; }\nflow.set(\"pendingBackup\", null);\n\nconst OFFSETS = { \"0X0050\": \"temp\", \"0X0051\": \"hum\", \"0X0052\": \"ec\", \"0X0053\": \"ph\" };\nconst NUTRIENTS = { \"0X04E8\": \"n\", \"0X04F2\": \"p\", \"0X04FC\": \"k\" };\nconst READONLY = { \"0X0022\": \"ec_factor\", \"0X0023\": \"salinity_factor\", \"0X0024\": \"tds_factor\" };\n\nconst snap = { offsets: {}, factors: {}, nutrient_offsets: {}, readonly: {}, unread: [] };\n\nconst lines = text.split(NL);\nfor (const raw of lines) {\n    const t = raw.trim().split(/ +/);\n    if (!t.length || t[0].substring(0, 2).toUpperCase() !== \"0X\") { continue; }\n    const reg = t[0].toUpperCase();\n\n    if (raw.indexOf(\"no reply\") !== -1) { snap.unread.push(reg); continue; }\n\n    if (OFFSETS[reg] !== undefined) {\n        const i = t.indexOf(\"raw\");\n        const v = Number(t[i + 1]);\n        if (i !== -1 && !isNaN(v)) { snap.offsets[OFFSETS[reg]] = v; }\n    } else if (NUTRIENTS[reg] !== undefined) {\n        const key = NUTRIENTS[reg];\n        const fi = t.indexOf(\"factor\");\n        const oi = t.indexOf(\"offset\");\n        const f = Number(t[fi + 1]);\n        const o = Number(t[oi + 1]);\n        if (fi !== -1 && !isNaN(f)) { snap.factors[key] = f; }\n        if (oi !== -1 && !isNaN(o)) { snap.nutrient_offsets[key] = o; }\n    } else if (READONLY[reg] !== undefined) {\n        const v = Number(t[t.indexOf(\"factor\") + 1]);\n        if (!isNaN(v)) { snap.readonly[READONLY[reg]] = v; }\n    }\n}\n\nconst nFactors = Object.keys(snap.factors).length;\nconst nOffsets = Object.keys(snap.offsets).length;\nif (nFactors === 0 && nOffsets === 0) {\n    return [null, { payload: { line: \"backup aborted: nothing parsed from the dump\",\n                               kind: \"error\" } }];\n}\n\nconst now = new Date();\nconst note = nFactors + \" factors, \" + nOffsets + \" offsets\" +\n             (snap.unread.length ? \", \" + snap.unread.length + \" unread\" : \"\");\n\nmsg.params = {\n    $ts: Math.floor(now.getTime() / 1000),\n    $ts_utc: now.toISOString().slice(0, 19).replace(\"T\", \" \"),\n    $note: note,\n    $data: JSON.stringify(snap)\n};\n\nnode.status({ fill: \"green\", shape: \"dot\", text: \"saved: \" + note });\n\nreturn [msg, { payload: { line: \"backup saved (\" + note + \"): \" +\n                                 JSON.stringify(snap.factors) + \" \" +\n                                 JSON.stringify(snap.offsets), kind: \"sent\" } }];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1460,
+        "wires": [
+            [
+                "ca11b0a000000045"
+            ],
+            [
+                "ca11b0a000000025"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000045",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "prepared",
+        "sql": "INSERT INTO probe_cal_backup (ts, ts_utc, note, data) VALUES ($ts, $ts_utc, $note, $data)",
+        "name": "store backup",
+        "x": 950,
+        "y": 1460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ca11b0a000000049",
+        "type": "inject",
+        "z": "55ef81d4c950013b",
+        "name": "create backup table",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "4",
+        "topic": "CREATE TABLE IF NOT EXISTS probe_cal_backup (ts INTEGER, ts_utc TEXT, note TEXT, data TEXT);",
+        "payload": "",
+        "payloadType": "date",
+        "x": 460,
+        "y": 1420,
+        "wires": [
+            [
+                "ca11b0a00000004a"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a00000004a",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "backup table",
+        "x": 700,
+        "y": 1420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ca11b0a000000046",
+        "type": "sqlite",
+        "z": "55ef81d4c950013b",
+        "mydb": "e9b358432d3979d4",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "read backups",
+        "x": 950,
+        "y": 1560,
+        "wires": [
+            [
+                "ca11b0a000000047"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000047",
+        "type": "function",
+        "z": "55ef81d4c950013b",
+        "name": "restore or list",
+        "func": "// Turn a stored snapshot back into write commands, or list what exists.\n// outputs: [ commands (rate limited), console log ]\n\nconst NL = String.fromCharCode(10);\nconst rows = Array.isArray(msg.payload) ? msg.payload : [];\nconst mode = flow.get(\"restoreMode\") || \"list\";\n\nif (rows.length === 0) {\n    return [null, { payload: { line: \"no backups stored yet - press Backup probe registers first\",\n                               kind: \"error\" } }];\n}\n\nif (mode === \"list\") {\n    const lines = rows.map(function (r) { return \"  \" + r.ts_utc + \"   \" + r.note; });\n    return [null, { payload: { line: \"backups on record:\" + NL + lines.join(NL),\n                               kind: \"reply\" } }];\n}\n\nlet snap;\ntry { snap = JSON.parse(rows[0].data); }\ncatch (e) {\n    return [null, { payload: { line: \"backup is unreadable: \" + e.message, kind: \"error\" } }];\n}\n\nconst cmds = [];\nconst warn = [];\n\n// gains: sensor factor <n|p|k> <float>\nfor (const key of [\"n\", \"p\", \"k\"]) {\n    const v = snap.factors ? snap.factors[key] : undefined;\n    if (v === undefined || v === null || isNaN(v)) { continue; }\n    cmds.push(\"sensor factor \" + key + \" \" + v);\n    if (v === 0) {\n        warn.push(\"note: \" + key + \" gain in this backup is 0, which is what the probe \" +\n                  \"shipped with - a two-point solve cannot run until it is set to 1.0\");\n    }\n}\n\n// offsets: sensor offset <temp|hum|ec|ph> <int>\nfor (const key of [\"temp\", \"hum\", \"ec\", \"ph\"]) {\n    const v = snap.offsets ? snap.offsets[key] : undefined;\n    if (v === undefined || v === null || isNaN(v)) { continue; }\n    cmds.push(\"sensor offset \" + key + \" \" + Math.round(v));\n}\n\nif (cmds.length === 0) {\n    return [null, { payload: { line: \"backup holds nothing writable\", kind: \"error\" } }];\n}\n\n// no write command exists for these, so say so rather than pretending\nconst skipped = [];\nif (snap.nutrient_offsets && Object.keys(snap.nutrient_offsets).length) {\n    skipped.push(\"N/P/K offset registers\");\n}\nif (snap.readonly && Object.keys(snap.readonly).length) {\n    skipped.push(\"0x0022-0x0024 (EC/salinity/TDS factors)\");\n}\n\nlet summary = \"restoring \" + rows[0].ts_utc + \":\" + NL + \"  \" + cmds.join(NL + \"  \");\nif (skipped.length) {\n    summary += NL + \"not restorable (no write command in the firmware): \" + skipped.join(\", \");\n}\nif (warn.length) { summary += NL + warn.join(NL); }\n\nnode.status({ fill: \"blue\", shape: \"dot\", text: cmds.length + \" commands\" });\n\n// one message per command; the delay node paces them so each Modbus write\n// finishes before the next arrives\nconst out = cmds.map(function (c) { return { topic: \"NPKcommand\", payload: c }; });\nreturn [out, { payload: { line: summary, kind: \"sent\" } }];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1620,
+        "wires": [
+            [
+                "ca11b0a000000048"
+            ],
+            [
+                "ca11b0a000000025"
+            ]
+        ]
+    },
+    {
+        "id": "ca11b0a000000048",
+        "type": "delay",
+        "z": "55ef81d4c950013b",
+        "name": "pace writes",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1500",
+        "rateUnits": "millisecond",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 950,
+        "y": 1620,
+        "wires": [
+            [
+                "ca11b0a000000023"
+            ]
+        ]
+    }
+]

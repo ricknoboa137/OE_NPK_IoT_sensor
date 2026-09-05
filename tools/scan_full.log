@@ -1,0 +1,2339 @@
+connected to mqtt://192.168.0.153:1883  (read-only scan)
+
+--- 0x0000..0x07FF   explicit range
+  0x0000..0x0007  8 answered  0.5s
+  0x0008..0x000F  8 answered  0.5s
+  0x0010..0x0017  8 answered  0.5s
+  0x0018..0x001F  8 answered  0.5s
+  0x0020..0x0027  8 answered  0.5s
+  0x0028..0x002F  8 answered  0.5s
+  0x0030..0x0037  8 answered  0.5s
+  0x0038..0x003F  8 answered  0.5s
+  0x0040..0x0047  8 answered  0.5s
+  0x0048..0x004F  8 answered  0.5s
+  0x0050..0x0057  8 answered  0.5s
+  0x0058..0x005F  8 answered  0.5s
+  0x0060..0x0067  8 answered  0.5s
+  0x0068..0x006F  8 answered  0.5s
+  0x0070..0x0077  8 answered  0.5s
+  0x0078..0x007F  8 answered  0.5s
+  0x0080..0x0087  8 answered  0.5s
+  0x0088..0x008F  8 answered  0.5s
+  0x0090..0x0097  8 answered  0.5s
+  0x0098..0x009F  8 answered  0.5s
+  0x00A0..0x00A7  8 answered  0.5s
+  0x00A8..0x00AF  8 answered  0.5s
+  0x00B0..0x00B7  8 answered  0.5s
+  0x00B8..0x00BF  8 answered  0.5s
+  0x00C0..0x00C7  8 answered  0.5s
+  0x00C8..0x00CF  8 answered  0.5s
+  0x00D0..0x00D7  8 answered  0.5s
+  0x00D8..0x00DF  8 answered  0.5s
+  0x00E0..0x00E7  8 answered  0.5s
+  0x00E8..0x00EF  8 answered  0.5s
+  0x00F0..0x00F7  8 answered  0.5s
+  0x00F8..0x00FF  8 answered  0.5s
+  0x0100..0x0107  8 answered  0.5s
+  0x0108..0x010F  8 answered  0.5s
+  0x0110..0x0117  8 answered  0.5s
+  0x0118..0x011F  8 answered  0.6s
+  0x0120..0x0127  8 answered  0.5s
+  0x0128..0x012F  8 answered  0.5s
+  0x0130..0x0137  8 answered  0.5s
+  0x0138..0x013F  8 answered  0.5s
+  0x0140..0x0147  8 answered  0.5s
+  0x0148..0x014F  8 answered  0.5s
+  0x0150..0x0157  8 answered  0.5s
+  0x0158..0x015F  8 answered  0.5s
+  0x0160..0x0167  8 answered  0.5s
+  0x0168..0x016F  8 answered  0.5s
+  0x0170..0x0177  8 answered  0.5s
+  0x0178..0x017F  8 answered  0.5s
+  0x0180..0x0187  8 answered  0.5s
+  0x0188..0x018F  8 answered  0.5s
+  0x0190..0x0197  8 answered  0.5s
+  0x0198..0x019F  8 answered  0.5s
+  0x01A0..0x01A7  8 answered  0.5s
+  0x01A8..0x01AF  8 answered  0.5s
+  0x01B0..0x01B7  8 answered  0.5s
+  0x01B8..0x01BF  8 answered  0.5s
+  0x01C0..0x01C7  8 answered  0.5s
+  0x01C8..0x01CF  8 answered  0.5s
+  0x01D0..0x01D7  8 answered  0.5s
+  0x01D8..0x01DF  8 answered  0.5s
+  0x01E0..0x01E7  8 answered  0.5s
+  0x01E8..0x01EF  8 answered  0.5s
+  0x01F0..0x01F7  8 answered  0.5s
+  0x01F8..0x01FF  8 answered  0.5s
+  0x0200..0x0207  8 answered  0.5s
+  0x0208..0x020F  8 answered  0.5s
+  0x0210..0x0217  8 answered  0.5s
+  0x0218..0x021F  8 answered  0.5s
+  0x0220..0x0227  8 answered  0.5s
+  0x0228..0x022F  8 answered  0.5s
+  0x0230..0x0237  8 answered  0.5s
+  0x0238..0x023F  8 answered  0.5s
+  0x0240..0x0247  8 answered  0.5s
+  0x0248..0x024F  8 answered  0.5s
+  0x0250..0x0257  8 answered  0.5s
+  0x0258..0x025F  8 answered  0.5s
+  0x0260..0x0267  8 answered  0.5s
+  0x0268..0x026F  8 answered  0.5s
+  0x0270..0x0277  8 answered  0.5s
+  0x0278..0x027F  8 answered  0.5s
+  0x0280..0x0287  8 answered  0.5s
+  0x0288..0x028F  8 answered  0.5s
+  0x0290..0x0297  8 answered  0.5s
+  0x0298..0x029F  8 answered  0.5s
+  0x02A0..0x02A7  8 answered  0.5s
+  0x02A8..0x02AF  8 answered  0.5s
+  0x02B0..0x02B7  8 answered  0.5s
+  0x02B8..0x02BF  8 answered  0.5s
+  0x02C0..0x02C7  8 answered  0.5s
+  0x02C8..0x02CF  8 answered  0.5s
+  0x02D0..0x02D7  8 answered  0.5s
+  0x02D8..0x02DF  8 answered  0.5s
+  0x02E0..0x02E7  8 answered  0.5s
+  0x02E8..0x02EF  8 answered  0.5s
+  0x02F0..0x02F7  8 answered  0.5s
+  0x02F8..0x02FF  8 answered  0.5s
+  0x0300..0x0307  8 answered  0.5s
+  0x0308..0x030F  8 answered  0.5s
+  0x0310..0x0317  8 answered  0.5s
+  0x0318..0x031F  8 answered  0.5s
+  0x0320..0x0327  8 answered  0.5s
+  0x0328..0x032F  8 answered  0.5s
+  0x0330..0x0337  8 answered  0.5s
+  0x0338..0x033F  8 answered  0.5s
+  0x0340..0x0347  8 answered  0.5s
+  0x0348..0x034F  8 answered  0.5s
+  0x0350..0x0357  8 answered  0.5s
+  0x0358..0x035F  8 answered  0.5s
+  0x0360..0x0367  8 answered  0.5s
+  0x0368..0x036F  8 answered  0.5s
+  0x0370..0x0377  8 answered  0.5s
+  0x0378..0x037F  8 answered  0.5s
+  0x0380..0x0387  8 answered  0.5s
+  0x0388..0x038F  8 answered  0.5s
+  0x0390..0x0397  8 answered  0.5s
+  0x0398..0x039F  8 answered  0.5s
+  0x03A0..0x03A7  8 answered  0.5s
+  0x03A8..0x03AF  8 answered  0.5s
+  0x03B0..0x03B7  8 answered  0.5s
+  0x03B8..0x03BF  8 answered  0.5s
+  0x03C0..0x03C7  8 answered  0.5s
+  0x03C8..0x03CF  8 answered  0.5s
+  0x03D0..0x03D7  8 answered  0.5s
+  0x03D8..0x03DF  8 answered  0.5s
+  0x03E0..0x03E7  8 answered  0.5s
+  0x03E8..0x03EF  8 answered  0.5s
+  0x03F0..0x03F7  8 answered  0.5s
+  0x03F8..0x03FF  8 answered  0.5s
+  0x0400..0x0407  8 answered  0.5s
+  0x0408..0x040F  8 answered  0.5s
+  0x0410..0x0417  8 answered  0.5s
+  0x0418..0x041F  8 answered  0.5s
+  0x0420..0x0427  8 answered  0.5s
+  0x0428..0x042F  8 answered  0.5s
+  0x0430..0x0437  8 answered  0.5s
+  0x0438..0x043F  8 answered  0.5s
+  0x0440..0x0447  8 answered  0.5s
+  0x0448..0x044F  8 answered  0.5s
+  0x0450..0x0457  8 answered  0.5s
+  0x0458..0x045F  8 answered  0.5s
+  0x0460..0x0467  8 answered  0.5s
+  0x0468..0x046F  8 answered  0.5s
+  0x0470..0x0477  8 answered  0.5s
+  0x0478..0x047F  8 answered  0.5s
+  0x0480..0x0487  8 answered  0.5s
+  0x0488..0x048F  8 answered  0.5s
+  0x0490..0x0497  8 answered  0.5s
+  0x0498..0x049F  8 answered  0.5s
+  0x04A0..0x04A7  8 answered  0.5s
+  0x04A8..0x04AF  8 answered  0.5s
+  0x04B0..0x04B7  8 answered  0.5s
+  0x04B8..0x04BF  8 answered  0.5s
+  0x04C0..0x04C7  8 answered  0.5s
+  0x04C8..0x04CF  8 answered  0.5s
+  0x04D0..0x04D7  8 answered  0.5s
+  0x04D8..0x04DF  8 answered  0.5s
+  0x04E0..0x04E7  8 answered  0.5s
+  0x04E8..0x04EF  8 answered  0.5s
+  0x04F0..0x04F7  8 answered  0.5s
+  0x04F8..0x04FF  8 answered  0.5s
+  0x0500..0x0507  8 answered  0.5s
+  0x0508..0x050F  8 answered  0.5s
+  0x0510..0x0517  8 answered  0.5s
+  0x0518..0x051F  8 answered  0.5s
+  0x0520..0x0527  8 answered  0.5s
+  0x0528..0x052F  8 answered  0.5s
+  0x0530..0x0537  8 answered  0.5s
+  0x0538..0x053F  8 answered  0.5s
+  0x0540..0x0547  8 answered  0.5s
+  0x0548..0x054F  8 answered  0.5s
+  0x0550..0x0557  8 answered  0.5s
+  0x0558..0x055F  8 answered  0.5s
+  0x0560..0x0567  8 answered  0.5s
+  0x0568..0x056F  8 answered  0.5s
+  0x0570..0x0577  8 answered  0.5s
+  0x0578..0x057F  8 answered  0.5s
+  0x0580..0x0587  8 answered  0.5s
+  0x0588..0x058F  8 answered  0.5s
+  0x0590..0x0597  8 answered  0.5s
+  0x0598..0x059F  8 answered  0.5s
+  0x05A0..0x05A7  8 answered  0.5s
+  0x05A8..0x05AF  8 answered  0.5s
+  0x05B0..0x05B7  8 answered  0.5s
+  0x05B8..0x05BF  8 answered  0.5s
+  0x05C0..0x05C7  8 answered  0.5s
+  0x05C8..0x05CF  8 answered  0.5s
+  0x05D0..0x05D7  8 answered  0.5s
+  0x05D8..0x05DF  8 answered  0.5s
+  0x05E0..0x05E7  8 answered  0.5s
+  0x05E8..0x05EF  8 answered  0.5s
+  0x05F0..0x05F7  8 answered  0.5s
+  0x05F8..0x05FF  8 answered  0.5s
+  0x0600..0x0607  8 answered  0.5s
+  0x0608..0x060F  8 answered  0.5s
+  0x0610..0x0617  8 answered  0.5s
+  0x0618..0x061F  8 answered  0.5s
+  0x0620..0x0627  8 answered  0.5s
+  0x0628..0x062F  8 answered  0.5s
+  0x0630..0x0637  8 answered  0.5s
+  0x0638..0x063F  8 answered  0.5s
+  0x0640..0x0647  8 answered  0.5s
+  0x0648..0x064F  8 answered  0.5s
+  0x0650..0x0657  8 answered  0.5s
+  0x0658..0x065F  8 answered  0.5s
+  0x0660..0x0667  8 answered  0.5s
+  0x0668..0x066F  8 answered  0.5s
+  0x0670..0x0677  8 answered  0.5s
+  0x0678..0x067F  8 answered  0.5s
+  0x0680..0x0687  8 answered  0.5s
+  0x0688..0x068F  8 answered  0.5s
+  0x0690..0x0697  8 answered  0.5s
+  0x0698..0x069F  8 answered  0.5s
+  0x06A0..0x06A7  8 answered  0.5s
+  0x06A8..0x06AF  8 answered  0.5s
+  0x06B0..0x06B7  8 answered  0.5s
+  0x06B8..0x06BF  8 answered  0.5s
+  0x06C0..0x06C7  8 answered  0.5s
+  0x06C8..0x06CF  8 answered  0.5s
+  0x06D0..0x06D7  8 answered  0.5s
+  0x06D8..0x06DF  8 answered  0.5s
+  0x06E0..0x06E7  8 answered  0.5s
+  0x06E8..0x06EF  8 answered  0.5s
+  0x06F0..0x06F7  8 answered  0.5s
+  0x06F8..0x06FF  8 answered  0.5s
+  0x0700..0x0707  8 answered  0.5s
+  0x0708..0x070F  8 answered  0.5s
+  0x0710..0x0717  8 answered  0.5s
+  0x0718..0x071F  8 answered  0.5s
+  0x0720..0x0727  8 answered  0.5s
+  0x0728..0x072F  8 answered  0.5s
+  0x0730..0x0737  8 answered  0.5s
+  0x0738..0x073F  8 answered  0.5s
+  0x0740..0x0747  8 answered  0.5s
+  0x0748..0x074F  8 answered  0.5s
+  0x0750..0x0757  8 answered  0.5s
+  0x0758..0x075F  8 answered  0.5s
+  0x0760..0x0767  8 answered  0.5s
+  0x0768..0x076F  8 answered  0.5s
+  0x0770..0x0777  8 answered  0.5s
+  0x0778..0x077F  8 answered  0.5s
+  0x0780..0x0787  8 answered  0.5s
+  0x0788..0x078F  8 answered  0.5s
+  0x0790..0x0797  8 answered  0.5s
+  0x0798..0x079F  8 answered  0.5s
+  0x07A0..0x07A7  8 answered  0.6s
+  0x07A8..0x07AF  8 answered  0.5s
+  0x07B0..0x07B7  8 answered  0.5s
+  0x07B8..0x07BF  8 answered  0.5s
+  0x07C0..0x07C7  8 answered  0.5s
+  0x07C8..0x07CF  8 answered  0.5s
+  0x07D0..0x07D7  8 answered  0.5s
+  0x07D8..0x07DF  8 answered  0.5s
+  0x07E0..0x07E7  8 answered  0.5s
+  0x07E8..0x07EF  8 answered  0.5s
+  0x07F0..0x07F7  8 answered  0.5s
+  0x07F8..0x07FF  8 answered  0.5s
+
+=== registers that answered ===
+  0x0000 =    245   signed    245   <-- non-zero
+  0x0001 =    249   signed    249   <-- non-zero
+  0x0002 =      0   signed      0
+  0x0003 =     84   signed     84   <-- non-zero
+  0x0004 =     45   signed     45   <-- non-zero
+  0x0005 =    152   signed    152   <-- non-zero
+  0x0006 =    145   signed    145   <-- non-zero
+  0x0007 =      0   signed      0
+  0x0008 =      0   signed      0
+  0x0009 =   1543   signed   1543   <-- non-zero
+  0x000A =      0   signed      0
+  0x000B =      9   signed      9   <-- non-zero
+  0x000C =   3565   signed   3565   <-- non-zero
+  0x000D =   2253   signed   2253   <-- non-zero
+  0x000E =      0   signed      0
+  0x000F =      0   signed      0
+  0x0010 =  16320   signed  16320   <-- non-zero
+  0x0011 =  33554   signed -31982   <-- non-zero
+  0x0012 =   1651   signed   1651   <-- non-zero
+  0x0013 =   1644   signed   1644   <-- non-zero
+  0x0014 =    249   signed    249   <-- non-zero
+  0x0015 =    250   signed    250   <-- non-zero
+  0x0016 =      0   signed      0
+  0x0017 =      0   signed      0
+  0x0018 =      0   signed      0
+  0x0019 =      0   signed      0
+  0x001A =      0   signed      0
+  0x001B =      0   signed      0
+  0x001C =      0   signed      0
+  0x001D =   3565   signed   3565   <-- non-zero
+  0x001E =   3565   signed   3565   <-- non-zero
+  0x001F =      0   signed      0
+  0x0020 =      0   signed      0
+  0x0021 =      0   signed      0
+  0x0022 =      0   signed      0
+  0x0023 =     55   signed     55   <-- non-zero
+  0x0024 =     50   signed     50   <-- non-zero
+  0x0025 =  16281   signed  16281   <-- non-zero
+  0x0026 =  39322   signed -26214   <-- non-zero
+  0x0027 =      0   signed      0
+  0x0028 =      0   signed      0
+  0x0029 =      0   signed      0
+  0x002A =      0   signed      0
+  0x002B =      0   signed      0
+  0x002C =      0   signed      0
+  0x002D =      0   signed      0
+  0x002E =      0   signed      0
+  0x002F =      0   signed      0
+  0x0030 =      0   signed      0
+  0x0031 =      0   signed      0
+  0x0032 =      0   signed      0
+  0x0033 =      0   signed      0
+  0x0034 =      0   signed      0
+  0x0035 =      0   signed      0
+  0x0036 =      0   signed      0
+  0x0037 =      0   signed      0
+  0x0038 =      0   signed      0
+  0x0039 =      0   signed      0
+  0x003A =      0   signed      0
+  0x003B =      0   signed      0
+  0x003C =      0   signed      0
+  0x003D =      0   signed      0
+  0x003E =      0   signed      0
+  0x003F =      0   signed      0
+  0x0040 =      0   signed      0
+  0x0041 =      0   signed      0
+  0x0042 =      0   signed      0
+  0x0043 =      0   signed      0
+  0x0044 =      0   signed      0
+  0x0045 =  16256   signed  16256   <-- non-zero
+  0x0046 =      0   signed      0
+  0x0047 =      0   signed      0
+  0x0048 =      0   signed      0
+  0x0049 =      0   signed      0
+  0x004A =      0   signed      0
+  0x004B =      0   signed      0
+  0x004C =      0   signed      0
+  0x004D =      0   signed      0
+  0x004E =      0   signed      0
+  0x004F =      0   signed      0
+  0x0050 =      0   signed      0
+  0x0051 =      0   signed      0
+  0x0052 =      0   signed      0
+  0x0053 =      0   signed      0
+  0x0054 =      0   signed      0
+  0x0055 =      0   signed      0
+  0x0056 =      0   signed      0
+  0x0057 =      0   signed      0
+  0x0058 =      0   signed      0
+  0x0059 =      0   signed      0
+  0x005A =      0   signed      0
+  0x005B =      0   signed      0
+  0x005C =      0   signed      0
+  0x005D =      0   signed      0
+  0x005E =      0   signed      0
+  0x005F =      0   signed      0
+  0x0060 =      0   signed      0
+  0x0061 =      0   signed      0
+  0x0062 =      0   signed      0
+  0x0063 =      0   signed      0
+  0x0064 =      0   signed      0
+  0x0065 =      0   signed      0
+  0x0066 =      0   signed      0
+  0x0067 =      0   signed      0
+  0x0068 =      0   signed      0
+  0x0069 =      0   signed      0
+  0x006A =      0   signed      0
+  0x006B =      0   signed      0
+  0x006C =      0   signed      0
+  0x006D =      0   signed      0
+  0x006E =      0   signed      0
+  0x006F =      0   signed      0
+  0x0070 =      0   signed      0
+  0x0071 =      0   signed      0
+  0x0072 =      0   signed      0
+  0x0073 =      0   signed      0
+  0x0074 =      0   signed      0
+  0x0075 =      0   signed      0
+  0x0076 =      0   signed      0
+  0x0077 =      0   signed      0
+  0x0078 =      0   signed      0
+  0x0079 =      0   signed      0
+  0x007A =      0   signed      0
+  0x007B =      0   signed      0
+  0x007C =      0   signed      0
+  0x007D =      0   signed      0
+  0x007E =      0   signed      0
+  0x007F =      0   signed      0
+  0x0080 =      0   signed      0
+  0x0081 =      0   signed      0
+  0x0082 =      0   signed      0
+  0x0083 =      0   signed      0
+  0x0084 =      0   signed      0
+  0x0085 =      0   signed      0
+  0x0086 =      0   signed      0
+  0x0087 =      0   signed      0
+  0x0088 =      0   signed      0
+  0x0089 =      0   signed      0
+  0x008A =      0   signed      0
+  0x008B =      0   signed      0
+  0x008C =      0   signed      0
+  0x008D =      0   signed      0
+  0x008E =      0   signed      0
+  0x008F =      0   signed      0
+  0x0090 =      0   signed      0
+  0x0091 =      0   signed      0
+  0x0092 =      0   signed      0
+  0x0093 =      0   signed      0
+  0x0094 =      0   signed      0
+  0x0095 =      0   signed      0
+  0x0096 =      0   signed      0
+  0x0097 =      0   signed      0
+  0x0098 =      0   signed      0
+  0x0099 =      0   signed      0
+  0x009A =      0   signed      0
+  0x009B =      0   signed      0
+  0x009C =      0   signed      0
+  0x009D =      0   signed      0
+  0x009E =      0   signed      0
+  0x009F =      0   signed      0
+  0x00A0 =      0   signed      0
+  0x00A1 =      0   signed      0
+  0x00A2 =      0   signed      0
+  0x00A3 =      0   signed      0
+  0x00A4 =      0   signed      0
+  0x00A5 =      0   signed      0
+  0x00A6 =      0   signed      0
+  0x00A7 =      0   signed      0
+  0x00A8 =      0   signed      0
+  0x00A9 =      0   signed      0
+  0x00AA =      0   signed      0
+  0x00AB =      0   signed      0
+  0x00AC =      0   signed      0
+  0x00AD =      0   signed      0
+  0x00AE =      0   signed      0
+  0x00AF =      0   signed      0
+  0x00B0 =      0   signed      0
+  0x00B1 =      0   signed      0
+  0x00B2 =      0   signed      0
+  0x00B3 =      0   signed      0
+  0x00B4 =      0   signed      0
+  0x00B5 =      0   signed      0
+  0x00B6 =      0   signed      0
+  0x00B7 =      0   signed      0
+  0x00B8 =      0   signed      0
+  0x00B9 =      0   signed      0
+  0x00BA =      0   signed      0
+  0x00BB =      0   signed      0
+  0x00BC =      0   signed      0
+  0x00BD =      0   signed      0
+  0x00BE =      0   signed      0
+  0x00BF =      0   signed      0
+  0x00C0 =      0   signed      0
+  0x00C1 =      0   signed      0
+  0x00C2 =      0   signed      0
+  0x00C3 =      0   signed      0
+  0x00C4 =      0   signed      0
+  0x00C5 =      0   signed      0
+  0x00C6 =      0   signed      0
+  0x00C7 =      0   signed      0
+  0x00C8 =      0   signed      0
+  0x00C9 =      0   signed      0
+  0x00CA =      0   signed      0
+  0x00CB =      0   signed      0
+  0x00CC =      0   signed      0
+  0x00CD =      0   signed      0
+  0x00CE =      0   signed      0
+  0x00CF =      0   signed      0
+  0x00D0 =      0   signed      0
+  0x00D1 =      0   signed      0
+  0x00D2 =      0   signed      0
+  0x00D3 =      0   signed      0
+  0x00D4 =      0   signed      0
+  0x00D5 =      0   signed      0
+  0x00D6 =      0   signed      0
+  0x00D7 =      0   signed      0
+  0x00D8 =      0   signed      0
+  0x00D9 =      0   signed      0
+  0x00DA =      0   signed      0
+  0x00DB =      0   signed      0
+  0x00DC =      0   signed      0
+  0x00DD =      0   signed      0
+  0x00DE =      0   signed      0
+  0x00DF =      0   signed      0
+  0x00E0 =      0   signed      0
+  0x00E1 =      0   signed      0
+  0x00E2 =      0   signed      0
+  0x00E3 =      0   signed      0
+  0x00E4 =      0   signed      0
+  0x00E5 =      0   signed      0
+  0x00E6 =      0   signed      0
+  0x00E7 =      0   signed      0
+  0x00E8 =      0   signed      0
+  0x00E9 =      0   signed      0
+  0x00EA =      0   signed      0
+  0x00EB =      0   signed      0
+  0x00EC =      0   signed      0
+  0x00ED =      0   signed      0
+  0x00EE =      0   signed      0
+  0x00EF =      0   signed      0
+  0x00F0 =  55973   signed  -9563   <-- non-zero
+  0x00F1 =      0   signed      0
+  0x00F2 =      0   signed      0
+  0x00F3 =      0   signed      0
+  0x00F4 =      0   signed      0
+  0x00F5 =      0   signed      0
+  0x00F6 =      0   signed      0
+  0x00F7 =      0   signed      0
+  0x00F8 =      0   signed      0
+  0x00F9 =      0   signed      0
+  0x00FA =      0   signed      0
+  0x00FB =      0   signed      0
+  0x00FC =      0   signed      0
+  0x00FD =      0   signed      0
+  0x00FE =      0   signed      0
+  0x00FF =     84   signed     84   <-- non-zero
+  0x0100 =   2703   signed   2703   <-- non-zero
+  0x0101 =      0   signed      0
+  0x0102 =      0   signed      0
+  0x0103 =      0   signed      0
+  0x0104 =      0   signed      0
+  0x0105 =      0   signed      0
+  0x0106 =      0   signed      0
+  0x0107 =      0   signed      0
+  0x0108 =      0   signed      0
+  0x0109 =      0   signed      0
+  0x010A =      0   signed      0
+  0x010B =      0   signed      0
+  0x010C =      0   signed      0
+  0x010D =      0   signed      0
+  0x010E =      0   signed      0
+  0x010F =      0   signed      0
+  0x0110 =  17579   signed  17579   <-- non-zero
+  0x0111 =  32768   signed -32768   <-- non-zero
+  0x0112 =  16928   signed  16928   <-- non-zero
+  0x0113 =      0   signed      0
+  0x0114 =      0   signed      0
+  0x0115 =      0   signed      0
+  0x0116 =      0   signed      0
+  0x0117 =      0   signed      0
+  0x0118 =      0   signed      0
+  0x0119 =      0   signed      0
+  0x011A =      0   signed      0
+  0x011B =      0   signed      0
+  0x011C =      0   signed      0
+  0x011D =      0   signed      0
+  0x011E =      0   signed      0
+  0x011F =      0   signed      0
+  0x0120 =  17683   signed  17683   <-- non-zero
+  0x0121 =  57344   signed  -8192   <-- non-zero
+  0x0122 =  17036   signed  17036   <-- non-zero
+  0x0123 =      0   signed      0
+  0x0124 =      0   signed      0
+  0x0125 =      0   signed      0
+  0x0126 =      0   signed      0
+  0x0127 =      0   signed      0
+  0x0128 =      0   signed      0
+  0x0129 =      0   signed      0
+  0x012A =      0   signed      0
+  0x012B =      0   signed      0
+  0x012C =      0   signed      0
+  0x012D =      0   signed      0
+  0x012E =      0   signed      0
+  0x012F =      0   signed      0
+  0x0130 =  17713   signed  17713   <-- non-zero
+  0x0131 =  57344   signed  -8192   <-- non-zero
+  0x0132 =  17076   signed  17076   <-- non-zero
+  0x0133 =      0   signed      0
+  0x0134 =      0   signed      0
+  0x0135 =      0   signed      0
+  0x0136 =      0   signed      0
+  0x0137 =      0   signed      0
+  0x0138 =      0   signed      0
+  0x0139 =      0   signed      0
+  0x013A =      0   signed      0
+  0x013B =      0   signed      0
+  0x013C =      0   signed      0
+  0x013D =      0   signed      0
+  0x013E =      0   signed      0
+  0x013F =      0   signed      0
+  0x0140 =      0   signed      0
+  0x0141 =      0   signed      0
+  0x0142 =      0   signed      0
+  0x0143 =      0   signed      0
+  0x0144 =      0   signed      0
+  0x0145 =      0   signed      0
+  0x0146 =      0   signed      0
+  0x0147 =      0   signed      0
+  0x0148 =      0   signed      0
+  0x0149 =      0   signed      0
+  0x014A =      0   signed      0
+  0x014B =      0   signed      0
+  0x014C =      0   signed      0
+  0x014D =      0   signed      0
+  0x014E =      0   signed      0
+  0x014F =      0   signed      0
+  0x0150 =  16256   signed  16256   <-- non-zero
+  0x0151 =      0   signed      0
+  0x0152 =      0   signed      0
+  0x0153 =      0   signed      0
+  0x0154 =      0   signed      0
+  0x0155 =      0   signed      0
+  0x0156 =      0   signed      0
+  0x0157 =      0   signed      0
+  0x0158 =      0   signed      0
+  0x0159 =      0   signed      0
+  0x015A =      0   signed      0
+  0x015B =      0   signed      0
+  0x015C =      0   signed      0
+  0x015D =      0   signed      0
+  0x015E =      0   signed      0
+  0x015F =      0   signed      0
+  0x0160 =      0   signed      0
+  0x0161 =      0   signed      0
+  0x0162 =      0   signed      0
+  0x0163 =      0   signed      0
+  0x0164 =      0   signed      0
+  0x0165 =      0   signed      0
+  0x0166 =      0   signed      0
+  0x0167 =      0   signed      0
+  0x0168 =      0   signed      0
+  0x0169 =      0   signed      0
+  0x016A =      0   signed      0
+  0x016B =      0   signed      0
+  0x016C =      0   signed      0
+  0x016D =      0   signed      0
+  0x016E =      0   signed      0
+  0x016F =      0   signed      0
+  0x0170 =      0   signed      0
+  0x0171 =      0   signed      0
+  0x0172 =      0   signed      0
+  0x0173 =      0   signed      0
+  0x0174 =      0   signed      0
+  0x0175 =      0   signed      0
+  0x0176 =      0   signed      0
+  0x0177 =      0   signed      0
+  0x0178 =      0   signed      0
+  0x0179 =      0   signed      0
+  0x017A =      0   signed      0
+  0x017B =      0   signed      0
+  0x017C =      0   signed      0
+  0x017D =      0   signed      0
+  0x017E =      0   signed      0
+  0x017F =      0   signed      0
+  0x0180 =      0   signed      0
+  0x0181 =      0   signed      0
+  0x0182 =      0   signed      0
+  0x0183 =      0   signed      0
+  0x0184 =      0   signed      0
+  0x0185 =      0   signed      0
+  0x0186 =      0   signed      0
+  0x0187 =      0   signed      0
+  0x0188 =      0   signed      0
+  0x0189 =      0   signed      0
+  0x018A =      0   signed      0
+  0x018B =      0   signed      0
+  0x018C =      0   signed      0
+  0x018D =      0   signed      0
+  0x018E =      0   signed      0
+  0x018F =      0   signed      0
+  0x0190 =  16318   signed  16318   <-- non-zero
+  0x0191 =  16318   signed  16318   <-- non-zero
+  0x0192 =      0   signed      0
+  0x0193 =      0   signed      0
+  0x0194 =      0   signed      0
+  0x0195 =      0   signed      0
+  0x0196 =      0   signed      0
+  0x0197 =      0   signed      0
+  0x0198 =      0   signed      0
+  0x0199 =      0   signed      0
+  0x019A =      0   signed      0
+  0x019B =      0   signed      0
+  0x019C =      0   signed      0
+  0x019D =      0   signed      0
+  0x019E =      0   signed      0
+  0x019F =      0   signed      0
+  0x01A0 =      0   signed      0
+  0x01A1 =      0   signed      0
+  0x01A2 =      0   signed      0
+  0x01A3 =      0   signed      0
+  0x01A4 =      0   signed      0
+  0x01A5 =      0   signed      0
+  0x01A6 =      0   signed      0
+  0x01A7 =      0   signed      0
+  0x01A8 =      0   signed      0
+  0x01A9 =      0   signed      0
+  0x01AA =      0   signed      0
+  0x01AB =      0   signed      0
+  0x01AC =      0   signed      0
+  0x01AD =      0   signed      0
+  0x01AE =      0   signed      0
+  0x01AF =      0   signed      0
+  0x01B0 =      0   signed      0
+  0x01B1 =      0   signed      0
+  0x01B2 =      0   signed      0
+  0x01B3 =      0   signed      0
+  0x01B4 =      0   signed      0
+  0x01B5 =      0   signed      0
+  0x01B6 =      0   signed      0
+  0x01B7 =      0   signed      0
+  0x01B8 =      0   signed      0
+  0x01B9 =      0   signed      0
+  0x01BA =      0   signed      0
+  0x01BB =      0   signed      0
+  0x01BC =      0   signed      0
+  0x01BD =      0   signed      0
+  0x01BE =      0   signed      0
+  0x01BF =      0   signed      0
+  0x01C0 =      0   signed      0
+  0x01C1 =      0   signed      0
+  0x01C2 =      0   signed      0
+  0x01C3 =      0   signed      0
+  0x01C4 =      0   signed      0
+  0x01C5 =      0   signed      0
+  0x01C6 =      0   signed      0
+  0x01C7 =      0   signed      0
+  0x01C8 =      0   signed      0
+  0x01C9 =      0   signed      0
+  0x01CA =      0   signed      0
+  0x01CB =      0   signed      0
+  0x01CC =      0   signed      0
+  0x01CD =      0   signed      0
+  0x01CE =      0   signed      0
+  0x01CF =      0   signed      0
+  0x01D0 =      0   signed      0
+  0x01D1 =      0   signed      0
+  0x01D2 =      0   signed      0
+  0x01D3 =      0   signed      0
+  0x01D4 =      0   signed      0
+  0x01D5 =      0   signed      0
+  0x01D6 =      0   signed      0
+  0x01D7 =      0   signed      0
+  0x01D8 =      0   signed      0
+  0x01D9 =      0   signed      0
+  0x01DA =      0   signed      0
+  0x01DB =      0   signed      0
+  0x01DC =      0   signed      0
+  0x01DD =      0   signed      0
+  0x01DE =      0   signed      0
+  0x01DF =      0   signed      0
+  0x01E0 =      0   signed      0
+  0x01E1 =      0   signed      0
+  0x01E2 =      0   signed      0
+  0x01E3 =      0   signed      0
+  0x01E4 =      0   signed      0
+  0x01E5 =      0   signed      0
+  0x01E6 =      0   signed      0
+  0x01E7 =      0   signed      0
+  0x01E8 =      0   signed      0
+  0x01E9 =      0   signed      0
+  0x01EA =      0   signed      0
+  0x01EB =      0   signed      0
+  0x01EC =      0   signed      0
+  0x01ED =      0   signed      0
+  0x01EE =      0   signed      0
+  0x01EF =      0   signed      0
+  0x01F0 =      0   signed      0
+  0x01F1 =      0   signed      0
+  0x01F2 =      0   signed      0
+  0x01F3 =      0   signed      0
+  0x01F4 =      0   signed      0
+  0x01F5 =      0   signed      0
+  0x01F6 =      0   signed      0
+  0x01F7 =      0   signed      0
+  0x01F8 =      0   signed      0
+  0x01F9 =      0   signed      0
+  0x01FA =      0   signed      0
+  0x01FB =      0   signed      0
+  0x01FC =      0   signed      0
+  0x01FD =      0   signed      0
+  0x01FE =      0   signed      0
+  0x01FF =      0   signed      0
+  0x0200 =      0   signed      0
+  0x0201 =      0   signed      0
+  0x0202 =      0   signed      0
+  0x0203 =      0   signed      0
+  0x0204 =      0   signed      0
+  0x0205 =      0   signed      0
+  0x0206 =      0   signed      0
+  0x0207 =      0   signed      0
+  0x0208 =      0   signed      0
+  0x0209 =      0   signed      0
+  0x020A =      0   signed      0
+  0x020B =      0   signed      0
+  0x020C =      0   signed      0
+  0x020D =      0   signed      0
+  0x020E =      0   signed      0
+  0x020F =      0   signed      0
+  0x0210 =  16258   signed  16258   <-- non-zero
+  0x0211 =  64012   signed  -1524   <-- non-zero
+  0x0212 =      0   signed      0
+  0x0213 =      0   signed      0
+  0x0214 =      0   signed      0
+  0x0215 =      0   signed      0
+  0x0216 =      0   signed      0
+  0x0217 =      0   signed      0
+  0x0218 =      0   signed      0
+  0x0219 =      0   signed      0
+  0x021A =      0   signed      0
+  0x021B =      0   signed      0
+  0x021C =      0   signed      0
+  0x021D =      0   signed      0
+  0x021E =      0   signed      0
+  0x021F =      0   signed      0
+  0x0220 =      0   signed      0
+  0x0221 =      0   signed      0
+  0x0222 =      0   signed      0
+  0x0223 =      0   signed      0
+  0x0224 =      0   signed      0
+  0x0225 =      0   signed      0
+  0x0226 =      0   signed      0
+  0x0227 =      0   signed      0
+  0x0228 =      0   signed      0
+  0x0229 =      0   signed      0
+  0x022A =      0   signed      0
+  0x022B =      0   signed      0
+  0x022C =      0   signed      0
+  0x022D =      0   signed      0
+  0x022E =      0   signed      0
+  0x022F =      0   signed      0
+  0x0230 =      0   signed      0
+  0x0231 =      0   signed      0
+  0x0232 =      0   signed      0
+  0x0233 =      0   signed      0
+  0x0234 =      0   signed      0
+  0x0235 =      0   signed      0
+  0x0236 =      0   signed      0
+  0x0237 =      0   signed      0
+  0x0238 =      0   signed      0
+  0x0239 =      0   signed      0
+  0x023A =      0   signed      0
+  0x023B =      0   signed      0
+  0x023C =      0   signed      0
+  0x023D =      0   signed      0
+  0x023E =      0   signed      0
+  0x023F =      0   signed      0
+  0x0240 =      0   signed      0
+  0x0241 =      0   signed      0
+  0x0242 =      0   signed      0
+  0x0243 =      0   signed      0
+  0x0244 =      0   signed      0
+  0x0245 =      0   signed      0
+  0x0246 =      0   signed      0
+  0x0247 =      0   signed      0
+  0x0248 =      0   signed      0
+  0x0249 =      0   signed      0
+  0x024A =      0   signed      0
+  0x024B =      0   signed      0
+  0x024C =      0   signed      0
+  0x024D =      0   signed      0
+  0x024E =      0   signed      0
+  0x024F =      0   signed      0
+  0x0250 =      0   signed      0
+  0x0251 =      0   signed      0
+  0x0252 =      0   signed      0
+  0x0253 =      0   signed      0
+  0x0254 =      0   signed      0
+  0x0255 =      0   signed      0
+  0x0256 =      0   signed      0
+  0x0257 =      0   signed      0
+  0x0258 =      0   signed      0
+  0x0259 =      0   signed      0
+  0x025A =      0   signed      0
+  0x025B =      0   signed      0
+  0x025C =      0   signed      0
+  0x025D =      0   signed      0
+  0x025E =      0   signed      0
+  0x025F =      0   signed      0
+  0x0260 =      0   signed      0
+  0x0261 =      0   signed      0
+  0x0262 =      0   signed      0
+  0x0263 =      0   signed      0
+  0x0264 =      0   signed      0
+  0x0265 =      0   signed      0
+  0x0266 =      0   signed      0
+  0x0267 =      0   signed      0
+  0x0268 =      0   signed      0
+  0x0269 =      0   signed      0
+  0x026A =      0   signed      0
+  0x026B =      0   signed      0
+  0x026C =      0   signed      0
+  0x026D =      0   signed      0
+  0x026E =      0   signed      0
+  0x026F =      0   signed      0
+  0x0270 =      0   signed      0
+  0x0271 =      0   signed      0
+  0x0272 =      0   signed      0
+  0x0273 =      0   signed      0
+  0x0274 =      0   signed      0
+  0x0275 =      0   signed      0
+  0x0276 =      0   signed      0
+  0x0277 =      0   signed      0
+  0x0278 =      0   signed      0
+  0x0279 =      0   signed      0
+  0x027A =      0   signed      0
+  0x027B =      0   signed      0
+  0x027C =      0   signed      0
+  0x027D =      0   signed      0
+  0x027E =      0   signed      0
+  0x027F =      0   signed      0
+  0x0280 =      0   signed      0
+  0x0281 =      0   signed      0
+  0x0282 =      0   signed      0
+  0x0283 =      0   signed      0
+  0x0284 =      0   signed      0
+  0x0285 =      0   signed      0
+  0x0286 =      0   signed      0
+  0x0287 =      0   signed      0
+  0x0288 =      0   signed      0
+  0x0289 =      0   signed      0
+  0x028A =      0   signed      0
+  0x028B =      0   signed      0
+  0x028C =      0   signed      0
+  0x028D =      0   signed      0
+  0x028E =      0   signed      0
+  0x028F =      0   signed      0
+  0x0290 =      0   signed      0
+  0x0291 =      0   signed      0
+  0x0292 =      0   signed      0
+  0x0293 =      0   signed      0
+  0x0294 =      0   signed      0
+  0x0295 =      0   signed      0
+  0x0296 =      0   signed      0
+  0x0297 =      0   signed      0
+  0x0298 =      0   signed      0
+  0x0299 =      0   signed      0
+  0x029A =      0   signed      0
+  0x029B =      0   signed      0
+  0x029C =      0   signed      0
+  0x029D =      0   signed      0
+  0x029E =      0   signed      0
+  0x029F =      0   signed      0
+  0x02A0 =      0   signed      0
+  0x02A1 =      0   signed      0
+  0x02A2 =      0   signed      0
+  0x02A3 =      0   signed      0
+  0x02A4 =      0   signed      0
+  0x02A5 =      0   signed      0
+  0x02A6 =      0   signed      0
+  0x02A7 =      0   signed      0
+  0x02A8 =      0   signed      0
+  0x02A9 =      0   signed      0
+  0x02AA =      0   signed      0
+  0x02AB =      0   signed      0
+  0x02AC =      0   signed      0
+  0x02AD =      0   signed      0
+  0x02AE =      0   signed      0
+  0x02AF =      0   signed      0
+  0x02B0 =      0   signed      0
+  0x02B1 =      0   signed      0
+  0x02B2 =      0   signed      0
+  0x02B3 =      0   signed      0
+  0x02B4 =      0   signed      0
+  0x02B5 =      0   signed      0
+  0x02B6 =      0   signed      0
+  0x02B7 =      0   signed      0
+  0x02B8 =      0   signed      0
+  0x02B9 =      0   signed      0
+  0x02BA =      0   signed      0
+  0x02BB =      0   signed      0
+  0x02BC =      0   signed      0
+  0x02BD =      0   signed      0
+  0x02BE =      0   signed      0
+  0x02BF =      0   signed      0
+  0x02C0 =      0   signed      0
+  0x02C1 =      0   signed      0
+  0x02C2 =      0   signed      0
+  0x02C3 =      0   signed      0
+  0x02C4 =      0   signed      0
+  0x02C5 =      0   signed      0
+  0x02C6 =      0   signed      0
+  0x02C7 =      0   signed      0
+  0x02C8 =      0   signed      0
+  0x02C9 =      0   signed      0
+  0x02CA =      0   signed      0
+  0x02CB =      0   signed      0
+  0x02CC =      0   signed      0
+  0x02CD =      0   signed      0
+  0x02CE =      0   signed      0
+  0x02CF =      0   signed      0
+  0x02D0 =      0   signed      0
+  0x02D1 =      0   signed      0
+  0x02D2 =      0   signed      0
+  0x02D3 =      0   signed      0
+  0x02D4 =      0   signed      0
+  0x02D5 =      0   signed      0
+  0x02D6 =      0   signed      0
+  0x02D7 =      0   signed      0
+  0x02D8 =      0   signed      0
+  0x02D9 =      0   signed      0
+  0x02DA =      0   signed      0
+  0x02DB =      0   signed      0
+  0x02DC =      0   signed      0
+  0x02DD =      0   signed      0
+  0x02DE =      0   signed      0
+  0x02DF =      0   signed      0
+  0x02E0 =      0   signed      0
+  0x02E1 =      0   signed      0
+  0x02E2 =      0   signed      0
+  0x02E3 =      0   signed      0
+  0x02E4 =      0   signed      0
+  0x02E5 =      0   signed      0
+  0x02E6 =      0   signed      0
+  0x02E7 =      0   signed      0
+  0x02E8 =      0   signed      0
+  0x02E9 =      0   signed      0
+  0x02EA =      0   signed      0
+  0x02EB =      0   signed      0
+  0x02EC =      0   signed      0
+  0x02ED =      0   signed      0
+  0x02EE =      0   signed      0
+  0x02EF =      0   signed      0
+  0x02F0 =      0   signed      0
+  0x02F1 =      0   signed      0
+  0x02F2 =      0   signed      0
+  0x02F3 =      0   signed      0
+  0x02F4 =      0   signed      0
+  0x02F5 =      0   signed      0
+  0x02F6 =      0   signed      0
+  0x02F7 =      0   signed      0
+  0x02F8 =      0   signed      0
+  0x02F9 =      0   signed      0
+  0x02FA =      0   signed      0
+  0x02FB =      0   signed      0
+  0x02FC =      0   signed      0
+  0x02FD =      0   signed      0
+  0x02FE =      0   signed      0
+  0x02FF =      0   signed      0
+  0x0300 =      0   signed      0
+  0x0301 =      0   signed      0
+  0x0302 =      0   signed      0
+  0x0303 =      0   signed      0
+  0x0304 =      0   signed      0
+  0x0305 =      0   signed      0
+  0x0306 =      0   signed      0
+  0x0307 =      0   signed      0
+  0x0308 =      0   signed      0
+  0x0309 =      0   signed      0
+  0x030A =      0   signed      0
+  0x030B =      0   signed      0
+  0x030C =      0   signed      0
+  0x030D =      0   signed      0
+  0x030E =      0   signed      0
+  0x030F =      0   signed      0
+  0x0310 =      0   signed      0
+  0x0311 =      0   signed      0
+  0x0312 =      0   signed      0
+  0x0313 =      0   signed      0
+  0x0314 =      0   signed      0
+  0x0315 =      0   signed      0
+  0x0316 =      0   signed      0
+  0x0317 =      0   signed      0
+  0x0318 =      0   signed      0
+  0x0319 =      0   signed      0
+  0x031A =      0   signed      0
+  0x031B =      0   signed      0
+  0x031C =      0   signed      0
+  0x031D =      0   signed      0
+  0x031E =      0   signed      0
+  0x031F =      0   signed      0
+  0x0320 =      0   signed      0
+  0x0321 =      0   signed      0
+  0x0322 =      0   signed      0
+  0x0323 =      0   signed      0
+  0x0324 =      0   signed      0
+  0x0325 =      0   signed      0
+  0x0326 =      0   signed      0
+  0x0327 =      0   signed      0
+  0x0328 =      0   signed      0
+  0x0329 =      0   signed      0
+  0x032A =      0   signed      0
+  0x032B =      0   signed      0
+  0x032C =      0   signed      0
+  0x032D =      0   signed      0
+  0x032E =      0   signed      0
+  0x032F =      0   signed      0
+  0x0330 =      0   signed      0
+  0x0331 =      0   signed      0
+  0x0332 =      0   signed      0
+  0x0333 =      0   signed      0
+  0x0334 =      0   signed      0
+  0x0335 =      0   signed      0
+  0x0336 =      0   signed      0
+  0x0337 =      0   signed      0
+  0x0338 =      0   signed      0
+  0x0339 =      0   signed      0
+  0x033A =      0   signed      0
+  0x033B =      0   signed      0
+  0x033C =      0   signed      0
+  0x033D =      0   signed      0
+  0x033E =      0   signed      0
+  0x033F =      0   signed      0
+  0x0340 =      0   signed      0
+  0x0341 =      0   signed      0
+  0x0342 =      0   signed      0
+  0x0343 =      0   signed      0
+  0x0344 =      0   signed      0
+  0x0345 =      0   signed      0
+  0x0346 =      0   signed      0
+  0x0347 =      0   signed      0
+  0x0348 =      0   signed      0
+  0x0349 =      0   signed      0
+  0x034A =      0   signed      0
+  0x034B =      0   signed      0
+  0x034C =      0   signed      0
+  0x034D =      0   signed      0
+  0x034E =      0   signed      0
+  0x034F =      0   signed      0
+  0x0350 =      0   signed      0
+  0x0351 =      0   signed      0
+  0x0352 =      0   signed      0
+  0x0353 =      0   signed      0
+  0x0354 =      0   signed      0
+  0x0355 =      0   signed      0
+  0x0356 =      0   signed      0
+  0x0357 =      0   signed      0
+  0x0358 =      0   signed      0
+  0x0359 =      0   signed      0
+  0x035A =      0   signed      0
+  0x035B =      0   signed      0
+  0x035C =      0   signed      0
+  0x035D =      0   signed      0
+  0x035E =      0   signed      0
+  0x035F =      0   signed      0
+  0x0360 =      0   signed      0
+  0x0361 =      0   signed      0
+  0x0362 =      0   signed      0
+  0x0363 =      0   signed      0
+  0x0364 =      0   signed      0
+  0x0365 =      0   signed      0
+  0x0366 =      0   signed      0
+  0x0367 =      0   signed      0
+  0x0368 =      0   signed      0
+  0x0369 =      0   signed      0
+  0x036A =      0   signed      0
+  0x036B =      0   signed      0
+  0x036C =      0   signed      0
+  0x036D =      0   signed      0
+  0x036E =      0   signed      0
+  0x036F =      0   signed      0
+  0x0370 =      0   signed      0
+  0x0371 =      0   signed      0
+  0x0372 =      0   signed      0
+  0x0373 =      0   signed      0
+  0x0374 =      0   signed      0
+  0x0375 =      0   signed      0
+  0x0376 =      0   signed      0
+  0x0377 =      0   signed      0
+  0x0378 =      0   signed      0
+  0x0379 =      0   signed      0
+  0x037A =      0   signed      0
+  0x037B =      0   signed      0
+  0x037C =      0   signed      0
+  0x037D =      0   signed      0
+  0x037E =      0   signed      0
+  0x037F =      0   signed      0
+  0x0380 =      0   signed      0
+  0x0381 =      0   signed      0
+  0x0382 =      0   signed      0
+  0x0383 =      0   signed      0
+  0x0384 =      0   signed      0
+  0x0385 =      0   signed      0
+  0x0386 =      0   signed      0
+  0x0387 =      0   signed      0
+  0x0388 =      0   signed      0
+  0x0389 =      0   signed      0
+  0x038A =      0   signed      0
+  0x038B =      0   signed      0
+  0x038C =      0   signed      0
+  0x038D =      0   signed      0
+  0x038E =      0   signed      0
+  0x038F =      0   signed      0
+  0x0390 =      0   signed      0
+  0x0391 =      0   signed      0
+  0x0392 =      0   signed      0
+  0x0393 =      0   signed      0
+  0x0394 =      0   signed      0
+  0x0395 =      0   signed      0
+  0x0396 =      0   signed      0
+  0x0397 =      0   signed      0
+  0x0398 =      0   signed      0
+  0x0399 =      0   signed      0
+  0x039A =      0   signed      0
+  0x039B =      0   signed      0
+  0x039C =      0   signed      0
+  0x039D =      0   signed      0
+  0x039E =      0   signed      0
+  0x039F =      0   signed      0
+  0x03A0 =      0   signed      0
+  0x03A1 =      0   signed      0
+  0x03A2 =      0   signed      0
+  0x03A3 =      0   signed      0
+  0x03A4 =      0   signed      0
+  0x03A5 =      0   signed      0
+  0x03A6 =      0   signed      0
+  0x03A7 =      0   signed      0
+  0x03A8 =      0   signed      0
+  0x03A9 =      0   signed      0
+  0x03AA =      0   signed      0
+  0x03AB =      0   signed      0
+  0x03AC =      0   signed      0
+  0x03AD =      0   signed      0
+  0x03AE =      0   signed      0
+  0x03AF =      0   signed      0
+  0x03B0 =      0   signed      0
+  0x03B1 =      0   signed      0
+  0x03B2 =      0   signed      0
+  0x03B3 =      0   signed      0
+  0x03B4 =      0   signed      0
+  0x03B5 =      0   signed      0
+  0x03B6 =      0   signed      0
+  0x03B7 =      0   signed      0
+  0x03B8 =      0   signed      0
+  0x03B9 =      0   signed      0
+  0x03BA =      0   signed      0
+  0x03BB =      0   signed      0
+  0x03BC =      0   signed      0
+  0x03BD =      0   signed      0
+  0x03BE =      0   signed      0
+  0x03BF =      0   signed      0
+  0x03C0 =      0   signed      0
+  0x03C1 =      0   signed      0
+  0x03C2 =      0   signed      0
+  0x03C3 =      0   signed      0
+  0x03C4 =      0   signed      0
+  0x03C5 =      0   signed      0
+  0x03C6 =      0   signed      0
+  0x03C7 =      0   signed      0
+  0x03C8 =      0   signed      0
+  0x03C9 =      0   signed      0
+  0x03CA =      0   signed      0
+  0x03CB =      0   signed      0
+  0x03CC =      0   signed      0
+  0x03CD =      0   signed      0
+  0x03CE =      0   signed      0
+  0x03CF =      0   signed      0
+  0x03D0 =      0   signed      0
+  0x03D1 =      0   signed      0
+  0x03D2 =      0   signed      0
+  0x03D3 =      0   signed      0
+  0x03D4 =      0   signed      0
+  0x03D5 =      0   signed      0
+  0x03D6 =      0   signed      0
+  0x03D7 =      0   signed      0
+  0x03D8 =      0   signed      0
+  0x03D9 =      0   signed      0
+  0x03DA =      0   signed      0
+  0x03DB =      0   signed      0
+  0x03DC =      0   signed      0
+  0x03DD =      0   signed      0
+  0x03DE =      0   signed      0
+  0x03DF =      0   signed      0
+  0x03E0 =      0   signed      0
+  0x03E1 =      0   signed      0
+  0x03E2 =      0   signed      0
+  0x03E3 =      0   signed      0
+  0x03E4 =      0   signed      0
+  0x03E5 =      0   signed      0
+  0x03E6 =      0   signed      0
+  0x03E7 =      0   signed      0
+  0x03E8 =      0   signed      0
+  0x03E9 =      0   signed      0
+  0x03EA =      0   signed      0
+  0x03EB =      0   signed      0
+  0x03EC =      0   signed      0
+  0x03ED =      0   signed      0
+  0x03EE =      0   signed      0
+  0x03EF =      0   signed      0
+  0x03F0 =      0   signed      0
+  0x03F1 =      0   signed      0
+  0x03F2 =      0   signed      0
+  0x03F3 =      0   signed      0
+  0x03F4 =      0   signed      0
+  0x03F5 =      0   signed      0
+  0x03F6 =      0   signed      0
+  0x03F7 =      0   signed      0
+  0x03F8 =      0   signed      0
+  0x03F9 =      0   signed      0
+  0x03FA =      0   signed      0
+  0x03FB =      0   signed      0
+  0x03FC =      0   signed      0
+  0x03FD =      0   signed      0
+  0x03FE =      0   signed      0
+  0x03FF =      0   signed      0
+  0x0400 =      0   signed      0
+  0x0401 =      0   signed      0
+  0x0402 =      0   signed      0
+  0x0403 =      0   signed      0
+  0x0404 =      0   signed      0
+  0x0405 =      0   signed      0
+  0x0406 =      0   signed      0
+  0x0407 =      0   signed      0
+  0x0408 =      0   signed      0
+  0x0409 =      0   signed      0
+  0x040A =      0   signed      0
+  0x040B =      0   signed      0
+  0x040C =      0   signed      0
+  0x040D =      0   signed      0
+  0x040E =      0   signed      0
+  0x040F =      0   signed      0
+  0x0410 =      0   signed      0
+  0x0411 =      0   signed      0
+  0x0412 =      0   signed      0
+  0x0413 =      0   signed      0
+  0x0414 =      0   signed      0
+  0x0415 =      0   signed      0
+  0x0416 =      0   signed      0
+  0x0417 =      0   signed      0
+  0x0418 =      0   signed      0
+  0x0419 =      0   signed      0
+  0x041A =      0   signed      0
+  0x041B =      0   signed      0
+  0x041C =      0   signed      0
+  0x041D =      0   signed      0
+  0x041E =      0   signed      0
+  0x041F =      0   signed      0
+  0x0420 =      0   signed      0
+  0x0421 =      0   signed      0
+  0x0422 =      0   signed      0
+  0x0423 =      0   signed      0
+  0x0424 =      0   signed      0
+  0x0425 =      0   signed      0
+  0x0426 =      0   signed      0
+  0x0427 =      0   signed      0
+  0x0428 =      0   signed      0
+  0x0429 =      0   signed      0
+  0x042A =      0   signed      0
+  0x042B =      0   signed      0
+  0x042C =      0   signed      0
+  0x042D =      0   signed      0
+  0x042E =      0   signed      0
+  0x042F =      0   signed      0
+  0x0430 =      0   signed      0
+  0x0431 =      0   signed      0
+  0x0432 =      0   signed      0
+  0x0433 =      0   signed      0
+  0x0434 =      0   signed      0
+  0x0435 =      0   signed      0
+  0x0436 =      0   signed      0
+  0x0437 =      0   signed      0
+  0x0438 =      0   signed      0
+  0x0439 =      0   signed      0
+  0x043A =      0   signed      0
+  0x043B =      0   signed      0
+  0x043C =      0   signed      0
+  0x043D =      0   signed      0
+  0x043E =      0   signed      0
+  0x043F =      0   signed      0
+  0x0440 =      0   signed      0
+  0x0441 =      0   signed      0
+  0x0442 =      0   signed      0
+  0x0443 =      0   signed      0
+  0x0444 =      0   signed      0
+  0x0445 =      0   signed      0
+  0x0446 =      0   signed      0
+  0x0447 =      0   signed      0
+  0x0448 =      0   signed      0
+  0x0449 =      0   signed      0
+  0x044A =      0   signed      0
+  0x044B =      0   signed      0
+  0x044C =      0   signed      0
+  0x044D =      0   signed      0
+  0x044E =      0   signed      0
+  0x044F =      0   signed      0
+  0x0450 =      0   signed      0
+  0x0451 =      0   signed      0
+  0x0452 =      0   signed      0
+  0x0453 =      0   signed      0
+  0x0454 =      0   signed      0
+  0x0455 =      0   signed      0
+  0x0456 =      0   signed      0
+  0x0457 =      0   signed      0
+  0x0458 =      0   signed      0
+  0x0459 =      0   signed      0
+  0x045A =      0   signed      0
+  0x045B =      0   signed      0
+  0x045C =      0   signed      0
+  0x045D =      0   signed      0
+  0x045E =      0   signed      0
+  0x045F =      0   signed      0
+  0x0460 =      0   signed      0
+  0x0461 =      0   signed      0
+  0x0462 =      0   signed      0
+  0x0463 =      0   signed      0
+  0x0464 =      0   signed      0
+  0x0465 =      0   signed      0
+  0x0466 =      0   signed      0
+  0x0467 =      0   signed      0
+  0x0468 =      0   signed      0
+  0x0469 =      0   signed      0
+  0x046A =      0   signed      0
+  0x046B =      0   signed      0
+  0x046C =      0   signed      0
+  0x046D =      0   signed      0
+  0x046E =      0   signed      0
+  0x046F =      0   signed      0
+  0x0470 =      0   signed      0
+  0x0471 =      0   signed      0
+  0x0472 =      0   signed      0
+  0x0473 =      0   signed      0
+  0x0474 =      0   signed      0
+  0x0475 =      0   signed      0
+  0x0476 =      0   signed      0
+  0x0477 =      0   signed      0
+  0x0478 =      0   signed      0
+  0x0479 =      0   signed      0
+  0x047A =      0   signed      0
+  0x047B =      0   signed      0
+  0x047C =      0   signed      0
+  0x047D =      0   signed      0
+  0x047E =      0   signed      0
+  0x047F =      0   signed      0
+  0x0480 =      0   signed      0
+  0x0481 =      0   signed      0
+  0x0482 =      0   signed      0
+  0x0483 =      0   signed      0
+  0x0484 =      0   signed      0
+  0x0485 =      0   signed      0
+  0x0486 =      0   signed      0
+  0x0487 =      0   signed      0
+  0x0488 =      0   signed      0
+  0x0489 =      0   signed      0
+  0x048A =      0   signed      0
+  0x048B =      0   signed      0
+  0x048C =      0   signed      0
+  0x048D =      0   signed      0
+  0x048E =      0   signed      0
+  0x048F =      0   signed      0
+  0x0490 =      0   signed      0
+  0x0491 =      0   signed      0
+  0x0492 =      0   signed      0
+  0x0493 =      0   signed      0
+  0x0494 =      0   signed      0
+  0x0495 =      0   signed      0
+  0x0496 =      0   signed      0
+  0x0497 =      0   signed      0
+  0x0498 =      0   signed      0
+  0x0499 =      0   signed      0
+  0x049A =      0   signed      0
+  0x049B =      0   signed      0
+  0x049C =      0   signed      0
+  0x049D =      0   signed      0
+  0x049E =      0   signed      0
+  0x049F =      0   signed      0
+  0x04A0 =      0   signed      0
+  0x04A1 =      0   signed      0
+  0x04A2 =      0   signed      0
+  0x04A3 =      0   signed      0
+  0x04A4 =      0   signed      0
+  0x04A5 =      0   signed      0
+  0x04A6 =      0   signed      0
+  0x04A7 =      0   signed      0
+  0x04A8 =      0   signed      0
+  0x04A9 =      0   signed      0
+  0x04AA =      0   signed      0
+  0x04AB =      0   signed      0
+  0x04AC =      0   signed      0
+  0x04AD =      0   signed      0
+  0x04AE =      0   signed      0
+  0x04AF =      0   signed      0
+  0x04B0 =      0   signed      0
+  0x04B1 =      0   signed      0
+  0x04B2 =      0   signed      0
+  0x04B3 =      0   signed      0
+  0x04B4 =      0   signed      0
+  0x04B5 =      0   signed      0
+  0x04B6 =      0   signed      0
+  0x04B7 =      0   signed      0
+  0x04B8 =      0   signed      0
+  0x04B9 =      0   signed      0
+  0x04BA =      0   signed      0
+  0x04BB =      0   signed      0
+  0x04BC =      0   signed      0
+  0x04BD =      0   signed      0
+  0x04BE =      0   signed      0
+  0x04BF =      0   signed      0
+  0x04C0 =      0   signed      0
+  0x04C1 =      0   signed      0
+  0x04C2 =      0   signed      0
+  0x04C3 =      0   signed      0
+  0x04C4 =      0   signed      0
+  0x04C5 =      0   signed      0
+  0x04C6 =      0   signed      0
+  0x04C7 =      0   signed      0
+  0x04C8 =      0   signed      0
+  0x04C9 =      0   signed      0
+  0x04CA =      0   signed      0
+  0x04CB =      0   signed      0
+  0x04CC =      0   signed      0
+  0x04CD =      0   signed      0
+  0x04CE =      0   signed      0
+  0x04CF =      0   signed      0
+  0x04D0 =      0   signed      0
+  0x04D1 =      0   signed      0
+  0x04D2 =      0   signed      0
+  0x04D3 =      0   signed      0
+  0x04D4 =      0   signed      0
+  0x04D5 =      0   signed      0
+  0x04D6 =      0   signed      0
+  0x04D7 =      0   signed      0
+  0x04D8 =      0   signed      0
+  0x04D9 =      0   signed      0
+  0x04DA =      0   signed      0
+  0x04DB =      0   signed      0
+  0x04DC =      0   signed      0
+  0x04DD =      0   signed      0
+  0x04DE =      0   signed      0
+  0x04DF =      0   signed      0
+  0x04E0 =      0   signed      0
+  0x04E1 =      0   signed      0
+  0x04E2 =      0   signed      0
+  0x04E3 =      0   signed      0
+  0x04E4 =      0   signed      0
+  0x04E5 =      0   signed      0
+  0x04E6 =      0   signed      0
+  0x04E7 =      0   signed      0
+  0x04E8 =      0   signed      0
+  0x04E9 =      0   signed      0
+  0x04EA =      0   signed      0
+  0x04EB =      0   signed      0
+  0x04EC =      0   signed      0
+  0x04ED =      0   signed      0
+  0x04EE =      0   signed      0
+  0x04EF =      0   signed      0
+  0x04F0 =      0   signed      0
+  0x04F1 =      0   signed      0
+  0x04F2 =      0   signed      0
+  0x04F3 =      0   signed      0
+  0x04F4 =      0   signed      0
+  0x04F5 =      0   signed      0
+  0x04F6 =      0   signed      0
+  0x04F7 =      0   signed      0
+  0x04F8 =      0   signed      0
+  0x04F9 =      0   signed      0
+  0x04FA =      0   signed      0
+  0x04FB =      0   signed      0
+  0x04FC =      0   signed      0
+  0x04FD =      0   signed      0
+  0x04FE =      0   signed      0
+  0x04FF =      0   signed      0
+  0x0500 =      0   signed      0
+  0x0501 =      0   signed      0
+  0x0502 =      0   signed      0
+  0x0503 =      0   signed      0
+  0x0504 =      0   signed      0
+  0x0505 =      0   signed      0
+  0x0506 =      0   signed      0
+  0x0507 =      0   signed      0
+  0x0508 =      0   signed      0
+  0x0509 =      0   signed      0
+  0x050A =      0   signed      0
+  0x050B =      0   signed      0
+  0x050C =      0   signed      0
+  0x050D =      0   signed      0
+  0x050E =      0   signed      0
+  0x050F =      0   signed      0
+  0x0510 =      0   signed      0
+  0x0511 =      0   signed      0
+  0x0512 =      0   signed      0
+  0x0513 =      0   signed      0
+  0x0514 =      0   signed      0
+  0x0515 =      0   signed      0
+  0x0516 =      0   signed      0
+  0x0517 =      0   signed      0
+  0x0518 =      0   signed      0
+  0x0519 =      0   signed      0
+  0x051A =      0   signed      0
+  0x051B =      0   signed      0
+  0x051C =      0   signed      0
+  0x051D =      0   signed      0
+  0x051E =      0   signed      0
+  0x051F =      0   signed      0
+  0x0520 =      0   signed      0
+  0x0521 =      0   signed      0
+  0x0522 =      0   signed      0
+  0x0523 =      0   signed      0
+  0x0524 =      0   signed      0
+  0x0525 =      0   signed      0
+  0x0526 =      0   signed      0
+  0x0527 =      0   signed      0
+  0x0528 =      0   signed      0
+  0x0529 =      0   signed      0
+  0x052A =      0   signed      0
+  0x052B =      0   signed      0
+  0x052C =      0   signed      0
+  0x052D =      0   signed      0
+  0x052E =      0   signed      0
+  0x052F =      0   signed      0
+  0x0530 =      0   signed      0
+  0x0531 =      0   signed      0
+  0x0532 =      0   signed      0
+  0x0533 =      0   signed      0
+  0x0534 =      0   signed      0
+  0x0535 =      0   signed      0
+  0x0536 =      0   signed      0
+  0x0537 =      0   signed      0
+  0x0538 =      0   signed      0
+  0x0539 =      0   signed      0
+  0x053A =      0   signed      0
+  0x053B =      0   signed      0
+  0x053C =      0   signed      0
+  0x053D =      0   signed      0
+  0x053E =      0   signed      0
+  0x053F =      0   signed      0
+  0x0540 =      0   signed      0
+  0x0541 =      0   signed      0
+  0x0542 =      0   signed      0
+  0x0543 =      0   signed      0
+  0x0544 =      0   signed      0
+  0x0545 =      0   signed      0
+  0x0546 =      0   signed      0
+  0x0547 =      0   signed      0
+  0x0548 =      0   signed      0
+  0x0549 =      0   signed      0
+  0x054A =      0   signed      0
+  0x054B =      0   signed      0
+  0x054C =      0   signed      0
+  0x054D =      0   signed      0
+  0x054E =      0   signed      0
+  0x054F =      0   signed      0
+  0x0550 =      0   signed      0
+  0x0551 =      0   signed      0
+  0x0552 =      0   signed      0
+  0x0553 =      0   signed      0
+  0x0554 =      0   signed      0
+  0x0555 =      0   signed      0
+  0x0556 =      0   signed      0
+  0x0557 =      0   signed      0
+  0x0558 =      0   signed      0
+  0x0559 =      0   signed      0
+  0x055A =      0   signed      0
+  0x055B =      0   signed      0
+  0x055C =      0   signed      0
+  0x055D =      0   signed      0
+  0x055E =      0   signed      0
+  0x055F =      0   signed      0
+  0x0560 =      0   signed      0
+  0x0561 =      0   signed      0
+  0x0562 =      0   signed      0
+  0x0563 =      0   signed      0
+  0x0564 =      0   signed      0
+  0x0565 =      0   signed      0
+  0x0566 =      0   signed      0
+  0x0567 =      0   signed      0
+  0x0568 =      0   signed      0
+  0x0569 =      0   signed      0
+  0x056A =      0   signed      0
+  0x056B =      0   signed      0
+  0x056C =      0   signed      0
+  0x056D =      0   signed      0
+  0x056E =      0   signed      0
+  0x056F =      0   signed      0
+  0x0570 =      0   signed      0
+  0x0571 =      0   signed      0
+  0x0572 =      0   signed      0
+  0x0573 =      0   signed      0
+  0x0574 =      0   signed      0
+  0x0575 =      0   signed      0
+  0x0576 =      0   signed      0
+  0x0577 =      0   signed      0
+  0x0578 =      0   signed      0
+  0x0579 =      0   signed      0
+  0x057A =      0   signed      0
+  0x057B =      0   signed      0
+  0x057C =      0   signed      0
+  0x057D =      0   signed      0
+  0x057E =      0   signed      0
+  0x057F =      0   signed      0
+  0x0580 =      0   signed      0
+  0x0581 =      0   signed      0
+  0x0582 =      0   signed      0
+  0x0583 =      0   signed      0
+  0x0584 =      0   signed      0
+  0x0585 =      0   signed      0
+  0x0586 =      0   signed      0
+  0x0587 =      0   signed      0
+  0x0588 =      0   signed      0
+  0x0589 =      0   signed      0
+  0x058A =      0   signed      0
+  0x058B =      0   signed      0
+  0x058C =      0   signed      0
+  0x058D =      0   signed      0
+  0x058E =      0   signed      0
+  0x058F =      0   signed      0
+  0x0590 =      0   signed      0
+  0x0591 =      0   signed      0
+  0x0592 =      0   signed      0
+  0x0593 =      0   signed      0
+  0x0594 =      0   signed      0
+  0x0595 =      0   signed      0
+  0x0596 =      0   signed      0
+  0x0597 =      0   signed      0
+  0x0598 =      0   signed      0
+  0x0599 =      0   signed      0
+  0x059A =      0   signed      0
+  0x059B =      0   signed      0
+  0x059C =      0   signed      0
+  0x059D =      0   signed      0
+  0x059E =      0   signed      0
+  0x059F =      0   signed      0
+  0x05A0 =      0   signed      0
+  0x05A1 =      0   signed      0
+  0x05A2 =      0   signed      0
+  0x05A3 =      0   signed      0
+  0x05A4 =      0   signed      0
+  0x05A5 =      0   signed      0
+  0x05A6 =      0   signed      0
+  0x05A7 =      0   signed      0
+  0x05A8 =      0   signed      0
+  0x05A9 =      0   signed      0
+  0x05AA =      0   signed      0
+  0x05AB =      0   signed      0
+  0x05AC =      0   signed      0
+  0x05AD =      0   signed      0
+  0x05AE =      0   signed      0
+  0x05AF =      0   signed      0
+  0x05B0 =      0   signed      0
+  0x05B1 =      0   signed      0
+  0x05B2 =      0   signed      0
+  0x05B3 =      0   signed      0
+  0x05B4 =      0   signed      0
+  0x05B5 =      0   signed      0
+  0x05B6 =      0   signed      0
+  0x05B7 =      0   signed      0
+  0x05B8 =      0   signed      0
+  0x05B9 =      0   signed      0
+  0x05BA =      0   signed      0
+  0x05BB =      0   signed      0
+  0x05BC =      0   signed      0
+  0x05BD =      0   signed      0
+  0x05BE =      0   signed      0
+  0x05BF =      0   signed      0
+  0x05C0 =      0   signed      0
+  0x05C1 =      0   signed      0
+  0x05C2 =      0   signed      0
+  0x05C3 =      0   signed      0
+  0x05C4 =      0   signed      0
+  0x05C5 =      0   signed      0
+  0x05C6 =      0   signed      0
+  0x05C7 =      0   signed      0
+  0x05C8 =      0   signed      0
+  0x05C9 =      0   signed      0
+  0x05CA =      0   signed      0
+  0x05CB =      0   signed      0
+  0x05CC =      0   signed      0
+  0x05CD =      0   signed      0
+  0x05CE =      0   signed      0
+  0x05CF =      0   signed      0
+  0x05D0 =      0   signed      0
+  0x05D1 =      0   signed      0
+  0x05D2 =      0   signed      0
+  0x05D3 =      0   signed      0
+  0x05D4 =      0   signed      0
+  0x05D5 =      0   signed      0
+  0x05D6 =      0   signed      0
+  0x05D7 =      0   signed      0
+  0x05D8 =      0   signed      0
+  0x05D9 =      0   signed      0
+  0x05DA =      0   signed      0
+  0x05DB =      0   signed      0
+  0x05DC =      0   signed      0
+  0x05DD =      0   signed      0
+  0x05DE =      0   signed      0
+  0x05DF =      0   signed      0
+  0x05E0 =      0   signed      0
+  0x05E1 =      0   signed      0
+  0x05E2 =      0   signed      0
+  0x05E3 =      0   signed      0
+  0x05E4 =      0   signed      0
+  0x05E5 =      0   signed      0
+  0x05E6 =      0   signed      0
+  0x05E7 =      0   signed      0
+  0x05E8 =      0   signed      0
+  0x05E9 =      0   signed      0
+  0x05EA =      0   signed      0
+  0x05EB =      0   signed      0
+  0x05EC =      0   signed      0
+  0x05ED =      0   signed      0
+  0x05EE =      0   signed      0
+  0x05EF =      0   signed      0
+  0x05F0 =      0   signed      0
+  0x05F1 =      0   signed      0
+  0x05F2 =      0   signed      0
+  0x05F3 =      0   signed      0
+  0x05F4 =      0   signed      0
+  0x05F5 =      0   signed      0
+  0x05F6 =      0   signed      0
+  0x05F7 =      0   signed      0
+  0x05F8 =      0   signed      0
+  0x05F9 =      0   signed      0
+  0x05FA =      0   signed      0
+  0x05FB =      0   signed      0
+  0x05FC =      0   signed      0
+  0x05FD =      0   signed      0
+  0x05FE =      0   signed      0
+  0x05FF =      0   signed      0
+  0x0600 =      0   signed      0
+  0x0601 =      0   signed      0
+  0x0602 =      0   signed      0
+  0x0603 =      0   signed      0
+  0x0604 =      0   signed      0
+  0x0605 =      0   signed      0
+  0x0606 =      0   signed      0
+  0x0607 =      0   signed      0
+  0x0608 =      0   signed      0
+  0x0609 =      0   signed      0
+  0x060A =      0   signed      0
+  0x060B =      0   signed      0
+  0x060C =      0   signed      0
+  0x060D =      0   signed      0
+  0x060E =      0   signed      0
+  0x060F =      0   signed      0
+  0x0610 =      0   signed      0
+  0x0611 =      0   signed      0
+  0x0612 =      0   signed      0
+  0x0613 =      0   signed      0
+  0x0614 =      0   signed      0
+  0x0615 =      0   signed      0
+  0x0616 =      0   signed      0
+  0x0617 =      0   signed      0
+  0x0618 =      0   signed      0
+  0x0619 =      0   signed      0
+  0x061A =      0   signed      0
+  0x061B =      0   signed      0
+  0x061C =      0   signed      0
+  0x061D =      0   signed      0
+  0x061E =      0   signed      0
+  0x061F =      0   signed      0
+  0x0620 =      0   signed      0
+  0x0621 =      0   signed      0
+  0x0622 =      0   signed      0
+  0x0623 =      0   signed      0
+  0x0624 =      0   signed      0
+  0x0625 =      0   signed      0
+  0x0626 =      0   signed      0
+  0x0627 =      0   signed      0
+  0x0628 =      0   signed      0
+  0x0629 =      0   signed      0
+  0x062A =      0   signed      0
+  0x062B =      0   signed      0
+  0x062C =      0   signed      0
+  0x062D =      0   signed      0
+  0x062E =      0   signed      0
+  0x062F =      0   signed      0
+  0x0630 =      0   signed      0
+  0x0631 =      0   signed      0
+  0x0632 =      0   signed      0
+  0x0633 =      0   signed      0
+  0x0634 =      0   signed      0
+  0x0635 =      0   signed      0
+  0x0636 =      0   signed      0
+  0x0637 =      0   signed      0
+  0x0638 =      0   signed      0
+  0x0639 =      0   signed      0
+  0x063A =      0   signed      0
+  0x063B =      0   signed      0
+  0x063C =      0   signed      0
+  0x063D =      0   signed      0
+  0x063E =      0   signed      0
+  0x063F =      0   signed      0
+  0x0640 =      0   signed      0
+  0x0641 =      0   signed      0
+  0x0642 =      0   signed      0
+  0x0643 =      0   signed      0
+  0x0644 =      0   signed      0
+  0x0645 =      0   signed      0
+  0x0646 =      0   signed      0
+  0x0647 =      0   signed      0
+  0x0648 =      0   signed      0
+  0x0649 =      0   signed      0
+  0x064A =      0   signed      0
+  0x064B =      0   signed      0
+  0x064C =      0   signed      0
+  0x064D =      0   signed      0
+  0x064E =      0   signed      0
+  0x064F =      0   signed      0
+  0x0650 =      0   signed      0
+  0x0651 =      0   signed      0
+  0x0652 =      0   signed      0
+  0x0653 =      0   signed      0
+  0x0654 =      0   signed      0
+  0x0655 =      0   signed      0
+  0x0656 =      0   signed      0
+  0x0657 =      0   signed      0
+  0x0658 =      0   signed      0
+  0x0659 =      0   signed      0
+  0x065A =      0   signed      0
+  0x065B =      0   signed      0
+  0x065C =      0   signed      0
+  0x065D =      0   signed      0
+  0x065E =      0   signed      0
+  0x065F =      0   signed      0
+  0x0660 =      0   signed      0
+  0x0661 =      0   signed      0
+  0x0662 =      0   signed      0
+  0x0663 =      0   signed      0
+  0x0664 =      0   signed      0
+  0x0665 =      0   signed      0
+  0x0666 =      0   signed      0
+  0x0667 =      0   signed      0
+  0x0668 =      0   signed      0
+  0x0669 =      0   signed      0
+  0x066A =      0   signed      0
+  0x066B =      0   signed      0
+  0x066C =      0   signed      0
+  0x066D =      0   signed      0
+  0x066E =      0   signed      0
+  0x066F =      0   signed      0
+  0x0670 =      0   signed      0
+  0x0671 =      0   signed      0
+  0x0672 =      0   signed      0
+  0x0673 =      0   signed      0
+  0x0674 =      0   signed      0
+  0x0675 =      0   signed      0
+  0x0676 =      0   signed      0
+  0x0677 =      0   signed      0
+  0x0678 =      0   signed      0
+  0x0679 =      0   signed      0
+  0x067A =      0   signed      0
+  0x067B =      0   signed      0
+  0x067C =      0   signed      0
+  0x067D =      0   signed      0
+  0x067E =      0   signed      0
+  0x067F =      0   signed      0
+  0x0680 =      0   signed      0
+  0x0681 =      0   signed      0
+  0x0682 =      0   signed      0
+  0x0683 =      0   signed      0
+  0x0684 =      0   signed      0
+  0x0685 =      0   signed      0
+  0x0686 =      0   signed      0
+  0x0687 =      0   signed      0
+  0x0688 =      0   signed      0
+  0x0689 =      0   signed      0
+  0x068A =      0   signed      0
+  0x068B =      0   signed      0
+  0x068C =      0   signed      0
+  0x068D =      0   signed      0
+  0x068E =      0   signed      0
+  0x068F =      0   signed      0
+  0x0690 =      0   signed      0
+  0x0691 =      0   signed      0
+  0x0692 =      0   signed      0
+  0x0693 =      0   signed      0
+  0x0694 =      0   signed      0
+  0x0695 =      0   signed      0
+  0x0696 =      0   signed      0
+  0x0697 =      0   signed      0
+  0x0698 =      0   signed      0
+  0x0699 =      0   signed      0
+  0x069A =      0   signed      0
+  0x069B =      0   signed      0
+  0x069C =      0   signed      0
+  0x069D =      0   signed      0
+  0x069E =      0   signed      0
+  0x069F =      0   signed      0
+  0x06A0 =      0   signed      0
+  0x06A1 =      0   signed      0
+  0x06A2 =      0   signed      0
+  0x06A3 =      0   signed      0
+  0x06A4 =      0   signed      0
+  0x06A5 =      0   signed      0
+  0x06A6 =      0   signed      0
+  0x06A7 =      0   signed      0
+  0x06A8 =      0   signed      0
+  0x06A9 =      0   signed      0
+  0x06AA =      0   signed      0
+  0x06AB =      0   signed      0
+  0x06AC =      0   signed      0
+  0x06AD =      0   signed      0
+  0x06AE =      0   signed      0
+  0x06AF =      0   signed      0
+  0x06B0 =      0   signed      0
+  0x06B1 =      0   signed      0
+  0x06B2 =      0   signed      0
+  0x06B3 =      0   signed      0
+  0x06B4 =      0   signed      0
+  0x06B5 =      0   signed      0
+  0x06B6 =      0   signed      0
+  0x06B7 =      0   signed      0
+  0x06B8 =      0   signed      0
+  0x06B9 =      0   signed      0
+  0x06BA =      0   signed      0
+  0x06BB =      0   signed      0
+  0x06BC =      0   signed      0
+  0x06BD =      0   signed      0
+  0x06BE =      0   signed      0
+  0x06BF =      0   signed      0
+  0x06C0 =      0   signed      0
+  0x06C1 =      0   signed      0
+  0x06C2 =      0   signed      0
+  0x06C3 =      0   signed      0
+  0x06C4 =      0   signed      0
+  0x06C5 =      0   signed      0
+  0x06C6 =      0   signed      0
+  0x06C7 =      0   signed      0
+  0x06C8 =      0   signed      0
+  0x06C9 =      0   signed      0
+  0x06CA =      0   signed      0
+  0x06CB =      0   signed      0
+  0x06CC =      0   signed      0
+  0x06CD =      0   signed      0
+  0x06CE =      0   signed      0
+  0x06CF =      0   signed      0
+  0x06D0 =      0   signed      0
+  0x06D1 =      0   signed      0
+  0x06D2 =      0   signed      0
+  0x06D3 =      0   signed      0
+  0x06D4 =      0   signed      0
+  0x06D5 =      0   signed      0
+  0x06D6 =      0   signed      0
+  0x06D7 =      0   signed      0
+  0x06D8 =      0   signed      0
+  0x06D9 =      0   signed      0
+  0x06DA =      0   signed      0
+  0x06DB =      0   signed      0
+  0x06DC =      0   signed      0
+  0x06DD =      0   signed      0
+  0x06DE =      0   signed      0
+  0x06DF =      0   signed      0
+  0x06E0 =      0   signed      0
+  0x06E1 =      0   signed      0
+  0x06E2 =      0   signed      0
+  0x06E3 =      0   signed      0
+  0x06E4 =      0   signed      0
+  0x06E5 =      0   signed      0
+  0x06E6 =      0   signed      0
+  0x06E7 =      0   signed      0
+  0x06E8 =      0   signed      0
+  0x06E9 =      0   signed      0
+  0x06EA =      0   signed      0
+  0x06EB =      0   signed      0
+  0x06EC =      0   signed      0
+  0x06ED =      0   signed      0
+  0x06EE =      0   signed      0
+  0x06EF =      0   signed      0
+  0x06F0 =      0   signed      0
+  0x06F1 =      0   signed      0
+  0x06F2 =      0   signed      0
+  0x06F3 =      0   signed      0
+  0x06F4 =      0   signed      0
+  0x06F5 =      0   signed      0
+  0x06F6 =      0   signed      0
+  0x06F7 =      0   signed      0
+  0x06F8 =      0   signed      0
+  0x06F9 =      0   signed      0
+  0x06FA =      0   signed      0
+  0x06FB =      0   signed      0
+  0x06FC =      0   signed      0
+  0x06FD =      0   signed      0
+  0x06FE =      0   signed      0
+  0x06FF =      0   signed      0
+  0x0700 =      0   signed      0
+  0x0701 =      0   signed      0
+  0x0702 =      0   signed      0
+  0x0703 =      0   signed      0
+  0x0704 =      0   signed      0
+  0x0705 =      0   signed      0
+  0x0706 =      0   signed      0
+  0x0707 =      0   signed      0
+  0x0708 =      0   signed      0
+  0x0709 =      0   signed      0
+  0x070A =      0   signed      0
+  0x070B =      0   signed      0
+  0x070C =      0   signed      0
+  0x070D =      0   signed      0
+  0x070E =      0   signed      0
+  0x070F =      0   signed      0
+  0x0710 =      0   signed      0
+  0x0711 =      0   signed      0
+  0x0712 =      0   signed      0
+  0x0713 =      0   signed      0
+  0x0714 =      0   signed      0
+  0x0715 =      0   signed      0
+  0x0716 =      0   signed      0
+  0x0717 =      0   signed      0
+  0x0718 =      0   signed      0
+  0x0719 =      0   signed      0
+  0x071A =      0   signed      0
+  0x071B =      0   signed      0
+  0x071C =      0   signed      0
+  0x071D =      0   signed      0
+  0x071E =      0   signed      0
+  0x071F =      0   signed      0
+  0x0720 =      0   signed      0
+  0x0721 =      0   signed      0
+  0x0722 =      0   signed      0
+  0x0723 =      0   signed      0
+  0x0724 =      0   signed      0
+  0x0725 =      0   signed      0
+  0x0726 =      0   signed      0
+  0x0727 =      0   signed      0
+  0x0728 =      0   signed      0
+  0x0729 =      0   signed      0
+  0x072A =      0   signed      0
+  0x072B =      0   signed      0
+  0x072C =      0   signed      0
+  0x072D =      0   signed      0
+  0x072E =      0   signed      0
+  0x072F =      0   signed      0
+  0x0730 =      0   signed      0
+  0x0731 =      0   signed      0
+  0x0732 =      0   signed      0
+  0x0733 =      0   signed      0
+  0x0734 =      0   signed      0
+  0x0735 =      0   signed      0
+  0x0736 =      0   signed      0
+  0x0737 =      0   signed      0
+  0x0738 =      0   signed      0
+  0x0739 =      0   signed      0
+  0x073A =      0   signed      0
+  0x073B =      0   signed      0
+  0x073C =      0   signed      0
+  0x073D =      0   signed      0
+  0x073E =      0   signed      0
+  0x073F =      0   signed      0
+  0x0740 =      0   signed      0
+  0x0741 =      0   signed      0
+  0x0742 =      0   signed      0
+  0x0743 =      0   signed      0
+  0x0744 =      0   signed      0
+  0x0745 =      0   signed      0
+  0x0746 =      0   signed      0
+  0x0747 =      0   signed      0
+  0x0748 =      0   signed      0
+  0x0749 =      0   signed      0
+  0x074A =      0   signed      0
+  0x074B =      0   signed      0
+  0x074C =      0   signed      0
+  0x074D =      0   signed      0
+  0x074E =      0   signed      0
+  0x074F =      0   signed      0
+  0x0750 =      0   signed      0
+  0x0751 =      0   signed      0
+  0x0752 =      0   signed      0
+  0x0753 =      0   signed      0
+  0x0754 =      0   signed      0
+  0x0755 =      0   signed      0
+  0x0756 =      0   signed      0
+  0x0757 =      0   signed      0
+  0x0758 =      0   signed      0
+  0x0759 =      0   signed      0
+  0x075A =      0   signed      0
+  0x075B =      0   signed      0
+  0x075C =      0   signed      0
+  0x075D =      0   signed      0
+  0x075E =      0   signed      0
+  0x075F =      0   signed      0
+  0x0760 =      0   signed      0
+  0x0761 =      0   signed      0
+  0x0762 =      0   signed      0
+  0x0763 =      0   signed      0
+  0x0764 =      0   signed      0
+  0x0765 =      0   signed      0
+  0x0766 =      0   signed      0
+  0x0767 =      0   signed      0
+  0x0768 =      0   signed      0
+  0x0769 =      0   signed      0
+  0x076A =      0   signed      0
+  0x076B =      0   signed      0
+  0x076C =      0   signed      0
+  0x076D =      0   signed      0
+  0x076E =      0   signed      0
+  0x076F =      0   signed      0
+  0x0770 =      0   signed      0
+  0x0771 =      0   signed      0
+  0x0772 =      0   signed      0
+  0x0773 =      0   signed      0
+  0x0774 =      0   signed      0
+  0x0775 =      0   signed      0
+  0x0776 =      0   signed      0
+  0x0777 =      0   signed      0
+  0x0778 =      0   signed      0
+  0x0779 =      0   signed      0
+  0x077A =      0   signed      0
+  0x077B =      0   signed      0
+  0x077C =      0   signed      0
+  0x077D =      0   signed      0
+  0x077E =      0   signed      0
+  0x077F =      0   signed      0
+  0x0780 =      0   signed      0
+  0x0781 =      0   signed      0
+  0x0782 =      0   signed      0
+  0x0783 =      0   signed      0
+  0x0784 =      0   signed      0
+  0x0785 =      0   signed      0
+  0x0786 =      0   signed      0
+  0x0787 =      0   signed      0
+  0x0788 =      0   signed      0
+  0x0789 =      0   signed      0
+  0x078A =      0   signed      0
+  0x078B =      0   signed      0
+  0x078C =      0   signed      0
+  0x078D =      0   signed      0
+  0x078E =      0   signed      0
+  0x078F =      0   signed      0
+  0x0790 =      0   signed      0
+  0x0791 =      0   signed      0
+  0x0792 =      0   signed      0
+  0x0793 =      0   signed      0
+  0x0794 =      0   signed      0
+  0x0795 =      0   signed      0
+  0x0796 =      0   signed      0
+  0x0797 =      0   signed      0
+  0x0798 =      0   signed      0
+  0x0799 =      0   signed      0
+  0x079A =      0   signed      0
+  0x079B =      0   signed      0
+  0x079C =      0   signed      0
+  0x079D =      0   signed      0
+  0x079E =      0   signed      0
+  0x079F =      0   signed      0
+  0x07A0 =      0   signed      0
+  0x07A1 =      0   signed      0
+  0x07A2 =      0   signed      0
+  0x07A3 =      0   signed      0
+  0x07A4 =      0   signed      0
+  0x07A5 =      0   signed      0
+  0x07A6 =      0   signed      0
+  0x07A7 =      0   signed      0
+  0x07A8 =      0   signed      0
+  0x07A9 =      0   signed      0
+  0x07AA =      0   signed      0
+  0x07AB =      0   signed      0
+  0x07AC =      0   signed      0
+  0x07AD =      0   signed      0
+  0x07AE =      0   signed      0
+  0x07AF =      0   signed      0
+  0x07B0 =      0   signed      0
+  0x07B1 =      0   signed      0
+  0x07B2 =      0   signed      0
+  0x07B3 =      0   signed      0
+  0x07B4 =      0   signed      0
+  0x07B5 =      0   signed      0
+  0x07B6 =      0   signed      0
+  0x07B7 =      0   signed      0
+  0x07B8 =      0   signed      0
+  0x07B9 =      0   signed      0
+  0x07BA =      0   signed      0
+  0x07BB =      0   signed      0
+  0x07BC =      0   signed      0
+  0x07BD =      0   signed      0
+  0x07BE =      0   signed      0
+  0x07BF =      0   signed      0
+  0x07C0 =      0   signed      0
+  0x07C1 =      0   signed      0
+  0x07C2 =      0   signed      0
+  0x07C3 =      0   signed      0
+  0x07C4 =      0   signed      0
+  0x07C5 =      0   signed      0
+  0x07C6 =      0   signed      0
+  0x07C7 =      0   signed      0
+  0x07C8 =      0   signed      0
+  0x07C9 =      0   signed      0
+  0x07CA =      0   signed      0
+  0x07CB =      0   signed      0
+  0x07CC =      0   signed      0
+  0x07CD =      0   signed      0
+  0x07CE =      0   signed      0
+  0x07CF =      0   signed      0
+  0x07D0 =      1   signed      1   <-- non-zero
+  0x07D1 =      1   signed      1   <-- non-zero
+  0x07D2 =      0   signed      0
+  0x07D3 =  26233   signed  26233   <-- non-zero
+  0x07D4 =  14676   signed  14676   <-- non-zero
+  0x07D5 =      0   signed      0
+  0x07D6 =      0   signed      0
+  0x07D7 =      0   signed      0
+  0x07D8 =      0   signed      0
+  0x07D9 =      0   signed      0
+  0x07DA =      0   signed      0
+  0x07DB =      0   signed      0
+  0x07DC =      0   signed      0
+  0x07DD =      0   signed      0
+  0x07DE =      0   signed      0
+  0x07DF =      0   signed      0
+  0x07E0 =      0   signed      0
+  0x07E1 =      0   signed      0
+  0x07E2 =      0   signed      0
+  0x07E3 =      0   signed      0
+  0x07E4 =      0   signed      0
+  0x07E5 =      0   signed      0
+  0x07E6 =      0   signed      0
+  0x07E7 =      0   signed      0
+  0x07E8 =      0   signed      0
+  0x07E9 =      0   signed      0
+  0x07EA =      0   signed      0
+  0x07EB =      0   signed      0
+  0x07EC =      0   signed      0
+  0x07ED =      0   signed      0
+  0x07EE =      0   signed      0
+  0x07EF =      0   signed      0
+  0x07F0 =      0   signed      0
+  0x07F1 =      0   signed      0
+  0x07F2 =      0   signed      0
+  0x07F3 =      0   signed      0
+  0x07F4 =      0   signed      0
+  0x07F5 =      0   signed      0
+  0x07F6 =      0   signed      0
+  0x07F7 =      0   signed      0
+  0x07F8 =      0   signed      0
+  0x07F9 =      0   signed      0
+  0x07FA =      0   signed      0
+  0x07FB =      0   signed      0
+  0x07FC =      0   signed      0
+  0x07FD =      0   signed      0
+  0x07FE =      0   signed      0
+  0x07FF =      0   signed      0
+
+=== float interpretations of adjacent pairs ===
+  0x000F/0x0010   word-swapped 1.5
+  0x0010/0x0011   big-endian 1.503999948501587
+  0x0024/0x0025   word-swapped 1.1953184604644775
+  0x0025/0x0026   big-endian 1.2000000476837158
+  0x0044/0x0045   word-swapped 1
+  0x0045/0x0046   big-endian 1
+  0x010F/0x0110   word-swapped 1368
+  0x0110/0x0111   big-endian 1372
+  0x0111/0x0112   word-swapped 40.125
+  0x0112/0x0113   big-endian 40
+  0x011F/0x0120   word-swapped 2352
+  0x0120/0x0121   big-endian 2366
+  0x0121/0x0122   word-swapped 70.4375
+  0x0122/0x0123   big-endian 70
+  0x012F/0x0130   word-swapped 2832
+  0x0130/0x0131   big-endian 2846
+  0x0131/0x0132   word-swapped 90.4375
+  0x0132/0x0133   big-endian 90
+  0x014F/0x0150   word-swapped 1
+  0x0150/0x0151   big-endian 1
+  0x018F/0x0190   word-swapped 1.484375
+  0x0190/0x0191   big-endian 1.4863202571868896   |   word-swapped 1.4863202571868896
+  0x0191/0x0192   big-endian 1.484375
+  0x020F/0x0210   word-swapped 1.015625
+  0x0210/0x0211   big-endian 1.0232558250427246
+saved tools/scan_results.json
+
+2048 answered, 44 non-zero
