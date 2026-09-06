@@ -86,6 +86,13 @@ for (const key of Object.keys(CHANNELS)) {
                       'floor rather than a measurement. The fit rests on that point - treat ' +
                       'it as provisional until a third soil confirms it.');
     }
+    if (b < 0) {
+        const floor = (-b / a).toFixed(1);
+        warnings.push(ch + ': B is negative, so any raw reading below ' + floor +
+                      ' produces a negative result. The firmware range check drops ' +
+                      'those from NPKdata rather than publishing them, so expect ' +
+                      'gaps whenever this channel reads low.');
+    }
     if (Math.abs(a) > 100 || Math.abs(b) > 10000) {
         warnings.push(ch + ': implausible magnitude (A=' + a.toFixed(3) + ', B=' + b.toFixed(1) +
                       '), the two points are probably too close together.');
@@ -108,3 +115,8 @@ for (const c of commands) { console.log('  ' + c); }
 console.log('');
 console.log('Nothing is written to the probe itself - these live in ESP32 NVS.');
 console.log('Verify afterwards with "cal", and undo with "cal clear all".');
+console.log('');
+console.log('Note: two soils fit two coefficients, so the fit passes through both');
+console.log('points exactly by construction. That is arithmetic, not agreement -');
+console.log('it says nothing about whether the response is actually linear. A');
+console.log('third soil, held back and predicted, is the only thing that tests it.');

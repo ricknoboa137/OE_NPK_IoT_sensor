@@ -892,6 +892,27 @@ void NpkConsole::cmdCal(char** argv, int argc, Print& out) {
     NpkCoeff k = cal_->get(ch);
     out.printf("%s: two-point solve -> A=%.5f B=%.5f saved\r\n",
                NPK_CHANNELS[ch].key, k.a, k.b);
+
+    // A negative gain means the probe read higher where the true value is
+    // lower, which for a soil nutrient is almost always the two references
+    // entered against the wrong samples. Nothing downstream can detect it:
+    // the fit passes through both points exactly whichever way round they go.
+    if (k.a < 0.0f) {
+      out.println("WARNING: negative gain - the probe read HIGHER where the");
+      out.println("         reference is LOWER. Almost certainly the two");
+      out.println("         samples were entered the wrong way round. This");
+      out.println("         fits both points perfectly either way, so nothing");
+      out.println("         downstream will catch it. Re-check before trusting.");
+    }
+    // B is what the channel reports when the probe reads zero. Negative means
+    // a bottomed-out reading becomes a negative concentration, which the range
+    // check then drops from the payload entirely.
+    if (k.b < 0.0f) {
+      out.printf("note: B is negative, so a raw reading below %.1f gives a\r\n",
+                 -k.b / k.a);
+      out.println("      negative result, which is dropped from NPKdata rather");
+      out.println("      than published. Expect gaps if this channel bottoms out.");
+    }
     return;
   }
 
