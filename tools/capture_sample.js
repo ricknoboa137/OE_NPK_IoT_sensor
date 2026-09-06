@@ -2,6 +2,15 @@
 // that has ever read non-zero, so two samples can be compared later.
 //
 //   node tools/capture_sample.js "GOOD - Szolnok farm"
+//   node tools/capture_sample.js "GOOD-1" --quick
+//
+// One run is one insertion of the probe. For calibration, take several at
+// different spots and label them with a common prefix (GOOD-1, GOOD-2, ...);
+// solve_firmware_cal.js pools by prefix and reports the spread between them.
+//
+// --quick skips the register dump, which exists for the constant-hunting
+// experiment and is dead weight when calibrating: ~15 s per insertion instead
+// of ~48 s. --seconds=N sets the collection window.
 //
 // Appends one JSON object per run to tools/samples.jsonl. Read-only.
 const fs = require('fs');
@@ -11,8 +20,13 @@ const mqtt = require(path.join(process.env.APPDATA, 'npm', 'node_modules',
 
 const HOST = 'mqtt://192.168.0.153:1883';
 const OUT = path.join(__dirname, 'samples.jsonl');
-const LABEL = process.argv[2] || 'unlabelled';
-const NOTE = process.argv[3] || '';
+const argv = process.argv.slice(2);
+const QUICK = argv.some(a => a === '--quick' || a === '-q');
+const secArg = argv.find(a => a.indexOf('--seconds=') === 0);
+const WINDOW_MS = secArg ? Number(secArg.split('=')[1]) * 1000 : (QUICK ? 15000 : 16000);
+const positional = argv.filter(a => a.indexOf('-') !== 0);
+const LABEL = positional[0] || 'unlabelled';
+const NOTE = positional[1] || '';
 
 // windows worth recording: the measurement block, everything that read
 // non-zero in the full sweep, and the documented calibration registers
@@ -62,22 +76,23 @@ function parse(text, into) {
     console.log('label: ' + LABEL);
     console.log('collecting published readings...');
 
-    // let a few payloads arrive first so the reading is not a single sample
-    await new Promise(r => setTimeout(r, 16000));
+    // let a few payloads arrive so the reading is not a single sample
+    await new Promise(r => setTimeout(r, WINDOW_MS));
 
     const regs = {};
-    process.stdout.write('reading registers');
-    for (const [first, last] of WINDOWS) {
-        for (let a = first; a <= last; a += CHUNK) {
-            const b = Math.min(a + CHUNK - 1, last);
-            parse(await scanChunk(a, b), regs);
-            process.stdout.write('.');
+    if (!QUICK) {
+        process.stdout.write('reading registers');
+        for (const [first, last] of WINDOWS) {
+            for (let a = first; a <= last; a += CHUNK) {
+                const b = Math.min(a + CHUNK - 1, last);
+                parse(await scanChunk(a, b), regs);
+                process.stdout.write('.');
+            }
         }
+        console.log('');
+        // a couple more payloads after the scan, to show whether it drifted
+        await new Promise(r => setTimeout(r, 12000));
     }
-    console.log('');
-
-    // a couple more payloads after the scan, to show whether it drifted
-    await new Promise(r => setTimeout(r, 12000));
 
     const parsed = payloads.map(p => { try { return JSON.parse(p); } catch (e) { return null; } })
                            .filter(Boolean);
@@ -112,10 +127,12 @@ function parse(text, into) {
         console.log('  ' + k.padEnd(13) + ' mean ' + String(s.mean).padStart(8) +
                     '   range ' + s.min + ' .. ' + s.max);
     }
-    console.log('');
-    console.log('non-zero registers:');
-    for (const k of Object.keys(regs).sort()) {
-        if (regs[k] !== 0) { console.log('  ' + k + ' = ' + regs[k]); }
+    if (!QUICK) {
+        console.log('');
+        console.log('non-zero registers:');
+        for (const k of Object.keys(regs).sort()) {
+            if (regs[k] !== 0) { console.log('  ' + k + ' = ' + regs[k]); }
+        }
     }
     console.log('');
     console.log('appended to tools/samples.jsonl');
