@@ -19,8 +19,11 @@ LAB = pathlib.Path(r"C:/Users/User/Documents/GitHub/Agriculture-4351955"
 # --- sensor readings --------------------------------------------------------
 wb = openpyxl.load_workbook(XLSX, data_only=True)
 ws = wb[wb.sheetnames[0]]
+CORRECT_TYPO = True
+
 readings = {}
 rejected = []
+corrected = []
 for row in list(ws.iter_rows(values_only=True))[1:]:
     if not row or row[0] is None:
         continue
@@ -30,10 +33,20 @@ for row in list(ws.iter_rows(values_only=True))[1:]:
         n, p, k, moist = float(row[2]), float(row[3]), float(row[4]), float(row[5])
     except (TypeError, ValueError):
         continue
-    # K = 9189 alongside P = 196 is a transcription slip for 189; the internal
-    # relation K ~ 1.008*P - 8 puts the true value near 190. Excluded rather
-    # than guessed.
-    if not (0 <= n <= 3000 and 0 <= p <= 3000 and 0 <= k <= 3000):
+    # One row reads K = 9189 beside P = 196. The device's internal relation
+    # K = 1.0079*P - 8.07 predicts 189.5, so this is a leading-digit slip for
+    # 189. It is corrected rather than discarded so that all forty readings
+    # are used; set CORRECT_TYPO = False to drop the row instead. The
+    # conclusions are unchanged either way, only the third decimal of A moves.
+    if not (0 <= k <= 3000):
+        fixed = float(str(int(k))[1:]) if len(str(int(k))) > 1 else 0.0
+        if CORRECT_TYPO and abs(fixed - (1.0079 * p - 8.07)) < 5.0:
+            corrected.append((soil, kod, k, fixed, 1.0079 * p - 8.07))
+            k = fixed
+        else:
+            rejected.append((soil, kod, n, p, k, moist))
+            continue
+    if not (0 <= n <= 3000 and 0 <= p <= 3000):
         rejected.append((soil, kod, n, p, k, moist))
         continue
     readings.setdefault((soil, kod), []).append((n, p, k, moist))
@@ -57,9 +70,13 @@ with open(LAB, encoding="utf-8-sig") as f:
 print("=" * 78)
 print("SENSOR READINGS")
 print("=" * 78)
+for soil, kod, was, now, pred in corrected:
+    print(f"  {soil} {kod}: K = {was:.0f} corrected to {now:.0f} "
+          f"(internal relation predicts {pred:.1f})")
 if rejected:
     for r in rejected:
         print(f"  excluded as out of range: {r}")
+if corrected or rejected:
     print()
 stats = {}
 for (soil, kod), vals in readings.items():
