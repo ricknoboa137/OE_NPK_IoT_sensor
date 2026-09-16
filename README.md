@@ -70,7 +70,4 @@ calibrated from a dashboard without a USB cable.
 
 ## A note on historical data
 
-The original firmware divided every channel by ten. Per the manual,
-conductivity and N/P/K are whole units, so **anything those four logged is a
-factor of ten low.** Multiply by 10 to compare with what this firmware
-publishes. Moisture, temperature and pH are unaffected.
+Bug corrected from the original version where N, p, K values where divided by a factor of 10 i.e. (/10)
