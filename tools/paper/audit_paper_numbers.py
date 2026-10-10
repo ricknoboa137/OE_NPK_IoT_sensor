@@ -121,22 +121,90 @@ want("clamped readings", len(z), f"{len(z):,}".replace(",", chr(92) + ","),
      f"{len(z):,}".replace(",", "{,}"))
 want("clamp floor P", bP, f"{bP:.1f}")
 
-# moisture within one session
-s = list(con.execute(
-    "select humidity,N from NPKv1 where timestamp between "
-    "strftime('%s','2026-09-07 12:46') and strftime('%s','2026-09-07 16:45') "
-    "and N>0 and humidity between 15 and 60"))
-sm = [r[0] for r in s]; sn = [r[1] for r in s]
-a, b, mx, sd = linfit(sm, sn)
-want("session n", len(s), f"{len(s):,}".replace(",", "{,}"), f"{len(s):,}".replace(",", chr(92) + ","))
-want("moisture r", pearson(sm, sn), f"{pearson(sm,sn):.3f}")
-want("moisture r2", pearson(sm, sn) ** 2, f"{pearson(sm,sn)**2:.3f}")
-want("mg/kg per %RH", a, f"{a:.2f}")
-want("moisture residual SD", sd, f"{sd:.2f}")
-want("session moisture low", min(sm), f"{min(sm):.1f}")
-want("session moisture high", max(sm), f"{max(sm):.1f}")
-want("session N low", min(sn), f"{min(sn):.0f}")
-want("session N high", max(sn), f"{max(sn):.0f}")
+# moisture relation and settling, from the two-soil campaign
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import insertion_analysis as ins
+
+w = ins.within_soil()
+for kod in ("59882", "59888"):
+    s = w[kod]
+    want(f"{kod} moisture low", s["m_lo"], f"{s['m_lo']:.1f}")
+    want(f"{kod} moisture high", s["m_hi"], f"{s['m_hi']:.1f}")
+    want(f"{kod} within-soil r", s["r"], f"{s['r']:.2f}")
+want("59882 N low", w["59882"]["n_lo"], f"{w['59882']['n_lo']:.0f} to")
+want("59882 N high", w["59882"]["n_hi"], f"{w['59882']['n_hi']:.0f}~mg/kg")
+want("59882 within-soil r2", w["59882"]["r2"], f"{w['59882']['r2']:.2f}")
+want("59882 within-soil slope", w["59882"]["slope"], f"{w['59882']['slope']:.2f}")
+want("pooled within-soil r", w["pooled"]["r"], f"{w['pooled']['r']:.2f}")
+want("pooled within-soil slope", w["pooled"]["slope"], f"{w['pooled']['slope']:.2f}")
+want("moisture share of the N gap, mg/kg", w["gap"]["explained"], f"{w['gap']['explained']:.1f}")
+want("moisture share of the N gap, %", w["gap"]["share"] * 100, f"{w['gap']['share']*100:.0f}~")
+
+sv = ins.settling()
+want("in-soil periods of ten minutes", sv["long"], f"the {sv['long']} periods")
+want("in-soil periods of thirty minutes", sv["long30"], f"the {sv['long30']} periods")
+want("moisture at 1 min, median", sv["moisture_1"]["median"], f"{sv['moisture_1']['median']:.1f}")
+want("moisture at 1 min, largest", sv["moisture_1"]["max"], f"{sv['moisture_1']['max']:.1f}")
+want("undisturbed moisture SD", sv["rest_sd_moisture"], f"{sv['rest_sd_moisture']:.1f}")
+for m in (1, 2, 5):
+    d = sv[f"nitrogen_{m}"]
+    want(f"nitrogen at {m} min, median", d["median"], f"{d['median']:.1f}~mg/kg")
+    want(f"nitrogen at {m} min, largest", d["max"], f"at most {d['max']:.0f})")
+want("nitrogen drift 2 to 30 min, largest", sv["drift_n"]["max"], f"{sv['drift_n']['max']:.0f}~mg/kg")
+
+# satellite case study: results written by ndmi_station_analysis.py (needs rasterio,
+# so it is run separately) and the forecasting metrics of the WREN project
+import json
+res = pathlib.Path(__file__).with_name("ndmi_station_results.json")
+if res.exists():
+    o = json.loads(res.read_text(encoding="utf-8"))
+    want("field area", o["field_ha"], f"{o['field_ha']:.1f}~ha")
+    want("scenes", o["scenes"], f"{o['scenes']} scenes", f"{o['scenes']}")
+    want("Sentinel-2A scenes", o["s2a"], f"{o['s2a']} by Sentinel-2A")
+    want("Sentinel-2B scenes", o["s2b"], f"{o['s2b']} by")
+    want("L1C scenes", o["l1c"], f"{o['l1c']} at top of atmosphere")
+    want("L2A scenes", o["l2a"], f"{o['l2a']} at surface reflectance")
+    want("in-field pixels", o["field_pixels"], f"{o['field_pixels']:,}".replace(",", chr(92) + ","))
+    want("pixel area", o["pixel_m2"], f"{o['pixel_m2']:.0f}~" + chr(92) + "mathrm")
+    want("median days between scenes", o["gap_median_days"], f"median of {o['gap_median_days']:.0f} days")
+    want("station to boundary", o["station_to_boundary_m"], f"{o['station_to_boundary_m']:.0f}~m")
+    want("station to field centre", o["station_to_centroid_m"], f"{o['station_to_centroid_m']:.0f}~m")
+    want("within-field SD, median", o["within_sd_median"], f"{o['within_sd_median']:.3f}")
+    want("within-field SD, Q1", o["within_sd_q1"], f"{o['within_sd_q1']:.3f}")
+    want("within-field SD, Q3", o["within_sd_q3"], f"{o['within_sd_q3']:.3f}")
+    want("within-field 5-95 spread", o["within_spread_median"], f"{o['within_spread_median']:.2f}")
+    for key in ("all", "season", "offseason"):
+        c = o[key]
+        want(f"NDMI vs station r, {key}", c["r"], f"{c['r']:+.2f}")
+        want(f"NDMI vs station n, {key}", c["n"], f"n={c['n']}", f"{c['n']} dates")
+    want("NDMI vs station CI low", o["all"]["lo"], f"{o['all']['lo']:+.2f}")
+    want("NDMI vs station CI high", o["all"]["hi"], f"{o['all']['hi']:+.2f}")
+    want("variance explained, all dates", o["all"]["r2"] * 100, f"about {o['all']['r2']*100:.0f}~")
+    want("variance explained, season", o["season"]["r2"] * 100, f"about {o['season']['r2']*100:.0f}~")
+    # the sampling arithmetic in the Discussion
+    pts5 = -(-o["field_ha"] // 5)
+    want("points at one per 5 ha", pts5, f"{pts5:.0f} points")
+    want("waiting at one per 5 ha", pts5 * 2, f"{pts5*2:.0f} minutes")
+    want("points at one per ha", round(o["field_ha"]), f"{round(o['field_ha'])}" + chr(10) + "points",
+         f"{round(o['field_ha'])} points")
+    want("waiting at one per pixel", o["field_pixels"] * 2 / 60, f"{o['field_pixels']*2/60:.0f} hours")
+else:
+    print("note: ndmi_station_results.json not found - run ndmi_station_analysis.py (tf210 environment)")
+
+wren = pathlib.Path(os.environ.get("WREN_DIR", r"C:/Users/User/Documents/GitHub/WREN")) / "paper/figures/metrics.txt"
+if wren.exists():
+    import re as _re
+    mt = wren.read_text(encoding="utf-8")
+    for tag, name in (("PERSISTENCE", "persistence"), ("UNET", "UNet-LSTM")):
+        m = _re.search(tag + r" MAE=([\d.]+) PSNR=([\d.]+) SSIM=([\d.]+)", mt)
+        mae, psnr, ssim = (float(x) for x in m.groups())
+        want(f"{name} MAE", mae, f"{mae:.4f}")
+        want(f"{name} PSNR", psnr, f"{psnr:.2f}")
+        want(f"{name} SSIM", ssim, f"{ssim:.3f}")
+    want("UNet-LSTM epochs", int(_re.search(r"epochs_unet=(\d+)", mt).group(1)),
+         _re.search(r"epochs_unet=(\d+)", mt).group(1) + " epochs")
+else:
+    print("note: WREN metrics.txt not found - forecasting figures not checked")
 
 # ---- 2. laboratory ---------------------------------------------------------
 lab = {}

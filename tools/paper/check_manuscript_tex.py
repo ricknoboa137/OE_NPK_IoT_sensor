@@ -167,6 +167,33 @@ for name in ("tab:collinearity", "tab:labcorr", "tab:calinputs", "tab:calresult"
         problems += 1
 
 print()
+print("=== \\hl spans that cross a paragraph break, or are nested ===")
+_BS = chr(92)
+_i, _crossing, _nested = 0, 0, 0
+while True:
+    _i = s.find(_BS + "hl{", _i)
+    if _i < 0:
+        break
+    _depth, _j = 1, _i + 4
+    while _j < len(s) and _depth:
+        if s[_j] == _BS:
+            if s.startswith(_BS + "hl{", _j):
+                print(f"  !! line {s.count(chr(10), 0, _j) + 1}: \\hl opened inside another \\hl")
+                _nested += 1
+            _j += 2
+            continue
+        _depth += (s[_j] == "{") - (s[_j] == "}")
+        _j += 1
+    if re.search(r"\n[ \t]*\n", s[_i:_j]):
+        print(f"  !! line {s.count(chr(10), 0, _i) + 1}: \\hl runs across a blank line: "
+              f"{s[_i:_i + 60]!r}")
+        _crossing += 1
+    _i = _j if _depth == 0 else _i + 4
+problems += _crossing + _nested
+if not (_crossing or _nested):
+    print("  none")
+
+print()
 print("=" * 60)
 print("clean" if problems == 0 else f"{problems} problem(s) to fix")
 sys.exit(1 if problems else 0)

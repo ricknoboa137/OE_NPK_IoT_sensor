@@ -20,3 +20,15 @@ Point them at a checkout of the paper:
 Run with the Anaconda interpreter:
 
     C:/Users/User/anaconda3/python.exe tools/paper/audit_paper_numbers.py
+
+## Added for the satellite case study
+
+| script | what it does |
+| --- | --- |
+| `ndmi_station_analysis.py` | field-mean Sentinel-2 NDMI against the Csolnok station soil moisture, the within-field spread of NDMI, and the figure `Pic/NDMI_station.png`. Needs rasterio and geopandas: run it with the `tf210` environment. Writes `ndmi_station_results.json`, which the audit reads. |
+| `insertion_analysis.py` | from the two-soil campaign: the nitrogen output against the moisture output across insertions in one soil, and how long a reading takes to settle after an insertion (5 s log). |
+
+The forecasting metrics quoted in the manuscript come from the WREN project
+(`paper/figures/metrics.txt`); set `WREN_DIR` if it is not in `Documents/GitHub/WREN`.
+`check_manuscript_tex.py` now also reports highlighted spans that cross a blank line or are
+nested, the two faults that stop the build.
