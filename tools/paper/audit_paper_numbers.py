@@ -153,7 +153,7 @@ for m in (1, 2, 5):
 want("nitrogen drift 2 to 30 min, largest", sv["drift_n"]["max"], f"{sv['drift_n']['max']:.0f}~mg/kg")
 
 # satellite case study: results written by ndmi_station_analysis.py (needs rasterio,
-# so it is run separately) and the forecasting metrics of the WREN project
+# so it is run separately)
 import json
 res = pathlib.Path(__file__).with_name("ndmi_station_results.json")
 if res.exists():
@@ -191,20 +191,8 @@ if res.exists():
 else:
     print("note: ndmi_station_results.json not found - run ndmi_station_analysis.py (tf210 environment)")
 
-wren = pathlib.Path(os.environ.get("WREN_DIR", r"C:/Users/User/Documents/GitHub/WREN")) / "paper/figures/metrics.txt"
-if wren.exists():
-    import re as _re
-    mt = wren.read_text(encoding="utf-8")
-    for tag, name in (("PERSISTENCE", "persistence"), ("UNET", "UNet-LSTM")):
-        m = _re.search(tag + r" MAE=([\d.]+) PSNR=([\d.]+) SSIM=([\d.]+)", mt)
-        mae, psnr, ssim = (float(x) for x in m.groups())
-        want(f"{name} MAE", mae, f"{mae:.4f}")
-        want(f"{name} PSNR", psnr, f"{psnr:.2f}")
-        want(f"{name} SSIM", ssim, f"{ssim:.3f}")
-    want("UNet-LSTM epochs", int(_re.search(r"epochs_unet=(\d+)", mt).group(1)),
-         _re.search(r"epochs_unet=(\d+)", mt).group(1) + " epochs")
-else:
-    print("note: WREN metrics.txt not found - forecasting figures not checked")
+# The forecasting model and its results are reported in a separate paper (WREN) and
+# are deliberately absent from this manuscript, so nothing of them is audited here.
 
 # ---- 2. laboratory ---------------------------------------------------------
 lab = {}
