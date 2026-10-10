@@ -40,6 +40,9 @@ p = _find("agriculture-4351955-revised-V3.tex", "agriculture-4351955-revised-V2.
 orig = _find_original("Agriculture-4351955-Reviewd-V2.text", "agriculture-V1-4351955.tex",
                       "agriculture-4351955.tex")
 s = p.read_text(encoding="utf-8")
+# \\hlnew{} marks the changes of the current round; it is \\hl{} in another color and
+# is subject to the same restrictions, so it is checked as \\hl{}
+s = s.replace("\\hlnew{", "\\hl{")
 o = orig.read_text(encoding="utf-8") if orig else ""
 if not orig:
     print("note: original manuscript not found, checking every \\hl span\n")
