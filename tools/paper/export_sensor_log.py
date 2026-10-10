@@ -16,7 +16,7 @@ COLUMNS = ("timestamp", "ts_utc", "humidity", "temperature", "PH", "N", "P", "K"
 
 con = sqlite3.connect(DB)
 rows = con.execute(f"select {', '.join(COLUMNS)} from NPKv1 order by timestamp, rowid").fetchall()
-pd_.DATA.mkdir(exist_ok=True)
+pd_.SENSOR_LOG.parent.mkdir(exist_ok=True)
 # mtime=0 keeps the compressed file identical when the content is unchanged
 with open(pd_.SENSOR_LOG, "wb") as raw:
     with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as gz:

@@ -1,9 +1,11 @@
 # Manuscript analysis scripts
 
 These scripts produce and verify the figures and numbers of the Agriculture
-manuscript. The code is kept here; the data are kept under version control in
-the paper repository, in its `data/` folder, and the scripts read nothing from
-anywhere else. Point them at a checkout of the paper:
+manuscript. The code is kept here. The readings of the module are in
+`database/sensor_log.csv.gz` of this repository; the laboratory, satellite and
+figure-source data are kept under version control in the paper repository, in
+its `data/` folder. The scripts read nothing from anywhere else. Point them at
+a checkout of the paper:
 
     set PAPER_DIR=C:/path/to/Agriculture-4351955
 
@@ -38,7 +40,7 @@ of how the data files were derived. They do not need to be run again.
 
 | script | reads | writes |
 | --- | --- | --- |
-| `export_sensor_log.py` | the live Node-RED database `DB_01.db` | `data/sensor_log.csv.gz` |
+| `export_sensor_log.py` | the live Node-RED database `DB_01.db` | `database/sensor_log.csv.gz` |
 | `build_ndmi_dataset.py` | the raw NDMI tiles, the field shapefile and the station file (needs rasterio and geopandas: `tf210` environment) | `data/ndmi_csolnok_field.npz`, `station_csolnok_daily.csv`, `field_csolnok.geojson`, `ndmi_field_meta.json` |
 
 `paper_data.py` holds the file locations and loads the sensor log into an

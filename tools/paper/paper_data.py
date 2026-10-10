@@ -13,7 +13,8 @@ PAPER = pathlib.Path(os.environ.get(
     "PAPER_DIR", r"C:/Users/User/Documents/GitHub/Agriculture-4351955"))
 DATA = PAPER / "data"
 
-SENSOR_LOG = DATA / "sensor_log.csv.gz"
+# the sensor log is public and lives with the firmware, in database/
+SENSOR_LOG = pathlib.Path(__file__).resolve().parent.parent.parent / "database" / "sensor_log.csv.gz"
 NDMI_STACK = DATA / "ndmi_csolnok_field.npz"
 STATION_DAILY = DATA / "station_csolnok_daily.csv"
 FIELD_META = DATA / "ndmi_field_meta.json"
