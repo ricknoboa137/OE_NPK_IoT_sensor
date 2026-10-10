@@ -2,12 +2,13 @@
 
     C:/Users/User/anaconda3/python.exe analysis/paper_analysis.py
 
-Reads DB_01.db (the Node-RED log of published NPKdata, kept with the firmware
+Reads the versioned Node-RED log of published NPKdata (see paper_data.py; originally kept with the firmware
 repository) and the SZ-24 laboratory database in this repository. Prints the statistics in the order the manuscript uses them, so any
 figure in the text can be traced back to a single command.
 """
 import csv, sqlite3, statistics as st, itertools, pathlib
 
+import sys
 import os
 
 # The manuscript lives in a separate (private) repository. Point PAPER_DIR at a
@@ -41,7 +42,8 @@ def _find_original(*candidates):
             return q
     return None
 
-DB = REPO / "DB_01.db"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paper_data          # the versioned sensor log, in the paper repository
 LAB = PAPER / "SZ-24/SZ-24/SZ-24_ADATBAZIS.csv"
 
 # Inclusion criteria for the logged readings, stated once and applied throughout.
@@ -65,7 +67,7 @@ def linfit(xs, ys):
     return a, b, max(abs(r) for r in res), st.pstdev(res)
 
 
-con = sqlite3.connect(DB)
+con = paper_data.log_connection()
 rows = list(con.execute(
     "select humidity, temperature, N, P, K from NPKv1 "
     "where date(timestamp,'unixepoch') between ? and ? "

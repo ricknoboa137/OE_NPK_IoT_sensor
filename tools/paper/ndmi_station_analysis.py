@@ -1,78 +1,51 @@
-"""Satellite NDMI against the one ground record, Csolnok field.
+"""Satellite NDMI against the one ground record, Csolnok field: the numbers of
+the case study and the figure Pic/NDMI_station.png.
 
-Reads the NDMI GeoTIFFs, the field polygon and the station record directly
-(independently of the WREN package) and reports what a single ground point can
-and cannot say about the field-scale image series. Writes the figure used in
-the manuscript.
+Reads only the versioned dataset in the paper repository (see paper_data.py);
+build_ndmi_dataset.py records how that dataset was derived from the raw files.
 
-Needs rasterio and geopandas, which the base Anaconda environment lacks:
-
-    C:/Users/User/anaconda3/envs/tf210/python.exe tools/paper/ndmi_station_analysis.py
-
-Data locations can be overridden with NDMI_DIR, FIELD_SHP, WEATHER_CSV, PAPER_DIR.
+    C:/Users/User/anaconda3/python.exe tools/paper/ndmi_station_analysis.py
 """
-import os, re, json, pathlib, math, statistics as st, datetime as dt
+import json, math, pathlib, statistics as st, datetime as dt
 import numpy as np
 import pandas as pd
-import geopandas as gpd
-import rasterio
-from rasterio.mask import mask as rio_mask
 from scipy import stats
-from shapely.geometry import Point
-
-BASE = pathlib.Path(r"C:/Users/User/Documents/Projects")
-NDMI_DIR = pathlib.Path(os.environ.get("NDMI_DIR", BASE / "LandCoverNDMI/NDMI_CSOLNOK"))
-SHAPE = pathlib.Path(os.environ.get("FIELD_SHP", BASE / "LandCoverNDMI/ThematicMaps/Hatar_73_tomb.shp"))
-WEATHER = pathlib.Path(os.environ.get("WEATHER_CSV", BASE / "SoilSensor/pivoted_all_data.csv"))
-PAPER = pathlib.Path(os.environ.get("PAPER_DIR", r"C:/Users/User/Documents/GitHub/Agriculture-4351955"))
-STATION = "Csolnok"
-CRS = "EPSG:23700"          # Hungarian EOV; the shapefile carries no .prj
+import paper_data as pd_
 
 
 def compute():
     """Return every figure quoted in the manuscript, plus the series for the plot."""
-    out = {}
-    g = gpd.read_file(SHAPE)
-    if g.crs is None:
-        g = g.set_crs(CRS)
-    poly = g.geometry.union_all() if hasattr(g.geometry, "union_all") else g.geometry.unary_union
-    out["field_ha"] = poly.area / 1e4
+    z = np.load(pd_.NDMI_STACK)
+    ndmi = z["ndmi"].astype("float64")
+    dates = [dt.date.fromisoformat(d) for d in z["date"]]
+    meta = json.loads(pd_.FIELD_META.read_text(encoding="utf-8"))
 
-    rows, level, sat, pix = [], {"MSIL1C": 0, "MSIL2A": 0}, {"S2A": 0, "S2B": 0}, None
-    for f in sorted(NDMI_DIR.glob("*.tif")):
-        m = re.match(r"(S2[AB])_(MSIL\w\w)_(\d{8})T", f.name)
-        if not m:
-            continue
-        sat[m.group(1)] += 1
-        level[m.group(2)] += 1
-        d = dt.datetime.strptime(m.group(3), "%Y%m%d").date()
-        with rasterio.open(f) as src:
-            if pix is None:
-                pix = (abs(src.transform.a), abs(src.transform.e))
-            a, _ = rio_mask(src, [poly], crop=True, all_touched=False, nodata=np.nan, filled=True)
-        a = a[0].astype("float64")
-        a[(a < -1) | (a > 1)] = np.nan
-        rows.append((d, a))
+    out = {"field_ha": meta["field_ha"], "pixel_m": meta["pixel_m"], "pixel_m2": meta["pixel_m2"],
+           "stations": meta["stations_in_network_file"],
+           "station_to_boundary_m": meta["station_to_boundary_m"],
+           "station_to_centroid_m": meta["station_to_centroid_m"],
+           "station_inside": meta["station_inside_field"]}
+    out["scenes"] = len(dates)
+    out["s2a"] = int((z["satellite"] == "S2A").sum())
+    out["s2b"] = int((z["satellite"] == "S2B").sum())
+    out["l1c"] = int((z["level"] == "L1C").sum())
+    out["l2a"] = int((z["level"] == "L2A").sum())
 
-    out["scenes"] = len(rows)
-    out["s2a"], out["s2b"] = sat["S2A"], sat["S2B"]
-    out["l1c"], out["l2a"] = level["MSIL1C"], level["MSIL2A"]
-    out["pixel_m"] = pix[0]
-    out["pixel_m2"] = pix[0] * pix[1]
+    order = np.argsort(np.array([d.toordinal() for d in dates]), kind="stable")
     by_date = {}
-    for d, a in rows:
-        by_date.setdefault(d, a)
-    dates = sorted(by_date)
-    out["first"], out["last"] = dates[0], dates[-1]
-    out["gap_median_days"] = st.median([(b - a).days for a, b in zip(dates, dates[1:])])
+    for i in order:
+        by_date.setdefault(dates[i], ndmi[i])
+    days = sorted(by_date)
+    out["first"], out["last"] = days[0], days[-1]
+    out["gap_median_days"] = st.median([(b - a).days for a, b in zip(days, days[1:])])
     out["field_pixels"] = int(st.median([int(np.isfinite(a).sum()) for a in by_date.values()]))
 
     series = pd.DataFrame({
-        "date": dates,
-        "ndmi_mean": [np.nanmean(by_date[d]) for d in dates],
-        "ndmi_sd": [np.nanstd(by_date[d]) for d in dates],
-        "p05": [np.nanpercentile(by_date[d], 5) for d in dates],
-        "p95": [np.nanpercentile(by_date[d], 95) for d in dates],
+        "date": days,
+        "ndmi_mean": [np.nanmean(by_date[d]) for d in days],
+        "ndmi_sd": [np.nanstd(by_date[d]) for d in days],
+        "p05": [np.nanpercentile(by_date[d], 5) for d in days],
+        "p95": [np.nanpercentile(by_date[d], 95) for d in days],
     })
     out["within_sd_median"] = float(series.ndmi_sd.median())
     out["within_sd_q1"] = float(series.ndmi_sd.quantile(.25))
@@ -80,16 +53,9 @@ def compute():
     out["within_spread_median"] = float((series.p95 - series.p05).median())
     out["temporal_sd"] = float(series.ndmi_mean.std(ddof=0))
 
-    w = pd.read_csv(WEATHER)
-    out["stations"] = int(w.station_name.nunique())
-    s = w[w.station_name == STATION].copy()
-    # EOV convention: X is the northing and Y the easting
-    pt = Point(float(s.station_eovy.iloc[0]), float(s.station_eovx.iloc[0]))
-    out["station_to_boundary_m"] = poly.distance(pt)
-    out["station_to_centroid_m"] = poly.centroid.distance(pt)
-    out["station_inside"] = bool(poly.contains(pt))
-    s["date"] = pd.to_datetime(dict(year=s.year, month=s.month, day=s.day)).dt.date
-    daily = s.groupby("date")[["soil_moisture"]].mean()
+    daily = pd.read_csv(pd_.STATION_DAILY)
+    daily["date"] = [dt.date.fromisoformat(d) for d in daily.date]
+    daily = daily.set_index("date")[["soil_moisture"]]
     j = series.join(daily, on="date").dropna(subset=["soil_moisture"]).copy()
     j["season"] = [4 <= d.month <= 9 for d in j.date]
 
@@ -117,7 +83,7 @@ def report(o):
           f"5th-95th percentile spread: median {o['within_spread_median']:.3f}")
     print(f"  SD over time of the field mean: {o['temporal_sd']:.3f}")
     print("STATION")
-    print(f"  {o['stations']} stations in the network file ; {STATION} is "
+    print(f"  {o['stations']} stations in the network file ; the station is "
           f"{o['station_to_boundary_m']:.0f} m from the field boundary and "
           f"{o['station_to_centroid_m']:.0f} m from its centroid ; inside the field: {o['station_inside']}")
     print("FIELD-MEAN NDMI AGAINST STATION SOIL MOISTURE, SAME DAY")
@@ -134,9 +100,10 @@ def figure(o, series, j, path):
     import matplotlib.dates as mdates
 
     INK, MUTED, GRID = "#0b0b0b", "#52514e", "#e4e3df"
-    BLUE, ORANGE = "#2a78d6", "#eb6834"          # validated pair, categorical slots 1 and 2
-    plt.rcParams.update({"font.size": 8, "axes.edgecolor": MUTED, "axes.labelcolor": INK,
-                         "xtick.color": MUTED, "ytick.color": MUTED, "axes.linewidth": 0.6})
+    BLUE, ORANGE = "#2a78d6", "#eb6834"          # a pair checked for color-vision deficiency
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8, "axes.edgecolor": MUTED,
+                         "axes.labelcolor": INK, "xtick.color": MUTED, "ytick.color": MUTED,
+                         "axes.linewidth": 0.6})
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.4, 3.0), dpi=300,
                                    gridspec_kw={"width_ratios": [1, 1.25]})
 
@@ -166,16 +133,16 @@ def figure(o, series, j, path):
         for side in ("top", "right"):
             ax.spines[side].set_visible(False)
     fig.tight_layout(w_pad=2.0)
-    fig.savefig(path, dpi=300, facecolor="white")
+    fig.savefig(path, dpi=300, facecolor="white", metadata={"Software": None})
     print(f"figure written: {path}")
 
 
 if __name__ == "__main__":
     o, series, j = compute()
     report(o)
-    # kept beside the scripts so the audit can check the text without rasterio
+    # kept beside the scripts so the audit can check the text against it
     res = pathlib.Path(__file__).with_name("ndmi_station_results.json")
     res.write_text(json.dumps({k: (str(v) if isinstance(v, dt.date) else v) for k, v in o.items()},
                               indent=2), encoding="utf-8")
     print(f"results written: {res.name}")
-    figure(o, series, j, PAPER / "Pic" / "NDMI_station.png")
+    figure(o, series, j, pd_.PAPER / "Pic" / "NDMI_station.png")

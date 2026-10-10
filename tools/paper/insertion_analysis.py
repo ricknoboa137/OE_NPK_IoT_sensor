@@ -3,19 +3,21 @@ the moisture output between placements in one and the same soil, and (b) how
 long a reading takes to settle after an insertion.
 
 Sources: the forty transcribed readings (calibration workbook) and the 5 s log
-(DB_01.db). The log is in UTC; the workbook is in local time (UTC+2 in
+(data/sensor_log.csv.gz in the paper repository). The log is in UTC; the workbook is in local time (UTC+2 in
 September 2026), so the campaign runs from 12:00 UTC on 5 September to 17:30
 UTC on 7 September.
 
     C:/Users/User/anaconda3/python.exe tools/paper/insertion_analysis.py
 """
+import sys
 import os, sqlite3, pathlib, statistics as st
 import openpyxl
 
 PAPER = pathlib.Path(os.environ.get(
     "PAPER_DIR", r"C:/Users/User/Documents/GitHub/Agriculture-4351955"))
 REPO = pathlib.Path(__file__).resolve().parent.parent.parent
-DB = REPO / "DB_01.db"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paper_data          # the versioned sensor log, in the paper repository
 XLSX = PAPER / "SoilSamplesCalibrationTest.xlsx"
 
 CAMPAIGN = ("2026-09-05 12:00", "2026-09-07 17:30")   # UTC
@@ -63,7 +65,7 @@ def within_soil():
 
 
 def _episodes():
-    con = sqlite3.connect(DB)
+    con = paper_data.log_connection()
     rows = con.execute(
         "select timestamp, humidity, N from NPKv1 where timestamp between strftime('%s',?) "
         "and strftime('%s',?) and humidity is not null and N is not null order by timestamp",

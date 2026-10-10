@@ -47,7 +47,8 @@ TEX = _find("agriculture-4351955-revised-V3.tex", "agriculture-4351955-revised-V
             "agriculture-4351955-revised.tex")
 LAB = PAPER / "SZ-24/SZ-24/SZ-24_ADATBAZIS.csv"
 XLSX = PAPER / "SoilSamplesCalibrationTest.xlsx"
-DB = REPO / "DB_01.db"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paper_data          # the versioned sensor log, in the paper repository
 
 tex = TEX.read_text(encoding="utf-8")
 checks = []
@@ -92,7 +93,7 @@ def pearson(a, b):
 
 
 # ---- 1. logged readings ----------------------------------------------------
-con = sqlite3.connect(DB)
+con = paper_data.log_connection()
 rows = list(con.execute(
     "select humidity,N,P,K from NPKv1 where date(timestamp,'unixepoch') between "
     "'2026-09-01' and '2026-09-07' and N>0 and P is not null and K is not null "
