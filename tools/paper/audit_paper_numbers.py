@@ -113,6 +113,14 @@ want("P range high", max(P), f"{max(P):.0f}")
 want("K range low", min(K), f"{min(K):.0f}")
 want("K range high", max(K), f"{max(K):.0f}")
 
+# the two parts of the record: before and during the two-soil campaign (12:43 UTC, 5 September)
+for label, op in (("readings before the campaign", "<"), ("readings during the campaign", ">=")):
+    n_part = con.execute(
+        "select count(*) from NPKv1 where date(timestamp,'unixepoch') between '2026-09-01' and '2026-09-07' "
+        "and N>0 and P is not null and K is not null and humidity between 15 and 60 "
+        f"and timestamp {op} strftime('%s','2026-09-05 12:43')").fetchone()[0]
+    want(label, n_part, f"{n_part:,}".replace(",", chr(92) + ","))
+
 # clamp
 aP, bP, _, _ = linfit(N, P)
 z = [r[0] for r in con.execute(
