@@ -49,3 +49,8 @@ in-memory SQLite table, so the queries in the scripts are unchanged.
 
 `make_paper_revision.py` is historical: it built the first revision from the
 original .tex. Do not re-run it; the manuscript has been edited directly since.
+
+## Preliminary UNet-LSTM run
+
+The code of the run behind the three model figures, with the record of how exactly each figure
+is reproduced, is in [`unet_lstm_preliminary/`](unet_lstm_preliminary/).
