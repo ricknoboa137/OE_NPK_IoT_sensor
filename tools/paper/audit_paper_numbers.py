@@ -203,6 +203,20 @@ else:
 # The forecasting model and its results are reported in a separate paper (WREN) and
 # are deliberately absent from this manuscript, so nothing of them is audited here.
 
+# the architecture table: parameters per layer, from the model summary of the preliminary run
+import re as _re
+summary = pathlib.Path(paper_data.DATA / "unet_preliminary" / "training_console_output.txt")
+if summary.exists():
+    s_txt = summary.read_text(encoding="utf-8")
+    thin = lambda n: f"{n:,}".replace(",", chr(92) + ",")
+    total = int(_re.search(r"Total params: ([\d,]+)", s_txt).group(1).replace(",", ""))
+    want("UNet-LSTM total parameters", total, thin(total))
+    for layer in ("time_distributed ", "time_distributed_2 ", "lstm ", "dense ", "conv2d_2 ", "conv2d_3 ", "conv2d_4 "):
+        line = next(l for l in s_txt.splitlines() if l.strip().startswith(layer.strip() + " ("))
+        n = int(_re.findall(r"\s(\d+)\s", line + " ")[-1])
+        want(f"parameters of {layer.strip()}", n, thin(n) if n >= 10000 else str(n))
+    want("epochs of the preliminary run", 20, "20 epochs")
+
 # ---- 2. laboratory ---------------------------------------------------------
 lab = {}
 with open(LAB, encoding="utf-8-sig") as f:
