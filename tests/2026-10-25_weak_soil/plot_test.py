@@ -19,7 +19,7 @@ READINGS = HERE / "readings.csv"
 FIGURE = HERE / "weak_soil_test.png"
 
 TEST_FROM_UTC = "2026-10-25 17:00"    # the probe was inserted shortly after this
-TEST_TO_UTC = "2026-10-27 12:19:29"   # last reading in the weak soil; the test ended here
+TEST_TO_UTC = "2026-10-27 12:20:04"   # last reading in the weak soil (13:20:04 local); removed 5 s later
 LOCAL = dt.timedelta(hours=1)        # CET
 WINDOW = 10                          # moisture moving average, in readings (5 s apart)
 TARGET = 40.0                        # %RH, the moisture the test aims to hold
@@ -64,6 +64,8 @@ def summary(d, m_avg):
           f"{(dt.datetime.utcfromtimestamp(t[0]) + LOCAL):%d %b %H:%M} to "
           f"{(dt.datetime.utcfromtimestamp(t[-1]) + LOCAL):%d %b %H:%M} local time")
     settled = t >= t[0] + 3600          # after the first hour
+    if not settled.any():               # a test shorter than an hour: use every reading
+        settled = np.ones_like(t, dtype=bool)
     print(f"moisture ({WINDOW}-reading average), after the first hour: mean {m_avg[settled].mean():.1f} %RH, "
           f"range {m_avg[settled].min():.1f}-{m_avg[settled].max():.1f} %RH")
     for k, unit in (("temperature", "C"), ("PH", ""), ("N", "mg/kg"), ("P", "mg/kg"), ("K", "mg/kg")):

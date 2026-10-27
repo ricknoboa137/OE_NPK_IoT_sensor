@@ -2,7 +2,8 @@
 
 The probe was inserted in the weak soil on the evening of 25 October 2026 and left in
 place, with the moisture kept at about 40 %, to follow the NPK readings over time. The
-test ended on 27 October 2026 at 13:19 local time (12:19 UTC).
+test ended on 27 October 2026 at 13:20:04 local time (12:20:04 UTC), when the probe
+was removed and moved to the good soil (see `../2026-10-27_good_soil/`).
 
 | file | content |
 | --- | --- |
