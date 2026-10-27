@@ -19,6 +19,7 @@ READINGS = HERE / "readings.csv"
 FIGURE = HERE / "weak_soil_test.png"
 
 TEST_FROM_UTC = "2026-10-25 17:00"    # the probe was inserted shortly after this
+TEST_TO_UTC = "2026-10-27 12:19:29"   # last reading in the weak soil; the test ended here
 LOCAL = dt.timedelta(hours=1)        # CET
 WINDOW = 10                          # moisture moving average, in readings (5 s apart)
 TARGET = 40.0                        # %RH, the moisture the test aims to hold
@@ -31,8 +32,8 @@ def refresh():
     t0 = con.execute(
         "select min(timestamp) from NPKv1 where timestamp >= strftime('%s', ?) "
         "and humidity between 15 and 60 and N > 0", (TEST_FROM_UTC,)).fetchone()[0]
-    rows = con.execute(f"select {', '.join(COLUMNS)} from NPKv1 where timestamp >= ? order by timestamp",
-                       (t0,)).fetchall()
+    rows = con.execute(f"select {', '.join(COLUMNS)} from NPKv1 where timestamp >= ? "
+                       "and timestamp <= strftime('%s', ?) order by timestamp", (t0, TEST_TO_UTC)).fetchall()
     with open(READINGS, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
         w.writerow(COLUMNS)
@@ -100,10 +101,10 @@ def figure(d, m_avg):
         for side in ("top", "right"):
             ax.spines[side].set_visible(False)
     for ax in axes[-1]:
-        ax.xaxis.set_major_locator(mdates.HourLocator(byhour=range(0, 24, 3)))
+        ax.xaxis.set_major_locator(mdates.HourLocator(byhour=(0, 12)))
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b\n%H:%M"))
         ax.set_xlabel("Local time (CET)", color=MUTED)
-    fig.suptitle("Weak soil, probe left in place from 25 October 2026", x=0.01, ha="left", fontsize=9, color=INK)
+    fig.suptitle("Weak soil, probe left in place from 25 to 27 October 2026", x=0.01, ha="left", fontsize=9, color=INK)
     fig.tight_layout(h_pad=1.0, w_pad=2.0)
     fig.savefig(FIGURE, facecolor="white", metadata={"Software": None})
     print(f"figure written: {FIGURE}")

@@ -83,7 +83,7 @@ The flow logs to a SQLite file with two tables, described in
 `probe_cal_backup`, the calibration backups saved from the dashboard.
 
 [`database/sensor_log.csv.gz`](database/sensor_log.csv.gz) holds the readings
-recorded from 12 January to 26 October 2026 (210,251 rows, times in UTC); the
+recorded from 12 January to 27 October 2026 (230,132 rows, times in UTC); the
 manuscript uses those up to 9 September. To obtain the SQLite file from it:
 
 ```
