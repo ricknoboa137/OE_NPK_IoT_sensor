@@ -24,6 +24,7 @@ Re-export the readings and redraw while the test runs:
 
     C:/Users/User/anaconda3/python.exe tests/2026-10-27_good_soil/plot_test.py --refresh
 
-When the test ends, set `TEST_TO_UTC` in `plot_test.py` to the last reading in the good soil.
+The test ended on 28 October 2026 at 09:45:02 local time (08:45:02 UTC), when the laptop
+was disconnected from the Node-RED flow.
 
 Not used in the manuscript.

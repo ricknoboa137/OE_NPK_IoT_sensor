@@ -1,0 +1,128 @@
+{
+  "assumption": "weak soil = sample 59888, good soil = sample 59882",
+  "laboratory": {
+    "weak": {
+      "N": 20.7,
+      "P": 119.0,
+      "K": 202.0
+    },
+    "good": {
+      "N": 19.1,
+      "P": 188.0,
+      "K": 269.0
+    }
+  },
+  "methods": {
+    "matched moisture": {
+      "sensor": {
+        "weak": {
+          "n": 1091,
+          "moisture": 41.80999999996275,
+          "temperature": 19.1,
+          "N": 31.0,
+          "P": 117.0,
+          "K": 110.0
+        },
+        "good": {
+          "n": 4023,
+          "moisture": 40.69999999998836,
+          "temperature": 19.1,
+          "N": 38.0,
+          "P": 134.0,
+          "K": 127.0
+        }
+      },
+      "coefficients": {
+        "N": {
+          "A": -0.22857142857142826,
+          "B": 27.785714285714274,
+          "direction": "opposite to laboratory"
+        },
+        "P": {
+          "A": 4.0588235294117645,
+          "B": -355.88235294117646,
+          "direction": "same as laboratory"
+        },
+        "K": {
+          "A": 3.9411764705882355,
+          "B": -231.5294117647059,
+          "direction": "same as laboratory"
+        }
+      }
+    },
+    "matched time": {
+      "sensor": {
+        "weak": {
+          "n": 12961,
+          "moisture": 44.60999999998603,
+          "temperature": 19.0,
+          "N": 39.0,
+          "P": 138.0,
+          "K": 131.0
+        },
+        "good": {
+          "n": 12960,
+          "moisture": 39.139999999996505,
+          "temperature": 19.0,
+          "N": 37.0,
+          "P": 133.0,
+          "K": 126.0
+        }
+      },
+      "coefficients": {
+        "N": {
+          "A": 0.7999999999999989,
+          "B": -10.499999999999961,
+          "direction": "same as laboratory"
+        },
+        "P": {
+          "A": -13.8,
+          "B": 2023.4,
+          "direction": "opposite to laboratory"
+        },
+        "K": {
+          "A": -13.4,
+          "B": 1957.4,
+          "direction": "opposite to laboratory"
+        }
+      }
+    },
+    "end of test": {
+      "sensor": {
+        "weak": {
+          "n": 721,
+          "moisture": 42.34000000001397,
+          "temperature": 18.4,
+          "N": 24.0,
+          "P": 102.0,
+          "K": 95.0
+        },
+        "good": {
+          "n": 721,
+          "moisture": 41.14000000002561,
+          "temperature": 18.2,
+          "N": 41.0,
+          "P": 142.0,
+          "K": 135.0
+        }
+      },
+      "coefficients": {
+        "N": {
+          "A": -0.0941176470588234,
+          "B": 22.95882352941176,
+          "direction": "opposite to laboratory"
+        },
+        "P": {
+          "A": 1.725,
+          "B": -56.95000000000002,
+          "direction": "same as laboratory"
+        },
+        "K": {
+          "A": 1.675,
+          "B": 42.875,
+          "direction": "same as laboratory"
+        }
+      }
+    }
+  }
+}

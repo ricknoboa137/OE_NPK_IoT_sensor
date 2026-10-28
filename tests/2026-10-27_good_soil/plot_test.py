@@ -19,7 +19,7 @@ READINGS = HERE / "readings.csv"
 FIGURE = HERE / "good_soil_test.png"
 
 TEST_FROM_UTC = "2026-10-27 12:23:04"  # the probe was inserted in the good soil (13:23:04 local)
-TEST_TO_UTC = "2099-01-01 00:00:00"   # test running; set the last reading in the good soil when it ends
+TEST_TO_UTC = "2026-10-28 08:45:02"   # last reading in the good soil; the laptop was then disconnected
 LOCAL = dt.timedelta(hours=1)        # CET
 WINDOW = 10                          # moisture moving average, in readings (5 s apart)
 TARGET = 40.0                        # %RH, the moisture the test aims to hold
@@ -103,10 +103,10 @@ def figure(d, m_avg):
         for side in ("top", "right"):
             ax.spines[side].set_visible(False)
     for ax in axes[-1]:
-        ax.xaxis.set_major_locator(mdates.HourLocator(byhour=(0, 12)))
+        ax.xaxis.set_major_locator(mdates.HourLocator(byhour=range(0, 24, 6)))
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b\n%H:%M"))
         ax.set_xlabel("Local time (CET)", color=MUTED)
-    fig.suptitle("Good soil, probe left in place from 27 October 2026", x=0.01, ha="left", fontsize=9, color=INK)
+    fig.suptitle("Good soil, probe left in place from 27 to 28 October 2026", x=0.01, ha="left", fontsize=9, color=INK)
     fig.tight_layout(h_pad=1.0, w_pad=2.0)
     fig.savefig(FIGURE, facecolor="white", metadata={"Software": None})
     print(f"figure written: {FIGURE}")
