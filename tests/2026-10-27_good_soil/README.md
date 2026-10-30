@@ -27,4 +27,4 @@ Re-export the readings and redraw while the test runs:
 The test ended on 28 October 2026 at 09:45:02 local time (08:45:02 UTC), when the laptop
 was disconnected from the Node-RED flow.
 
-Not used in the manuscript.
+Used in the manuscript (`Pic/good_soil_test.png`).

@@ -125,7 +125,6 @@ def figure(data):
         if key == "moist_avg":
             ax.axhspan(*MOIST_BAND, color=MUTED, alpha=0.12, linewidth=0)
             ax.legend(frameon=False, fontsize=7, loc="lower right")
-        ax.axvspan(*TIME_BAND_H, color=MUTED, alpha=0.06, linewidth=0)
         ax.set_title(title, loc="left", fontsize=8, color=INK)
         ax.grid(True, color=GRID, linewidth=0.5)
         ax.set_axisbelow(True)
@@ -133,7 +132,7 @@ def figure(data):
             ax.spines[side].set_visible(False)
     for ax in axes[-1]:
         ax.set_xlabel("Hours since insertion", color=MUTED)
-    fig.suptitle("Weak and good soil, aligned at insertion (shaded: 2-20 h window; band: 40-42 %RH)",
+    fig.suptitle("Weak and good soil, aligned at insertion (gray band: 40-42 %RH)",
                  x=0.01, ha="left", fontsize=8.5, color=INK)
     fig.tight_layout(h_pad=1.0, w_pad=2.0)
     out = HERE / "two_soil_comparison.png"

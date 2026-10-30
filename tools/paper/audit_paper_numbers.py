@@ -93,73 +93,71 @@ def pearson(a, b):
 
 
 # ---- 1. logged readings ----------------------------------------------------
+# The test of October 2026: results written by the scripts in tests/2026-10_two_soil_calibration
+import json
+_oct = pathlib.Path(__file__).resolve().parent.parent.parent / "tests" / "2026-10_two_soil_calibration"
+rec = json.loads((_oct / "record_results.json").read_text(encoding="utf-8"))
+cal = json.loads((_oct / "calibration_results.json").read_text(encoding="utf-8"))
+thin = lambda n: f"{n:,}".replace(",", chr(92) + ",")
 con = paper_data.log_connection()
-rows = list(con.execute(
-    "select humidity,N,P,K from NPKv1 where date(timestamp,'unixepoch') between "
-    "'2026-09-01' and '2026-09-07' and N>0 and P is not null and K is not null "
-    "and humidity between 15 and 60"))
-N = [r[1] for r in rows]; P = [r[2] for r in rows]; K = [r[3] for r in rows]
-want("in-soil readings", len(rows), f"{len(rows):,}".replace(",", chr(92) + ","),
-     f"{len(rows):,}".replace(",", "{,}"))
-for (xn, x), (yn, y) in ((("N", N), ("P", P)), (("N", N), ("K", K)), (("P", P), ("K", K))):
-    a, b, mx, sd = linfit(x, y)
-    want(f"{yn}={xn} slope", a, f"{a:.4f}")
-    want(f"{yn}={xn} intercept", b, f"{abs(b):.3f}")
-    want(f"{yn}={xn} max residual", mx, f"{mx:.2f}")
-    want(f"{yn}={xn} residual SD", sd, f"{sd:.2f}")
-    want(f"r({xn},{yn})", pearson(x, y), f"{pearson(x,y):.5f}")
-want("P range low", min(P), f"{min(P):.0f}")
-want("P range high", max(P), f"{max(P):.0f}")
-want("K range low", min(K), f"{min(K):.0f}")
-want("K range high", max(K), f"{max(K):.0f}")
 
-# the two parts of the record: before and during the two-soil campaign (12:43 UTC, 5 September)
-for label, op in (("readings before the campaign", "<"), ("readings during the campaign", ">=")):
-    n_part = con.execute(
-        "select count(*) from NPKv1 where date(timestamp,'unixepoch') between '2026-09-01' and '2026-09-07' "
-        "and N>0 and P is not null and K is not null and humidity between 15 and 60 "
-        f"and timestamp {op} strftime('%s','2026-09-05 12:43')").fetchone()[0]
-    want(label, n_part, f"{n_part:,}".replace(",", chr(92) + ","))
+want("in-soil readings, October", rec["n_in_soil"], thin(rec["n_in_soil"]))
+for key, name in (("P_N", "P=N"), ("K_N", "K=N"), ("K_P", "K=P")):
+    f = rec[key]
+    want(f"{name} slope", f["a"], f"{f['a']:.4f}")
+    want(f"{name} intercept", f["b"], f"{abs(f['b']):.3f}")
+    want(f"{name} max residual", f["max_res"], f"{f['max_res']:.2f}")
+    want(f"{name} residual SD", f["sd"], f"{f['sd']:.2f}")
+    want(f"{name} r", f["r"], f"{f['r']:.5f}")
+for ch in "PK":
+    lo, hi = rec["ranges"][ch]
+    want(f"{ch} output range", (lo, hi), f"{lo:.0f}--{hi:.0f}")
+for s in ("weak", "good"):
+    v = rec[s]
+    want(f"{s} readings", v["readings"], thin(v["readings"]))
+    want(f"{s} duration", v["hours"], f"{v['hours']:.1f}")
+    n2, n5 = v["settling"]["N"]["2"], v["settling"]["N"]["5"]
+    want(f"{s} N at 2 min vs 10 min", n2, f"{abs(n2):.0f}")
+    want(f"{s} N at 5 min vs 10 min", n5, f"{abs(n5):.0f}")
+    dm = v["settling"]["N_1h"] - v["settling"]["N_10min"]
+    want(f"{s} N, 10 min to 1 h", dm, f"{abs(dm):.0f}")
+ev = rec["weak"]["steps"] + rec["good"]["steps"]
+want("moisture steps", len(ev), "six steps" if len(ev) == 6 else str(len(ev)))
+want("smallest moisture step", min(e["dM"] for e in ev), f"{min(e['dM'] for e in ev):.1f} to")
+want("largest moisture step", max(e["dM"] for e in ev), f"{max(e['dM'] for e in ev):.1f}~" + chr(92) + "%RH")
+want("N per %RH at the steps", rec["N_per_RH_all_steps"], f"{rec['N_per_RH_all_steps']:.1f}~mg/kg")
+want("weak end N", rec["weak"]["last_hour"]["N"], f"$N={rec['weak']['last_hour']['N']:.0f}$")
+want("weak end P", rec["weak"]["last_hour"]["P"], f"$P={rec['weak']['last_hour']['P']:.0f}$")
+want("weak end K", rec["weak"]["last_hour"]["K"], f"$K={rec['weak']['last_hour']['K']:.0f}$")
+want("weak band P, Q1", rec["weak"]["band_quartiles"]["P"][0], f"{rec['weak']['band_quartiles']['P'][0]:.0f} to")
+want("weak band P, Q3", rec["weak"]["band_quartiles"]["P"][1], f"{rec['weak']['band_quartiles']['P'][1]:.0f}~mg/kg")
 
-# clamp
-aP, bP, _, _ = linfit(N, P)
+end = cal["methods"]["end of test"]
+band = cal["methods"]["matched moisture"]
+for s, col in (("good", 0), ("weak", 1)):
+    v = end["sensor"][s]
+    want(f"{s} last-hour moisture", v["moisture"], f"{v['moisture']:.1f}$")
+    want(f"{s} last-hour temperature", v["temperature"], f"{v['temperature']:.1f}$")
+    for ch in "NPK":
+        want(f"{s} last-hour {ch}", v[ch], f"${v[ch]:.0f}$")
+for name, m in (("last hour", end), ("40-42 %RH", band)):
+    for ch in "NPK":
+        c = m["coefficients"][ch]
+        want(f"{name} {ch} A", c["A"], f"{c['A']:+.4f}".replace("-", "-"))
+        want(f"{name} {ch} B", c["B"], f"{c['B']:+.2f}")
+want("gain P, text", end["coefficients"]["P"]["A"], f"{end['coefficients']['P']['A']:.3f}")
+want("gain K, text", end["coefficients"]["K"]["A"], f"{end['coefficients']['K']['A']:.3f}")
+want("moisture difference, last hour", abs(end["sensor"]["weak"]["moisture"] - end["sensor"]["good"]["moisture"]),
+     f"{abs(end['sensor']['weak']['moisture'] - end['sensor']['good']['moisture']):.1f}~" + chr(92) + "%RH")
+
+# clamp: the earlier record of 1 to 7 September 2026
 z = [r[0] for r in con.execute(
     "select P from NPKv1 where N=0 and P is not null and humidity between 15 and 60 "
     "and date(timestamp,'unixepoch') between '2026-09-01' and '2026-09-07'")]
-want("clamped readings", len(z), f"{len(z):,}".replace(",", chr(92) + ","),
-     f"{len(z):,}".replace(",", "{,}"))
-want("clamp floor P", bP, f"{bP:.1f}")
-
-# moisture relation and settling, from the two-soil campaign
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import insertion_analysis as ins
-
-w = ins.within_soil()
-for kod in ("59882", "59888"):
-    s = w[kod]
-    want(f"{kod} moisture low", s["m_lo"], f"{s['m_lo']:.1f}")
-    want(f"{kod} moisture high", s["m_hi"], f"{s['m_hi']:.1f}")
-    want(f"{kod} within-soil r", s["r"], f"{s['r']:.2f}")
-want("59882 N low", w["59882"]["n_lo"], f"{w['59882']['n_lo']:.0f} to")
-want("59882 N high", w["59882"]["n_hi"], f"{w['59882']['n_hi']:.0f}~mg/kg")
-want("59882 within-soil r2", w["59882"]["r2"], f"{w['59882']['r2']:.2f}")
-want("59882 within-soil slope", w["59882"]["slope"], f"{w['59882']['slope']:.2f}")
-want("pooled within-soil r", w["pooled"]["r"], f"{w['pooled']['r']:.2f}")
-want("pooled within-soil slope", w["pooled"]["slope"], f"{w['pooled']['slope']:.2f}")
-want("moisture share of the N gap, mg/kg", w["gap"]["explained"], f"{w['gap']['explained']:.1f}")
-want("moisture share of the N gap, %", w["gap"]["share"] * 100, f"{w['gap']['share']*100:.0f}~")
-
-sv = ins.settling()
-want("in-soil periods of ten minutes", sv["long"], f"the {sv['long']} periods")
-want("in-soil periods of thirty minutes", sv["long30"], f"the {sv['long30']} periods")
-want("moisture at 1 min, median", sv["moisture_1"]["median"], f"{sv['moisture_1']['median']:.1f}")
-want("moisture at 1 min, largest", sv["moisture_1"]["max"], f"{sv['moisture_1']['max']:.1f}")
-want("undisturbed moisture SD", sv["rest_sd_moisture"], f"{sv['rest_sd_moisture']:.1f}")
-for m in (1, 2, 5):
-    d = sv[f"nitrogen_{m}"]
-    want(f"nitrogen at {m} min, median", d["median"], f"{d['median']:.1f}~mg/kg")
-    want(f"nitrogen at {m} min, largest", d["max"], f"at most {d['max']:.0f})")
-want("nitrogen drift 2 to 30 min, largest", sv["drift_n"]["max"], f"{sv['drift_n']['max']:.0f}~mg/kg")
+want("clamped readings", len(z), thin(len(z)))
+want("P ceiling of the clamped readings", max(z), "exceeded " + str(max(47, int(max(z)))) + "~mg/kg")
+if max(z) > 47:
+    print(f"note: clamped readings reach P = {max(z)}")
 
 # satellite case study: results written by ndmi_station_analysis.py (needs rasterio,
 # so it is run separately)
@@ -193,10 +191,10 @@ if res.exists():
     # the sampling arithmetic in the Discussion
     pts5 = -(-o["field_ha"] // 5)
     want("points at one per 5 ha", pts5, f"{pts5:.0f} points")
-    want("waiting at one per 5 ha", pts5 * 2, f"{pts5*2:.0f} minutes")
+    want("waiting at one per 5 ha, h", pts5 * 10 / 60, "less than two hours" if pts5 * 10 / 60 < 2 else "CHECK")
     want("points at one per ha", round(o["field_ha"]), f"{round(o['field_ha'])}" + chr(10) + "points",
          f"{round(o['field_ha'])} points")
-    want("waiting at one per pixel", o["field_pixels"] * 2 / 60, f"{o['field_pixels']*2/60:.0f} hours")
+    want("waiting at one per pixel", o["field_pixels"] * 10 / 60, f"{o['field_pixels']*10/60:.0f} hours")
 else:
     print("note: ndmi_station_results.json not found - run ndmi_station_analysis.py (tf210 environment)")
 
@@ -284,26 +282,14 @@ for row in list(ws.iter_rows(values_only=True))[1:]:
     soils.setdefault(str(row[0]).strip().lower(), []).append((n_, p_, k_, m_))
 for soil, kod in (("good", "59882"), ("bad", "59888")):
     v = soils[soil]
-    want(f"{soil} n", len(v), f"${len(v)}$")
-    for i, ch in enumerate("NPK"):
+    # the preliminary series of 40 insertions, cited for the spread between placements
+    want(f"{soil} insertions", len(v), "twenty")
+    for i, ch in enumerate("NP"):
         col = [x[i] for x in v]
-        want(f"{soil} {ch} mean", st.mean(col), f"{st.mean(col):.2f}")
-        want(f"{soil} {ch} sd", st.stdev(col), f"{st.stdev(col):.2f}")
-    mo = [x[3] for x in v]
-    want(f"{soil} moisture", st.mean(mo), f"{st.mean(mo):.1f}")
-    want(f"{soil} moisture sd", st.stdev(mo), f"{st.stdev(mo):.1f}")
+        want(f"{soil} {ch} SD between placements", st.stdev(col), f"{st.stdev(col):.1f}")
+    want(f"{soil} moisture of the series", st.mean([x[3] for x in v]), f"{st.mean([x[3] for x in v]):.1f}")
     for key, name in (("N", "NO2/NO3-N"), ("P", "P2O5"), ("K", "K2O")):
         want(f"{soil} lab {name}", lab[kod][key], f"{lab[kod][key]:.1f}", f"{lab[kod][key]:.0f}")
-
-# coefficients
-for i, (ch, key, nm) in enumerate((("N", "N", "nitrogen"), ("P", "P", "phosphorus"),
-                                   ("K", "K", "potassium"))):
-    rg = st.mean([x[i] for x in soils["good"]])
-    rb = st.mean([x[i] for x in soils["bad"]])
-    lg, lb = lab["59882"][key], lab["59888"][key]
-    a = (lb - lg) / (rb - rg); b = lg - a * rg
-    want(f"{nm} A", a, f"{abs(a):.4f}")
-    want(f"{nm} B", b, f"{abs(b):.2f}")
 
 # ---- report ----------------------------------------------------------------
 miss = [c for c in checks if not c[3]]

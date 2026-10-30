@@ -15,5 +15,11 @@ last hour of each test.
     C:/Users/User/anaconda3/python.exe tests/2026-10_two_soil_calibration/calibrate.py
 
 The laboratory values are read from the paper repository (set `PAPER_DIR`).
-Result: A and B change sign with the window chosen, because the weak-soil readings
-drifted throughout the test; they are not used in the firmware.
+`record_analysis.py` gives the relations between the outputs, the moisture steps, the
+change of the readings between steps and the settling after insertion
+(`record_results.json`).
+
+The manuscript reports the factors of the last hour of each test, when the two soils
+were within 1.2 %RH and 0.2 C of each other, and those of the 40-42 %RH readings for
+comparison. `calibration_results.json` also holds the 2-20 h window, not at matched
+moisture, where the weak soil was 5.5 %RH wetter and the gains for P and K are negative.

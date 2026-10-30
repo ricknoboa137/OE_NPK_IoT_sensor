@@ -16,4 +16,4 @@ Rebuild the figure from the saved readings (the export is limited to the test pe
     C:/Users/User/anaconda3/python.exe tests/2026-10-25_weak_soil/plot_test.py
     C:/Users/User/anaconda3/python.exe tests/2026-10-25_weak_soil/plot_test.py --refresh
 
-Not used in the manuscript.
+Used in the manuscript (`Pic/weak_soil_test.png`).
