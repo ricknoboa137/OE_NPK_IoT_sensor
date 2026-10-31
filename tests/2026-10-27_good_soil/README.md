@@ -1,7 +1,7 @@
 # Good soil, from 27 October 2026
 
 The probe was moved from the weak soil to the good soil and left in place, with the
-moisture kept at about 40 % by a constant drop method, to follow the NPK readings over time.
+moisture kept at about 40 % by a constant drop method (checking and adjusting the drops caused the moisture steps), to follow the NPK readings over time.
 
 ## Record of the change (local time, CET = UTC+1)
 
