@@ -1,5 +1,5 @@
 {
-  "assumption": "weak soil = sample 59888, good soil = sample 59882",
+  "samples": "weak soil = sample 59888, good soil = sample 59882",
   "laboratory": {
     "weak": {
       "N": 20.7,

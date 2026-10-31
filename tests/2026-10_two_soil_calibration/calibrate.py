@@ -15,7 +15,7 @@ ways, and the coefficients are reported for each:
                      lasted 20.4 h)
   end of test        the last hour of each test
 
-Assumption: the weak soil is laboratory sample 59888 and the good soil sample
+Samples: the weak soil is laboratory sample 59888 and the good soil sample
 59882, the designations used in the two-soil campaign of September 2026.
 
     C:/Users/User/anaconda3/python.exe tests/2026-10_two_soil_calibration/calibrate.py
@@ -74,7 +74,7 @@ def windows(d):
 def main():
     data = {s: load(folder) for s, (folder, _) in SOILS.items()}
     lab = lab_values()
-    result = {"assumption": "weak soil = sample 59888, good soil = sample 59882",
+    result = {"samples": "weak soil = sample 59888, good soil = sample 59882",
               "laboratory": {s: lab[code] for s, (_, code) in SOILS.items()}, "methods": {}}
     print("laboratory (mg/kg):", json.dumps(result["laboratory"]))
     for method in ("matched moisture", "matched time", "end of test"):

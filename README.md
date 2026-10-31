@@ -84,7 +84,7 @@ The flow logs to a SQLite file with two tables, described in
 
 [`database/sensor_log.csv.gz`](database/sensor_log.csv.gz) holds the readings
 recorded from 12 January to 28 October 2026 (244,884 rows, times in UTC); the
-manuscript uses those up to 9 September. To obtain the SQLite file from it:
+manuscript uses those of September and October. To obtain the SQLite file from it:
 
 ```
 python database/build_database.py
