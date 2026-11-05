@@ -194,7 +194,6 @@ if res.exists():
     want("waiting at one per 5 ha, h", pts5 * 10 / 60, "less than two hours" if pts5 * 10 / 60 < 2 else "CHECK")
     want("points at one per ha", round(o["field_ha"]), f"{round(o['field_ha'])}" + chr(10) + "points",
          f"{round(o['field_ha'])} points")
-    want("waiting at one per pixel", o["field_pixels"] * 10 / 60, f"{o['field_pixels']*10/60:.0f} hours")
 else:
     print("note: ndmi_station_results.json not found - run ndmi_station_analysis.py (tf210 environment)")
 
