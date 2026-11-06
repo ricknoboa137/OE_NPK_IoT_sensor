@@ -128,6 +128,16 @@ want("largest moisture step", max(e["dM"] for e in ev), f"{max(e['dM'] for e in 
 want("N per %RH at the steps", rec["N_per_RH_all_steps"], f"{rec['N_per_RH_all_steps']:.1f}~mg/kg")
 want("weak end N", rec["weak"]["last_hour"]["N"], f"$N={rec['weak']['last_hour']['N']:.0f}$")
 want("weak end P", rec["weak"]["last_hour"]["P"], f"$P={rec['weak']['last_hour']['P']:.0f}$")
+# moisture fit of the two-soil test (moisture_fit.py)
+mf = json.loads((_oct / "moisture_fit_results.json").read_text(encoding="utf-8"))
+for s in ("weak", "good"):
+    lo, hi = mf[s]["moisture"]
+    want(f"{s} moisture range of the fit", (lo, hi), f"{lo:.1f}-{hi:.1f}")
+    for c in "NPK":
+        f = mf[s][c]
+        for k in ("slope", "r", "slope_with_time", "per_hour"):
+            want(f"{s} {c} {k}", f[k], f"${f[k]:+.2f}$")
+    want(f"{s} N slope with time, text", mf[s]["N"]["slope_with_time"], f"{mf[s]['N']['slope_with_time']:.1f}")
 want("weak end K", rec["weak"]["last_hour"]["K"], f"$K={rec['weak']['last_hour']['K']:.0f}$")
 want("weak band P, Q1", rec["weak"]["band_quartiles"]["P"][0], f"{rec['weak']['band_quartiles']['P'][0]:.0f} to")
 want("weak band P, Q3", rec["weak"]["band_quartiles"]["P"][1], f"{rec['weak']['band_quartiles']['P'][1]:.0f}~mg/kg")

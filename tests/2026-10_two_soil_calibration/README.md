@@ -17,6 +17,8 @@ last hour of each test.
 The laboratory values are read from the paper repository (set `PAPER_DIR`).
 `record_analysis.py` gives the relations between the outputs, the moisture steps, the
 change of the readings between steps and the settling after insertion
+`moisture_fit.py` fits each nutrient output against the moisture average, alone and
+with the time since insertion (`moisture_fit_results.json`).
 (`record_results.json`).
 
 The manuscript reports the factors of the last hour of each test, when the two soils
