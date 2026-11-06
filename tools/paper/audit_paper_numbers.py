@@ -132,7 +132,7 @@ want("weak end P", rec["weak"]["last_hour"]["P"], f"$P={rec['weak']['last_hour']
 mf = json.loads((_oct / "moisture_fit_results.json").read_text(encoding="utf-8"))
 for s in ("weak", "good"):
     lo, hi = mf[s]["moisture"]
-    want(f"{s} moisture range of the fit", (lo, hi), f"{lo:.1f}-{hi:.1f}")
+    want(f"{s} moisture range of the fit", (lo, hi), f"{lo:.1f}--{hi:.1f}")
     for c in "NPK":
         f = mf[s][c]
         for k in ("slope", "r", "slope_with_time", "per_hour"):
